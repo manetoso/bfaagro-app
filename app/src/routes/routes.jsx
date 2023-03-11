@@ -1,13 +1,15 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import { Auth, Formulation, Home, NotFound, Warehouses } from '@/pages'
 import { Layout, ProtectedRoute } from '@/components/layout'
 import { useAuthStore } from '@/stores'
+import { AnimatePresence } from 'framer-motion'
 
 export function Router() {
+  const location = useLocation()
   const { isAuthenticated, permissions, roles } = useAuthStore()
   return (
-    <BrowserRouter>
-      <Routes>
+    <AnimatePresence mode='wait'>
+      <Routes key={location.pathname} location={location}>
         <Route
           path='/autenticacion'
           element={<Auth isAuthenticated={isAuthenticated} />}
@@ -58,6 +60,6 @@ export function Router() {
           element={<NotFound isAuthenticated={isAuthenticated} />}
         />
       </Routes>
-    </BrowserRouter>
+    </AnimatePresence>
   )
 }

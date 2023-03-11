@@ -1,3 +1,4 @@
+import { PageTransition } from '@/components/layout/PageTransition'
 import { useAuthStore } from '@/stores'
 import { Navigate } from 'react-router-dom'
 
@@ -10,11 +11,13 @@ export function Auth({ isAuthenticated }) {
     login({ username: 'admin' })
   }
   return (
-    <div className='flex min-h-screen items-center justify-center'>
-      <section className='flex flex-col'>
-        <h1>Inicio de Sesion</h1>
-        <button onClick={handleLogin}>Acceder</button>
-      </section>
-    </div>
+    <PageTransition>
+      <div className='flex min-h-screen items-center justify-center'>
+        <section className='flex flex-col'>
+          <h1>Inicio de Sesion</h1>
+          <button onClick={handleLogin}>Acceder</button>
+        </section>
+      </div>
+    </PageTransition>
   )
 }
