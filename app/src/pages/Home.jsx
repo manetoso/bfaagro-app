@@ -5,22 +5,22 @@ export const routesList = [
   {
     title: 'Compras',
     description: 'Administra compras',
-    to: '/app/compras'
+    to: '/app/compras/inicio'
   },
   {
     title: 'Ventas',
     description: 'Administra ventas',
-    to: '/app/ventas'
+    to: '/app/ventas/inicio'
   },
   {
     title: 'Producción',
     description: 'Administra almacenes',
-    to: '/app/produccion'
+    to: '/app/produccion/inicio'
   },
   {
     title: 'Usuarios',
     description: 'Administra usuarios',
-    to: '/app/usuarios'
+    to: '/app/usuarios/inicio'
   }
 ]
 

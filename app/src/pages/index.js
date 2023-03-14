@@ -7,3 +7,5 @@ export { Purchases } from './Purchases'
 export { Sales } from './Sales'
 export { Users } from './Users'
 export { Warehouses } from './Warehouses'
+
+export { MateriaPrima } from './MateriaPrima'

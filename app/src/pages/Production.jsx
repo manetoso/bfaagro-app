@@ -5,7 +5,7 @@ export const routesList = [
   {
     title: 'Almacenes',
     description: 'Administra almacenes',
-    to: '/app/produccion/almacenes'
+    to: '/app/produccion/almacenes/materia-prima'
   },
   {
     title: 'Formulas',

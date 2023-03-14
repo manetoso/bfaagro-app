@@ -1,9 +1,11 @@
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { useAuthStore } from '@/stores'
 
 import { Close } from '🚀'
-import { AsideButton, IconButton } from './'
+import { AsideButton } from './'
+import { IconButton } from '../'
+import { WarehouseList } from './lists'
 
 /**
  *
@@ -11,7 +13,6 @@ import { AsideButton, IconButton } from './'
  * @returns {JSX.Element} Aside component
  */
 export function Aside({ menuCheckboxId, inputRef }) {
-  const { pathname } = useLocation()
   const navigate = useNavigate()
   const logout = useAuthStore((store) => store.logout)
 
@@ -28,16 +29,8 @@ export function Aside({ menuCheckboxId, inputRef }) {
         <Close />
       </IconButton>
       <ul className='flex flex-col gap-2 overflow-scroll'>
-        {pathname.includes('home') && (
-          <li>
-            <AsideButton
-              isActive={pathname.includes('home')}
-              label='Inicio'
-              onClick={() => handleClick('/app/test')}
-            />
-          </li>
-        )}
-        <li>
+        <WarehouseList handleClick={handleClick} />
+        <li className='mt-6'>
           <AsideButton isActive label='Salir' onClick={handleLogout} />
         </li>
       </ul>

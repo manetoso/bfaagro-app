@@ -14,7 +14,7 @@ export function Navigation() {
         <IconButton htmlFor={menuCheckboxId}>
           <Menu />
         </IconButton>
-        {!window.location.pathname.includes('inicio') && (
+        {!window.location.pathname.includes('app/inicio') && (
           <IconButton onClick={() => history.back()}>
             <ChevronBack />
             Atras

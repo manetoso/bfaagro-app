@@ -4,19 +4,16 @@ import { AnimatePresence } from 'framer-motion'
 import { Auth, Home, NotFound } from '@/pages'
 import { Layout, ProtectedRoute } from '@/components/layout'
 
+import {
+  ProductionRoutes,
+  PurchasesRoutes,
+  SalesRoutes,
+  UsersRoutes
+} from './routesModules'
 import { useRouterLists } from '@/hooks/useRouterLists'
 
 export function Router() {
-  const {
-    isAuthenticated,
-    location,
-    permissions,
-    productionRoutes,
-    purchasesRoutes,
-    roles,
-    salesRoutes,
-    usersRoutes
-  } = useRouterLists()
+  const { isAuthenticated, location, permissions, roles } = useRouterLists()
   return (
     <AnimatePresence mode='wait'>
       <Routes key={location.pathname} location={location}>
@@ -40,18 +37,26 @@ export function Router() {
               </ProtectedRoute>
             }
           />
-          {purchasesRoutes.map(({ element, path }) => (
-            <Route key={path} path={path} element={element} />
-          ))}
-          {salesRoutes.map(({ element, path }) => (
-            <Route key={path} path={path} element={element} />
-          ))}
-          {productionRoutes.map(({ element, path }) => (
-            <Route key={path} path={path} element={element} />
-          ))}
-          {usersRoutes.map(({ element, path }) => (
-            <Route key={path} path={path} element={element} />
-          ))}
+          <Route
+            path='compras/*'
+            element={
+              <PurchasesRoutes permissions={permissions} roles={roles} />
+            }
+          />
+          <Route
+            path='ventas/*'
+            element={<SalesRoutes permissions={permissions} roles={roles} />}
+          />
+          <Route
+            path='produccion/*'
+            element={
+              <ProductionRoutes permissions={permissions} roles={roles} />
+            }
+          />
+          <Route
+            path='usuarios/*'
+            element={<UsersRoutes permissions={permissions} roles={roles} />}
+          />
         </Route>
         <Route
           path='*'
