@@ -3,28 +3,18 @@ import { Card, CardsContainer } from '@/components/navigationCard'
 
 export const routesList = [
   {
-    title: 'Compras',
-    description: 'Administra compras',
-    to: '/app/compras'
-  },
-  {
-    title: 'Ventas',
-    description: 'Administra ventas',
-    to: '/app/ventas'
-  },
-  {
-    title: 'Producción',
+    title: 'Almacenes',
     description: 'Administra almacenes',
-    to: '/app/produccion'
+    to: '/app/produccion/almacenes'
   },
   {
-    title: 'Usuarios',
-    description: 'Administra usuarios',
-    to: '/app/usuarios'
+    title: 'Formulas',
+    description: 'Administra ventas',
+    to: '/app/produccion/formulas'
   }
 ]
 
-export function Home() {
+export function Production() {
   return (
     <PageTransition>
       <CardsContainer>

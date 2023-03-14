@@ -1,12 +1,22 @@
-import { Route, Routes, useLocation } from 'react-router-dom'
-import { Auth, Formulation, Home, NotFound, Warehouses } from '@/pages'
-import { Layout, ProtectedRoute } from '@/components/layout'
-import { useAuthStore } from '@/stores'
+import { Route, Routes } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 
+import { Auth, Home, NotFound } from '@/pages'
+import { Layout, ProtectedRoute } from '@/components/layout'
+
+import { useRouterLists } from '@/hooks/useRouterLists'
+
 export function Router() {
-  const location = useLocation()
-  const { isAuthenticated, permissions, roles } = useAuthStore()
+  const {
+    isAuthenticated,
+    location,
+    permissions,
+    productionRoutes,
+    purchasesRoutes,
+    roles,
+    salesRoutes,
+    usersRoutes
+  } = useRouterLists()
   return (
     <AnimatePresence mode='wait'>
       <Routes key={location.pathname} location={location}>
@@ -30,30 +40,18 @@ export function Router() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path='almacenes'
-            element={
-              <ProtectedRoute
-                isAllow={
-                  permissions.includes('write') && roles.includes('admin')
-                }
-              >
-                <Warehouses />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='formulas'
-            element={
-              <ProtectedRoute
-                isAllow={
-                  permissions.includes('write') && roles.includes('admin')
-                }
-              >
-                <Formulation />
-              </ProtectedRoute>
-            }
-          />
+          {purchasesRoutes.map(({ element, path }) => (
+            <Route key={path} path={path} element={element} />
+          ))}
+          {salesRoutes.map(({ element, path }) => (
+            <Route key={path} path={path} element={element} />
+          ))}
+          {productionRoutes.map(({ element, path }) => (
+            <Route key={path} path={path} element={element} />
+          ))}
+          {usersRoutes.map(({ element, path }) => (
+            <Route key={path} path={path} element={element} />
+          ))}
         </Route>
         <Route
           path='*'

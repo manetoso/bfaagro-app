@@ -1,6 +1,7 @@
-import { PageTransition } from '@/components/layout/PageTransition'
-import { useAuthStore } from '@/stores'
 import { Navigate } from 'react-router-dom'
+
+import { useAuthStore } from '@/stores'
+import { PageTransition } from '@/components/layout/PageTransition'
 
 export function Auth({ isAuthenticated }) {
   const login = useAuthStore((store) => store.login)
