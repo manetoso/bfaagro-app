@@ -1,0 +1,162 @@
+[
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Cyrille",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Litros",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Cyrille",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Kilos",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Aharon",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Litros",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Aharon",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Kilos",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Jedidiah",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Litros",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Jedidiah",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Kilos",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Wain",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Litros",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Wain",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Kilos",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Lou",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Litros",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Lou",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Kilos",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Tedda",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Litros",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Tedda",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Kilos",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Virgie",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Litros",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Virgie",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Kilos",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Kev",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Litros",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Kev",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Kilos",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Martitia",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Litros",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Martitia",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Kilos",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Parry",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Litros",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	},
+	{
+		"ID_PRODUCTO": 1,
+		"NOMBRE": "Parry",
+		"CANTIDAD": 1,
+		"UNIDAD_MEDIDA": "Kilos",
+		"ID_TIPO_PRODUCTO": 1,
+		"ID_ALMACEN": 1
+	}
+]
