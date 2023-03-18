@@ -1,3 +1,4 @@
+import { formatNumberToString } from '@/utils/utils'
 import { ChevronBack, ChevronRight } from '🚀'
 
 /**
@@ -9,7 +10,10 @@ export function BottomControls({ table }) {
   return (
     <div className='flex w-full items-center justify-end gap-2 overflow-x-auto bg-white py-2 px-2 md:py-4 md:px-6'>
       <button
-        className='cursor-pointer rounded border-2 hover:border-black'
+        className={`btn p-1 ${
+          !table.getCanPreviousPage() &&
+          'cursor-not-allowed bg-opacity-50 hover:bg-black/50'
+        }`}
         onClick={() => table.previousPage()}
         disabled={!table.getCanPreviousPage()}
       >
@@ -17,11 +21,15 @@ export function BottomControls({ table }) {
       </button>
       <span>
         <strong>
-          {table.getState().pagination.pageIndex + 1} .. {table.getPageCount()}
+          {table.getState().pagination.pageIndex + 1} ..{' '}
+          {formatNumberToString(table.getPageCount())}
         </strong>
       </span>
       <button
-        className='cursor-pointer rounded border-2 hover:border-black'
+        className={`btn p-1 ${
+          !table.getCanNextPage() &&
+          'cursor-not-allowed bg-opacity-50 hover:bg-black/50'
+        }`}
         onClick={() => table.nextPage()}
         disabled={!table.getCanNextPage()}
       >
@@ -33,12 +41,12 @@ export function BottomControls({ table }) {
           type='number'
           defaultValue={table.getState().pagination.pageIndex + 1}
           onChange={(e) => {
+            if (e.target.value <= 0 || e.target.value > table.getPageCount())
+              return
             const page = e.target.value ? Number(e.target.value) - 1 : 0
-            table.setPageIndex(
-              page > -1 && page <= table.getPageCount() && page
-            )
+            table.setPageIndex(page)
           }}
-          className='w-10 rounded border-2 px-1 hover:border-black'
+          className='w-16 rounded border-2 px-1 hover:border-black'
         />
       </span>
     </div>

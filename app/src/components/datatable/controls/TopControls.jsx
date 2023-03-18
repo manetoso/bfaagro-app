@@ -1,13 +1,14 @@
 import { Filter } from '@/components/Icons'
+import { Plus } from '🚀'
 
 import './filters.css'
 
 /**
  *
- * @param {{table: Table<any>}} props Table from useReactTable '@tanstack/react-table'
+ * @param {{table: Table<any>, addHandler: () => void}} props Table from useReactTable '@tanstack/react-table'
  * @returns Pagination controls for the table
  */
-export function TopControls({ table }) {
+export function TopControls({ table, addHandler }) {
   return (
     <div className='flex items-center gap-2'>
       <span className='text-xs font-bold'>Registros por pág:</span>
@@ -30,6 +31,9 @@ export function TopControls({ table }) {
       >
         <Filter />
       </label>
+      <button className='btn p-1' onClick={addHandler}>
+        <Plus />
+      </button>
     </div>
   )
 }

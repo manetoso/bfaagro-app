@@ -9,8 +9,14 @@ import {
 } from '@tanstack/react-table'
 
 import { BottomControls, Table, TopControls } from './'
+import { formatNumberToString } from '@/utils/utils'
 
-export function Datatable({ columns, data, title = 'Table' }) {
+/**
+ *
+ * @param {{columns: ColumnDef<unknown, unknown>[], data: any, title: string, addHandler () => void}} props
+ * @returns DataTable
+ */
+export function Datatable({ columns, data, title = 'Table', addHandler }) {
   const [sorting, setSorting] = useState([])
 
   const table = useReactTable({
@@ -28,21 +34,23 @@ export function Datatable({ columns, data, title = 'Table' }) {
   })
 
   return (
-    <div className='p-2'>
+    <>
       <div className='rounded-md border-2'>
         <div className='flex justify-between p-2 md:py-4 md:px-6'>
           <h3 className='text-xl font-black'>
             {title}{' '}
-            <small className='text-xs font-bold text-gray-400'>{`(${data.length} Registros)`}</small>
+            <small className='text-xs font-bold text-gray-400'>{`(${formatNumberToString(
+              data.length
+            )} Registros)`}</small>
           </h3>
-          <TopControls table={table} />
+          <TopControls table={table} addHandler={addHandler} />
         </div>
         <div className='overflow-x-auto'>
           <Table flexRender={flexRender} table={table} />
         </div>
         <BottomControls table={table} />
       </div>
-    </div>
+    </>
   )
 }
 
@@ -53,8 +61,14 @@ export function Datatable({ columns, data, title = 'Table' }) {
 //     columnHelper.accessor('name', {
 //       header: 'Nombre',
 //       cell: (info) => (
-//         <span className='flex items-center justify-between font-bold'>
-//           {info.getValue()} <RowDropdownMenu />
+//         <span className='flex items-center justify-between gap-2 font-bold'>
+//           {info.getValue()}{' '}
+//           <DropdownMenu
+//             openAlert={() => toggleAlert(info.cell.row.original)}
+//             openModal={() => {
+//               toggleEditModal(info.cell.row.original)
+//             }}
+//           />
 //         </span>
 //       ),
 //       footer: (props) => props.column.id
@@ -93,4 +107,5 @@ export function Datatable({ columns, data, title = 'Table' }) {
 //     })
 //   ],
 //   []
+// )
 // )

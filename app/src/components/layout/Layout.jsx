@@ -13,7 +13,7 @@ export function Layout({ isAuthenticated }) {
   return (
     <>
       <Navigation />
-      <main className='my-5 mx-auto max-w-[1000px] flex-1 px-4 overflow-y-auto mt-16'>
+      <main className='mx-auto mb-10 mt-20 max-w-[1000px] flex-1 overflow-y-auto px-4'>
         <Outlet />
       </main>
     </>
