@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 
-import { Formulation, MateriaPrima, Production, Warehouses } from '@/pages'
+import { Formulation, Production, Warehouses } from '@/pages'
 import { ProtectedRoute } from '@/components/layout'
 import { Packaging, Products, RawMaterial } from '@/components/warehouses'
 

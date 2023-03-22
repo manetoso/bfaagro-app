@@ -5,7 +5,7 @@ import { useAuthStore } from '@/stores'
 import { Close } from '🚀'
 import { AsideButton } from './'
 import { IconButton } from '../'
-import { WarehouseList } from './lists'
+import { FormulationList, WarehouseList } from './lists'
 
 /**
  *
@@ -30,6 +30,7 @@ export function Aside({ menuCheckboxId, inputRef }) {
       </IconButton>
       <ul className='flex flex-col gap-2 overflow-scroll'>
         <WarehouseList handleClick={handleClick} />
+        <FormulationList handleClick={handleClick} />
         <li className='mt-6'>
           <AsideButton isActive label='Salir' onClick={handleLogout} />
         </li>
