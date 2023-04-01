@@ -14,7 +14,7 @@ const PRODUCTOS = new Schema({
     type: String,
     required: true
   },
-  TIPOS_PRODUCTO: [
+  TIPO_PRODUCTO: [
     {
       _id: false,
       ID_TIPO_PRODUCTO: {

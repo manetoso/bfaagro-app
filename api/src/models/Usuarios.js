@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose'
 
 const USUARIOS = new Schema({
-  
   ID_USUARIO: {
     type: String,
     unique: true,

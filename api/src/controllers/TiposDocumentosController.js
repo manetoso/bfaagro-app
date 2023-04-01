@@ -26,6 +26,18 @@ const findTiposDocumentos = async (req = request, res = response) => {
   }
 }
 
+const findTiposDocumentosByType = async (req = request, res = response) => {
+  try {
+    const type = req.params.tipoDocumentos
+    const actionDB = await TIPOS_DOCUMENTOS.find({
+      TIPO_DOCUMENTO: 'TIPO_' + type.toUpperCase()
+    })
+    return serverOkMessage(res, actionDB)
+  } catch (error) {
+    return serverErrorMessage(res)
+  }
+}
+
 const updateTipoDocumento = async (req = request, res = response) => {
   try {
     const id = req.params.idTipoDocumento
@@ -49,4 +61,10 @@ const deleteTipoDocumento = async (req = request, res = response) => {
   }
 }
 
-export { createTipoDocumento, findTiposDocumentos, deleteTipoDocumento, updateTipoDocumento }
+export {
+  createTipoDocumento,
+  findTiposDocumentos,
+  findTiposDocumentosByType,
+  deleteTipoDocumento,
+  updateTipoDocumento
+}

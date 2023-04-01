@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose'
 
 const BITACORA_PRODUCTOS = new Schema({
-  
   ID_BITACORA_PRODUCTO: {
     type: String,
     unique: true,

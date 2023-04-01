@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose'
 
 const NOTIFICACIONES = new Schema({
-  
   ID_NOTIFICACION: {
     type: String,
     unique: true,

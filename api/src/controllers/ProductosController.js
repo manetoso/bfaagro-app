@@ -8,14 +8,14 @@ const createProducto = async (req = request, res = response) => {
       NOMBRE_PRODUCTO,
       CANTIDAD,
       UNIDAD_MEDIDA,
-      TIPOS_PRODUCTO,
+      TIPO_PRODUCTO,
       ALMACEN
     } = req.body
     const producto = {
       NOMBRE_PRODUCTO,
       CANTIDAD,
       UNIDAD_MEDIDA,
-      TIPOS_PRODUCTO,
+      TIPO_PRODUCTO,
       ALMACEN
     }
     const actionDB = await PRODUCTOS.create(producto)
@@ -62,7 +62,7 @@ const findProductosByType = async (req = request, res = response) => {
     const id = req.params.idTipoProducto
     let actionDB = await PRODUCTOS.aggregate([
       {
-        $match: { 'TIPOS_PRODUCTO.ID_TIPO_PRODUCTO': id }
+        $match: { 'TIPO_PRODUCTO.ID_TIPO_PRODUCTO': id }
       }
     ])
     if (actionDB.length === 0) {

@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose'
 
 const PROCESOS = new Schema({
-  
   ID_PROCESO: {
     type: String,
     unique: true,

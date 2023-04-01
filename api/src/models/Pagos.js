@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose'
 
 const PAGOS = new Schema({
-  
   ID_PAGO: {
     type: String,
     unique: true,

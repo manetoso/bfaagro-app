@@ -1,5 +1,6 @@
 import {
   findTiposDocumentos,
+  findTiposDocumentosByType,
   createTipoDocumento,
   deleteTipoDocumento,
   updateTipoDocumento
@@ -9,6 +10,7 @@ import { Router } from 'express'
 const router = Router()
 
 router.get('/', [], findTiposDocumentos)
+router.get('/:tipoDocumentos', [], findTiposDocumentosByType)
 router.post('/', [], createTipoDocumento)
 router.put('/:idTipoDocumento', [], updateTipoDocumento)
 router.delete('/:idTipoDocumento', [], deleteTipoDocumento)

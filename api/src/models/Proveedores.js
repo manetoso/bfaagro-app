@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose'
 
 const PROVEEDORES = new Schema({
-  
   ID_PROVEEDOR: {
     type: String,
     unique: true,
