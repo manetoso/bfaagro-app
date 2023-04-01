@@ -1,13 +1,6 @@
 import { Schema, model } from 'mongoose'
 
 const EMBALAJES_PRODUCTO = new Schema({
-  _id: false,
-  ID_EMBALAJE_PRODUCTO: {
-    type: String,
-    unique: true,
-    index: true,
-    required: true
-  },
   PRODUCTO: {
     ID_PRODUCTO: {
       type: Schema.Types.ObjectId,
@@ -41,7 +34,8 @@ const EMBALAJES_PRODUCTO = new Schema({
   EMBALAJE_PRODUCTO: {
     ID_PRODUCTO: {
       type: Schema.Types.ObjectId,
-      ref: 'PRODUCTOS'
+      ref: 'PRODUCTOS',
+      required: true
     },
     NOMBRE_PRODUCTO: {
       type: String,
@@ -59,4 +53,4 @@ EMBALAJES_PRODUCTO.methods.toJSON = function () {
   return embalajesProducto
 }
 
-module.exports = model(EMBALAJES_PRODUCTO, 'EMBALAJES_PRODUCTO')
+export default model('EMBALAJES_PRODUCTO', EMBALAJES_PRODUCTO)

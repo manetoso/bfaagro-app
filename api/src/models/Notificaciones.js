@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose'
 
 const NOTIFICACIONES = new Schema({
-  _id: false,
+  
   ID_NOTIFICACION: {
     type: String,
     unique: true,
@@ -38,4 +38,4 @@ NOTIFICACIONES.methods.toJSON = function () {
   const { __v, ...notificaciones } = this.toObject()
   return notificaciones
 }
-module.exports = model('NOTIFICACIONES', NOTIFICACIONES)
+export default model('NOTIFICACIONES', NOTIFICACIONES)

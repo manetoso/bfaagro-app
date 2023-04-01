@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose'
 
 const BITACORA_PRODUCTOS = new Schema({
-  _id: false,
+  
   ID_BITACORA_PRODUCTO: {
     type: String,
     unique: true,
@@ -58,4 +58,4 @@ BITACORA_PRODUCTOS.methods.toJSON = function () {
   return bitacoraProductos
 }
 
-module.exports = model(BITACORA_PRODUCTOS, 'BITACORA_PRODUCTOS')
+export default model(BITACORA_PRODUCTOS, 'BITACORA_PRODUCTOS')

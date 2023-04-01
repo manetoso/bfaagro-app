@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose'
 
 const LIBRO_DIARIO = new Schema({
-  _id: false,
+  
   ID_DIARIO: {
     type: String,
     unique: true,
@@ -43,4 +43,4 @@ LIBRO_DIARIO.methods.toJSON = function () {
   return libroDiario
 }
 
-module.exports = model(LIBRO_DIARIO, 'LIBRO_DIARIO')
+export default model(LIBRO_DIARIO, 'LIBRO_DIARIO')

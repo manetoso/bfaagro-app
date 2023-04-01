@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose'
 
 const PAGOS = new Schema({
-  _id: false,
+  
   ID_PAGO: {
     type: String,
     unique: true,
@@ -35,4 +35,4 @@ PAGOS.methods.toJSON = function () {
   return pago
 }
 
-module.exports = model(PAGOS, 'PAGOS')
+export default model(PAGOS, 'PAGOS')

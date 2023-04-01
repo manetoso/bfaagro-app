@@ -1,13 +1,6 @@
 import { Schema, model } from 'mongoose'
 
 const PRODUCTOS = new Schema({
-  _id: false,
-  ID_PRODUCTO: {
-    type: String,
-    unique: true,
-    index: true,
-    required: true
-  },
   NOMBRE_PRODUCTO: {
     type: String,
     required: true,
@@ -21,19 +14,23 @@ const PRODUCTOS = new Schema({
     type: String,
     required: true
   },
-  TIPO_PRODUCTO: {
-    ID_TIPO_PRODUCTO: {
-      type: String,
-      required: true
-    },
-    TIPO_PRODUCTO: {
-      type: String,
-      required: true
+  TIPOS_PRODUCTO: [
+    {
+      _id: false,
+      ID_TIPO_PRODUCTO: {
+        type: String,
+        required: true
+      },
+      TIPO_PRODUCTO: {
+        type: String,
+        required: true
+      }
     }
-  },
+  ],
   ALMACEN: {
     ID_ALMACEN: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'ALMACENES',
       required: true
     },
     NOMBRE_ALMACEN: {
@@ -48,4 +45,4 @@ PRODUCTOS.methods.toJSON = function () {
   return productos
 }
 
-module.exports = model(PRODUCTOS, 'PRODUCTOS')
+export default model('PRODUCTOS', PRODUCTOS)

@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose'
 
 const COBROS = new Schema({
-  _id: false,
+  
   ID_COBRO: {
     type: String,
     unique: true,
@@ -35,4 +35,4 @@ COBROS.methods.toJSON = function () {
   return cobro
 }
 
-module.exports = model(COBROS, 'COBROS')
+export default model(COBROS, 'COBROS')

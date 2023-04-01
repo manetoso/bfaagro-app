@@ -1,13 +1,6 @@
 import { Schema, model } from 'mongoose'
 
 const PRODUCTOS_EMBALAJADOS = new Schema({
-  _id: false,
-  ID_PRODUCTO_EMBALAJADO: {
-    type: String,
-    unique: true,
-    index: true,
-    required: true
-  },
   PRODUCTO: {
     ID_PRODUCTO: {
       type: Schema.Types.ObjectId,
@@ -59,4 +52,4 @@ PRODUCTOS_EMBALAJADOS.methods.toJSON = function () {
   return productosEmbalajados
 }
 
-module.exports = model(PRODUCTOS_EMBALAJADOS, 'PRODUCTOS_EMBALAJADOS')
+export default model('PRODUCTOS_EMBALAJADOS', PRODUCTOS_EMBALAJADOS)

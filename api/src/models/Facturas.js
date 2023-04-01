@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose'
 
 const FACTURAS = new Schema({
-  _id: false,
+  
   ID_FACTURAS: {
     type: String,
     unique: true,
@@ -35,4 +35,4 @@ FACTURAS.methods.toJSON = function () {
   const { __v, ...facturas } = this.toObject()
   return facturas
 }
-module.exports = model('FACTURAS', FACTURAS)
+export default model('FACTURAS', FACTURAS)

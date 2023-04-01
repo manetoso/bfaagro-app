@@ -1,11 +1,8 @@
 import { Schema, model } from 'mongoose'
 
 const FORMULAS = new Schema({
-  _id: false,
-  ID_FORMULA: {
+  NOMBRE_FORMULA: {
     type: String,
-    unique: true,
-    index: true,
     required: true
   },
   PRODUCTO: {
@@ -19,12 +16,17 @@ const FORMULAS = new Schema({
       required: true
     }
   },
+  UNIDAD_MEDIDA: {
+    type: String,
+    required: true
+  },
   CANTIDAD: {
     type: Number,
     required: true
   },
   FORMULACION_DETALLE: [
     {
+      _id: false,
       ID_PRODUCTO: {
         type: Schema.Types.ObjectId,
         ref: 'PRODUCTOS',
@@ -47,4 +49,4 @@ FORMULAS.methods.toJSON = function () {
   return formulas
 }
 
-module.exports = model(FORMULAS, 'FORMULAS')
+export default model('FORMULAS', FORMULAS)
