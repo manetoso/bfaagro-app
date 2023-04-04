@@ -1,0 +1,109 @@
+const typesDocuments = [
+  {
+    key: 'TIPOS_PRODUCTO',
+    values: [
+      {
+        ID_TIPO_PRODUCTO: '1',
+        TIPO_PRODUCTO: 'MATERIA PRIMA'
+      },
+      {
+        ID_TIPO_PRODUCTO: '2',
+        TIPO_PRODUCTO: 'PRODUCTO TERMINADO'
+      },
+      {
+        ID_TIPO_PRODUCTO: '3',
+        TIPO_PRODUCTO: 'EMBALAJE'
+      }
+    ]
+  },
+  {
+    key: 'TIPO_ALMACEN',
+    values: [
+      {
+        ID_TIPO_ALMACEN: '1',
+        TIPO_ALMACEN: 'MATERIA PRIMA'
+      },
+      {
+        ID_TIPO_ALMACEN: '2',
+        TIPO_ALMACEN: 'PRODUCTO TERMINADO'
+      },
+      {
+        ID_TIPO_ALMACEN: '3',
+        TIPO_ALMACEN: 'EMBALAJE'
+      }
+    ]
+  }
+]
+const producto = {
+  ALMACEN: {
+    ID_ALMACEN: '6425035703b1839e02b0873f',
+    NOMBRE_ALMACEN: 'Almacen Abasolo'
+  },
+  _id: '64251ec5229f67cf73d2743f',
+  NOMBRE_PRODUCTO: 'VITAMINA B12',
+  CANTIDAD: 10,
+  UNIDAD_MEDIDA: 'G',
+  TIPOS_PRODUCTO: [
+    {
+      ID_TIPO_PRODUCTO: '1',
+      TIPO_PRODUCTO: 'MATERIA PRIMA'
+    }
+  ]
+}
+
+const validateExistDocumentType = (producto) => {
+  let flagValidate = false
+  const objectRequest = producto
+  typesDocuments.forEach((documentType) => {
+    if (Object.prototype.hasOwnProperty.call(objectRequest, documentType.key)) {
+      const keyObject = documentType.key
+      const arrayValuesFromDocumentKey = returnValuesFromKey(documentType.key)
+      flagValidate = validateValuesFromKeyAreEquals(
+        objectRequest[keyObject],
+        arrayValuesFromDocumentKey
+      )
+      console.log(flagValidate)
+    }
+  })
+}
+
+const returnValuesFromKey = (keyDocument) => {
+  let values = []
+  typesDocuments.every((documentType) => {
+    if (documentType.key == keyDocument) {
+      values = documentType.values
+    }
+  })
+  return values
+}
+
+const validateValuesFromKeyAreEquals = (
+  objectValuesKey,
+  DocumentTypevalues
+) => {
+  let flagEquals = false
+  if (objectValuesKey.length === undefined) {
+    DocumentTypevalues.forEach((objectValue) => {
+      if (objectValue === objectValuesKey) {
+        flagEquals = true
+      }
+    })
+  } else {
+    let asserts = 0
+    for (let i = 0; i <= objectValuesKey.length - 1; i++) {
+      for (let y = 0; y <= DocumentTypevalues.length - 1; y++) {
+        if (
+          JSON.stringify(objectValuesKey[i]) ===
+          JSON.stringify(DocumentTypevalues[y])
+        ) {
+          asserts++
+        }
+      }
+    }
+    if (asserts === objectValuesKey.length) {
+      flagEquals = true
+    }
+  }
+  return flagEquals
+}
+validateExistDocumentType(producto)
