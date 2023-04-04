@@ -1,7 +1,8 @@
+import { convertToDBSchema } from '@/services/recipesServices'
 import { create } from 'zustand'
 
 export const FIELDS_TYPES = {
-  RECIPES: 'recipesData',
+  RECIPES: 'recipesData'
 }
 
 export const useRecipesStore = create((set, get) => ({
@@ -30,7 +31,9 @@ export const useRecipesStore = create((set, get) => ({
   setDataFilds: (newData, field) => {
     set((state) => ({ ...state, [field]: newData }))
   },
-  addOrEditElement: (element, field) => {
+  addOrEditElement: async (element, field) => {
+    const elementToDBSchema = await convertToDBSchema(element)
+    console.log({ element, elementToDBSchema })
     const { [field]: data } = get()
     const index = data.findIndex((e) => e.id === element.id)
     if (index === -1) {

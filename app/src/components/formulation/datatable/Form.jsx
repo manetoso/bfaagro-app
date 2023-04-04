@@ -6,43 +6,43 @@ import { InfiniteInput } from './InfiniteInput'
 const products = [
   {
     id: 1,
-    NOMBRE: 'Cyrille'
+    name: 'Cyrille'
   },
   {
     id: 2,
-    NOMBRE: 'Aharon'
+    name: 'Aharon'
   },
   {
     id: 3,
-    NOMBRE: 'Jedidiah'
+    name: 'Jedidiah'
   },
   {
     id: 4,
-    NOMBRE: 'Wain'
+    name: 'Wain'
   },
   {
     id: 5,
-    NOMBRE: 'Lou'
+    name: 'Lou'
   },
   {
     id: 6,
-    NOMBRE: 'Tedda'
+    name: 'Tedda'
   },
   {
     id: 7,
-    NOMBRE: 'Virgie'
+    name: 'Virgie'
   },
   {
     id: 8,
-    NOMBRE: 'Kev'
+    name: 'Kev'
   },
   {
     id: 9,
-    NOMBRE: 'Martitia'
+    name: 'Martitia'
   },
   {
     id: 10,
-    NOMBRE: 'Parry'
+    name: 'Parry'
   }
 ]
 
@@ -73,16 +73,16 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
 
     if (newIsEmpty) return
     data.idProduct = data['product[id]']
-    data.productName = data['product[NOMBRE]']
+    data.productName = data['product[name]']
     delete data['product[id]']
-    delete data['product[NOMBRE]']
+    delete data['product[name]']
 
     const firstInfiniteInput = []
     const firstInfiniteNameInput = []
     const secondInfiniteInput = []
     const rawMaterials = []
     for (const [key, value] of formData.entries()) {
-      if (key.includes('firstInfiniteInput') && key.includes('NOMBRE')) {
+      if (key.includes('firstInfiniteInput') && key.includes('name')) {
         firstInfiniteNameInput.push(value)
         delete data[key]
       }
@@ -97,9 +97,9 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     }
     firstInfiniteInput.forEach((id, index) => {
       rawMaterials.push({
-        ID_PRODUCT: id,
-        NOMBRE: firstInfiniteNameInput[index],
-        CANTIDAD: secondInfiniteInput[index]
+        idProduct: id,
+        name: firstInfiniteNameInput[index],
+        quantity: secondInfiniteInput[index]
       })
     })
     data.rawMaterials = rawMaterials
@@ -154,7 +154,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
             <h3 className='text-xl font-bold'>Producto</h3>
             <ComboBox
               data={products}
-              dataDisplayAttribute='NOMBRE'
+              dataDisplayAttribute='name'
               name='product'
               defaultSelected={
                 Object.keys(selectedRow).length !== 0

@@ -15,8 +15,8 @@ export function InfiniteInput({
       ? rawMaterials.map((x, i) => ({
           id: i + 1,
           inputs: [
-            { id: 1, value: x.NOMBRE },
-            { id: 2, value: x.CANTIDAD }
+            { id: 1, value: x.name },
+            { id: 2, value: x.quantity }
           ]
         }))
       : [
@@ -41,8 +41,8 @@ export function InfiniteInput({
                     <ComboBox
                       key={y.id}
                       data={data}
-                      dataDisplayAttribute='NOMBRE'
-                      defaultSelected={rawMaterials[i]?.NOMBRE}
+                      dataDisplayAttribute='name'
+                      defaultSelected={rawMaterials[i]?.name}
                       name={`${fisrtInputName}[${i}]`}
                       onChange={(e) => {
                         const list = [...inputList]

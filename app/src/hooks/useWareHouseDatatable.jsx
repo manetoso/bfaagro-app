@@ -4,22 +4,9 @@ import { createColumnHelper } from '@tanstack/react-table'
 import { DropdownMenu } from '@/components/datatable'
 import { useWarehouseStore, FIELDS_TYPES } from '@/stores/useWarehouseStore'
 import { formatNumberToString } from '@/utils/utils'
+import { fetchData } from '@/services/warehouseServices'
 
 const DEFAULT_FIELD = FIELDS_TYPES.RAW_MATERIAL
-
-async function fetchData(url) {
-  const resp = await fetch(url)
-  const json = await resp.json()
-  const data = json.map((rawMaterial) => ({
-    id: rawMaterial.ID_PRODUCTO,
-    name: rawMaterial.NOMBRE,
-    quantity: rawMaterial.CANTIDAD,
-    unity: rawMaterial.UNIDAD_MEDIDA,
-    idProductType: rawMaterial.ID_TIPO_PRODUCTO,
-    idWarehouse: rawMaterial.ID_ALMACEN
-  }))
-  return data
-}
 
 /**
  *
@@ -46,15 +33,15 @@ export const useWareHouseDatatable = ({ field }) => {
   const FETCH_DATA_BY_FIELD = {
     [FIELDS_TYPES.RAW_MATERIAL]: async () => {
       console.warn('rawMaterial')
-      return await fetchData('http://localhost:5173/rawMaterial.json')
+      return fetchData('http://localhost:5173/rawMaterial.json')
     },
     [FIELDS_TYPES.PRODUCTS]: async () => {
       console.warn('products')
-      return await fetchData('http://localhost:5173/rawMaterial.json')
+      return fetchData('http://localhost:5173/rawMaterial.json')
     },
     [FIELDS_TYPES.PACKAGING]: async () => {
       console.warn('packaging')
-      return await fetchData('http://localhost:5173/rawMaterial.json')
+      return fetchData('http://localhost:5173/rawMaterial.json')
     }
   }
 

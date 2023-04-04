@@ -8,12 +8,12 @@
 		"CANTIDAD": 100,
 		"RAW_MATERIAL": [
 			{
-				"ID_PRODUCT": 2,
+				"ID_PRODUCTO": 2,
 				"NOMBRE": "Aharon",
 				"CANTIDAD": 25
 			},
 			{
-				"ID_PRODUCT": 3,
+				"ID_PRODUCTO": 3,
 				"NOMBRE": "Jedidiah",
 				"CANTIDAD": 30
 			}
@@ -28,12 +28,12 @@
 		"CANTIDAD": 95,
 		"RAW_MATERIAL": [
 			{
-				"ID_PRODUCT": 3,
+				"ID_PRODUCTO": 3,
 				"NOMBRE": "Jedidiah",
 				"CANTIDAD": 12
 			},
 			{
-				"ID_PRODUCT": 4,
+				"ID_PRODUCTO": 4,
 				"NOMBRE": "Wain",
 				"CANTIDAD": 46
 			}
@@ -48,12 +48,12 @@
 		"CANTIDAD": 46,
 		"RAW_MATERIAL": [
 			{
-				"ID_PRODUCT": 4,
+				"ID_PRODUCTO": 4,
 				"NOMBRE": "Wain",
 				"CANTIDAD": 16
 			},
 			{
-				"ID_PRODUCT": 5,
+				"ID_PRODUCTO": 5,
 				"NOMBRE": "Lou",
 				"CANTIDAD": 32
 			}
@@ -68,12 +68,12 @@
 		"CANTIDAD": 350,
 		"RAW_MATERIAL": [
 			{
-				"ID_PRODUCT": 5,
+				"ID_PRODUCTO": 5,
 				"NOMBRE": "Lou",
 				"CANTIDAD": 50
 			},
 			{
-				"ID_PRODUCT": 1,
+				"ID_PRODUCTO": 1,
 				"NOMBRE": "Cyrille",
 				"CANTIDAD": 300
 			}

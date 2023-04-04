@@ -3,24 +3,10 @@ import { createColumnHelper } from '@tanstack/react-table'
 
 import { DropdownMenu } from '@/components/datatable'
 import { useRecipesStore, FIELDS_TYPES } from '@/stores/useRecipesStore'
+import { fetchData } from '@/services/recipesServices'
 import { formatNumberToString } from '@/utils/utils'
 
 const DEFAULT_FIELD = FIELDS_TYPES.RECIPES
-
-async function fetchData(url) {
-  const resp = await fetch(url)
-  const json = await resp.json()
-  const data = json.map((element) => ({
-    id: element.ID_FORMULA,
-    idProduct: element.ID_PRODUCTO,
-    productName: element.NOMBRE_PRODUCTO,
-    unity: element.UNIDAD_MEDIDA,
-    recipeName: element.NOMBRE_FORMULA,
-    quantity: element.CANTIDAD,
-    rawMaterials: element.RAW_MATERIAL
-  }))
-  return data
-}
 
 /**
  *
@@ -43,9 +29,9 @@ export const useRecipesDatatable = ({ field }) => {
   } = useRecipesStore()
 
   const FETCH_DATA_BY_FIELD = {
-    [FIELDS_TYPES.RECIPES]: async () => {
+    [FIELDS_TYPES.RECIPES]: () => {
       console.warn('recipesData')
-      return await fetchData('http://localhost:5173/recipes.json')
+      return fetchData('http://localhost:5173/recipes.json')
     }
   }
 

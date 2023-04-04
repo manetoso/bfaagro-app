@@ -1,3 +1,4 @@
+import { convertToDBSchema } from '@/services/warehouseServices'
 import { create } from 'zustand'
 
 export const FIELDS_TYPES = {
@@ -34,7 +35,9 @@ export const useWarehouseStore = create((set, get) => ({
   setDataFilds: (newData, field) => {
     set((state) => ({ ...state, [field]: newData }))
   },
-  addOrEditElement: (element, field) => {
+  addOrEditElement: async (element, field) => {
+    const elementToDBSchema = await convertToDBSchema(element)
+    console.log({ element, elementToDBSchema })
     const { [field]: data } = get()
     const index = data.findIndex((e) => e.id === element.id)
     if (index === -1) {
