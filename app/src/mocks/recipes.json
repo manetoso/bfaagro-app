@@ -1,0 +1,82 @@
+[
+	{
+		"ID_FORMULA": 1,
+		"ID_PRODUCTO": 1,
+		"NOMBRE_PRODUCTO": "Cyrille",
+		"UNIDAD_MEDIDA": "Litros",
+		"NOMBRE_FORMULA": "Formula Cyrille",
+		"CANTIDAD": 100,
+		"RAW_MATERIAL": [
+			{
+				"ID_PRODUCTO": 2,
+				"NOMBRE": "Aharon",
+				"CANTIDAD": 25
+			},
+			{
+				"ID_PRODUCTO": 3,
+				"NOMBRE": "Jedidiah",
+				"CANTIDAD": 30
+			}
+		]
+	},
+	{
+		"ID_FORMULA": 2,
+		"ID_PRODUCTO": 2,
+		"NOMBRE_PRODUCTO": "Aharon",
+		"UNIDAD_MEDIDA": "Litros",
+		"NOMBRE_FORMULA": "Formula Aharon",
+		"CANTIDAD": 95,
+		"RAW_MATERIAL": [
+			{
+				"ID_PRODUCTO": 3,
+				"NOMBRE": "Jedidiah",
+				"CANTIDAD": 12
+			},
+			{
+				"ID_PRODUCTO": 4,
+				"NOMBRE": "Wain",
+				"CANTIDAD": 46
+			}
+		]
+	},
+	{
+		"ID_FORMULA": 3,
+		"ID_PRODUCTO": 3,
+		"NOMBRE_PRODUCTO": "Jedidiah",
+		"UNIDAD_MEDIDA": "Kilos",
+		"NOMBRE_FORMULA": "Formula Jedidiah",
+		"CANTIDAD": 46,
+		"RAW_MATERIAL": [
+			{
+				"ID_PRODUCTO": 4,
+				"NOMBRE": "Wain",
+				"CANTIDAD": 16
+			},
+			{
+				"ID_PRODUCTO": 5,
+				"NOMBRE": "Lou",
+				"CANTIDAD": 32
+			}
+		]
+	},
+	{
+		"ID_FORMULA": 4,
+		"ID_PRODUCTO": 4,
+		"NOMBRE_PRODUCTO": "Wain",
+		"UNIDAD_MEDIDA": "Litros",
+		"NOMBRE_FORMULA": "Formula Wain",
+		"CANTIDAD": 350,
+		"RAW_MATERIAL": [
+			{
+				"ID_PRODUCTO": 5,
+				"NOMBRE": "Lou",
+				"CANTIDAD": 50
+			},
+			{
+				"ID_PRODUCTO": 1,
+				"NOMBRE": "Cyrille",
+				"CANTIDAD": 300
+			}
+		]
+	}
+]
