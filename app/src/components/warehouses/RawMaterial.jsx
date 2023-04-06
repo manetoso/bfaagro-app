@@ -12,6 +12,8 @@ export function RawMaterial() {
     selected,
     columns,
     rawMaterialData,
+    warehouse,
+    productType,
     toggleAddModal,
     toggleAlert,
     toggleEditModal
@@ -31,6 +33,8 @@ export function RawMaterial() {
         alert={alert}
         editModal={editModal}
         field={FIELDS_TYPES.RAW_MATERIAL}
+        productType={productType}
+        warehouse={warehouse}
       />
     </>
   )

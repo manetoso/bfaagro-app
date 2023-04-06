@@ -25,16 +25,18 @@ export const useRecipesDatatable = ({ field }) => {
     toggleEditModal,
     setDataFilds,
     addOrEditElement,
-    removeElement
+    removeElement,
+    fetchProductsForDetailsFromApi
   } = useRecipesStore()
 
   const FETCH_DATA_BY_FIELD = {
     [FIELDS_TYPES.RECIPES]: () => {
       console.warn('recipesData')
-      return fetchData('http://localhost:5173/recipes.json')
+      return fetchData()
     }
   }
 
+  // COLUMNS FOR THE DATA TABLE
   const columnHelper = createColumnHelper()
   const columns = useMemo(
     () => [
@@ -58,33 +60,24 @@ export const useRecipesDatatable = ({ field }) => {
         cell: (info) => formatNumberToString(info.getValue()),
         footer: (props) => props.column.id
       }),
-      columnHelper.accessor('productName', {
+      columnHelper.accessor('product.name', {
         header: 'Producto',
-        cell: (info) => (
-          <span>
-            {info.cell.row.original.unity === 'Litros' ? (
-              <span className='rounded-full bg-emerald-100 px-4 py-1 font-semibold text-emerald-500'>
-                {`${info.getValue()} ( ${info.cell.row.original.unity} )`}
-              </span>
-            ) : (
-              <span className='rounded-full bg-rose-100 px-4 py-1 font-semibold text-rose-500'>
-                {`${info.getValue()} ( ${info.cell.row.original.unity} )`}
-              </span>
-            )}
-          </span>
-        ),
+        cell: (info) => info.getValue(),
         footer: (props) => props.column.id
       })
     ],
     []
   )
 
+  // FETCHING DATA FROM THE API
   const getData = useMemo(async () => {
+    await fetchProductsForDetailsFromApi()
     const apiData = await FETCH_DATA_BY_FIELD[localField]()
     setDataFilds(apiData, localField)
     return apiData
   }, [])
 
+  // SETTING THE DATA TO THE STORE
   useEffect(() => {
     const apiData = getData
     setDataFilds(apiData, localField)

@@ -11,7 +11,9 @@ export function Packaging() {
     removeElement,
     selected,
     columns,
-    rawMaterialData,
+    packagingData,
+    warehouse,
+    productType,
     toggleAddModal,
     toggleAlert,
     toggleEditModal
@@ -20,8 +22,8 @@ export function Packaging() {
     <>
       <WareHouseDatatable
         columns={columns}
-        data={rawMaterialData}
-        title='Empaques'
+        data={packagingData}
+        title='Embalajes'
         toggleAddModal={toggleAddModal}
         toggleAlert={toggleAlert}
         toggleEditModal={toggleEditModal}
@@ -31,6 +33,8 @@ export function Packaging() {
         alert={alert}
         editModal={editModal}
         field={FIELDS_TYPES.PACKAGING}
+        productType={productType}
+        warehouse={warehouse}
       />
     </>
   )

@@ -1,10 +1,14 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
 
 import { DropdownMenu } from '@/components/datatable'
 import { useWarehouseStore, FIELDS_TYPES } from '@/stores/useWarehouseStore'
 import { formatNumberToString } from '@/utils/utils'
-import { fetchData } from '@/services/warehouseServices'
+import {
+  fetchData,
+  fetchWarehouses,
+  fetchProductTypes
+} from '@/services/warehouseServices'
 
 const DEFAULT_FIELD = FIELDS_TYPES.RAW_MATERIAL
 
@@ -14,7 +18,7 @@ const DEFAULT_FIELD = FIELDS_TYPES.RAW_MATERIAL
  * @returns
  */
 export const useWareHouseDatatable = ({ field }) => {
-  const localField = FIELDS_TYPES[field] || DEFAULT_FIELD
+  const localField = field || DEFAULT_FIELD
   const {
     rawMaterialData,
     productsData,
@@ -27,24 +31,57 @@ export const useWareHouseDatatable = ({ field }) => {
     toggleAlert,
     setDataFilds,
     addOrEditElement,
-    removeElement
+    removeElement,
+    fetchWarehousesFromApi,
+    fetchProductTypesFromApi
   } = useWarehouseStore()
+  const [warehouse, setWarehouse] = useState({})
+  const [productType, setProductType] = useState({})
+
+  /**
+   * @description PREPARING THE DATA TO BE RENDERED IN THE TABLE, FILTERING BY THE SELECTED FIELD
+   * @param { { id: string; name: string; quantity: number; unity: string; warehouse: { id: string; name: string; }; productType: { id: number; name: string; }[]; idProductType: number; idWarehouse: string }[] } data
+   * @returns
+   */
+  const prepareDataByfield = async (data, field) => {
+    const warehouses = await fetchWarehouses()
+    const productTypes = await fetchProductTypes()
+    setWarehouse(warehouses.find((x) => x.name === field))
+    setProductType(productTypes.find((x) => x.value.productType === field))
+    return data.filter((x) => x.productType.some((y) => y.name === field))
+  }
 
   const FETCH_DATA_BY_FIELD = {
-    [FIELDS_TYPES.RAW_MATERIAL]: async () => {
+    /**
+     *
+     * @param { { id: string; name: string; quantity: number; unity: string; warehouse: { id: string; name: string; }; productType: { id: number; name: string; }[]; idProductType: number; idWarehouse: string }[] } data
+     * @returns
+     */
+    [FIELDS_TYPES.RAW_MATERIAL]: async (data) => {
       console.warn('rawMaterial')
-      return fetchData('http://localhost:5173/rawMaterial.json')
+      return prepareDataByfield(data, 'MATERIA PRIMA')
     },
-    [FIELDS_TYPES.PRODUCTS]: async () => {
+    /**
+     *
+     * @param { { id: string; name: string; quantity: number; unity: string; warehouse: { id: string; name: string; }; productType: { id: number; name: string; }[]; idProductType: number; idWarehouse: string }[] } data
+     * @returns
+     */
+    [FIELDS_TYPES.PRODUCTS]: async (data) => {
       console.warn('products')
-      return fetchData('http://localhost:5173/rawMaterial.json')
+      return prepareDataByfield(data, 'PRODUCTOS')
     },
-    [FIELDS_TYPES.PACKAGING]: async () => {
+    /**
+     *
+     * @param { { id: string; name: string; quantity: number; unity: string; warehouse: { id: string; name: string; }; productType: { id: number; name: string; }[]; idProductType: number; idWarehouse: string }[] } data
+     * @returns
+     */
+    [FIELDS_TYPES.PACKAGING]: async (data) => {
       console.warn('packaging')
-      return fetchData('http://localhost:5173/rawMaterial.json')
+      return prepareDataByfield(data, 'EMBALAJES')
     }
   }
 
+  // COLUMNS FOR THE DATA TABLE
   const columnHelper = createColumnHelper()
   const columns = useMemo(
     () => [
@@ -70,28 +107,6 @@ export const useWareHouseDatatable = ({ field }) => {
       }),
       columnHelper.accessor('unity', {
         header: 'Unidad de Medida',
-        cell: (info) => (
-          <span>
-            {info.getValue() === 'Litros' ? (
-              <span className='rounded-full bg-emerald-100 px-4 py-1 font-semibold text-emerald-500'>
-                {info.getValue()}
-              </span>
-            ) : (
-              <span className='rounded-full bg-rose-100 px-4 py-1 font-semibold text-rose-500'>
-                {info.getValue()}
-              </span>
-            )}
-          </span>
-        ),
-        footer: (props) => props.column.id
-      }),
-      columnHelper.accessor('idProductType', {
-        header: 'Tipo Producto',
-        cell: (info) => info.getValue(),
-        footer: (props) => props.column.id
-      }),
-      columnHelper.accessor('idWarehouse', {
-        header: 'Tipo Producto',
         cell: (info) => info.getValue(),
         footer: (props) => props.column.id
       })
@@ -99,14 +114,19 @@ export const useWareHouseDatatable = ({ field }) => {
     []
   )
 
-  const getData = useMemo(async () => {
-    const apiData = await FETCH_DATA_BY_FIELD[localField]()
-    setDataFilds(apiData, localField)
-    return apiData
+  // FETCHING DATA FROM THE API
+  const memoizeData = useMemo(async () => {
+    await fetchWarehousesFromApi()
+    await fetchProductTypesFromApi()
+    const apiData = await fetchData()
+    const data = await FETCH_DATA_BY_FIELD[localField](apiData)
+    setDataFilds(data, localField)
+    return data
   }, [])
 
+  // SETTING THE DATA TO THE STORE
   useEffect(() => {
-    const apiData = getData
+    const apiData = memoizeData
     setDataFilds(apiData, localField)
   }, [])
 
@@ -114,6 +134,8 @@ export const useWareHouseDatatable = ({ field }) => {
     rawMaterialData,
     productsData,
     packagingData,
+    warehouse,
+    productType,
     editModal,
     alert,
     selected,

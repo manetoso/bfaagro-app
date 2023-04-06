@@ -14,7 +14,9 @@ export function WareHouseDatatable({
   removeElement,
   alert,
   editModal,
-	field
+	field,
+  warehouse,
+  productType,
 }) {
   return (
     <div className='relative mt-4'>
@@ -38,7 +40,8 @@ export function WareHouseDatatable({
           selectedRow={selected}
           submitAction={addOrEditElement}
           field={field}
-          modalId={data.length + 1}
+          productType={productType}
+          warehouse={warehouse}
         />
       </EmptyModal>
     </div>

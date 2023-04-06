@@ -11,7 +11,9 @@ export function Products() {
     removeElement,
     selected,
     columns,
-    rawMaterialData,
+    productsData,
+    warehouse,
+    productType,
     toggleAddModal,
     toggleAlert,
     toggleEditModal
@@ -20,7 +22,7 @@ export function Products() {
     <>
       <WareHouseDatatable
         columns={columns}
-        data={rawMaterialData}
+        data={productsData}
         title='Productos'
         toggleAddModal={toggleAddModal}
         toggleAlert={toggleAlert}
@@ -31,6 +33,8 @@ export function Products() {
         alert={alert}
         editModal={editModal}
         field={FIELDS_TYPES.PRODUCTS}
+        productType={productType}
+        warehouse={warehouse}
       />
     </>
   )

@@ -1,4 +1,10 @@
-import { convertToDBSchema } from '@/services/warehouseServices'
+import {
+  fetchWarehouses,
+  fetchProductTypes,
+  createData,
+  updateData,
+  deleteData
+} from '@/services/warehouseServices'
 import { create } from 'zustand'
 
 export const FIELDS_TYPES = {
@@ -11,6 +17,8 @@ export const useWarehouseStore = create((set, get) => ({
   rawMaterialData: [],
   productsData: [],
   packagingData: [],
+  warehouses: [],
+  productTypes: [],
   editModal: false,
   alert: false,
   selected: {},
@@ -36,19 +44,45 @@ export const useWarehouseStore = create((set, get) => ({
     set((state) => ({ ...state, [field]: newData }))
   },
   addOrEditElement: async (element, field) => {
-    const elementToDBSchema = await convertToDBSchema(element)
-    console.log({ element, elementToDBSchema })
+    const { warehouses, productTypes, selected } = get()
+    const warehouse = warehouses.find((w) => w.id === element.idWarehouse)
+    const productType = productTypes.find((p) => p.id === element.idProductType)
+
+    delete element.idProductType
+    delete element.idWarehouse
+    element.id = selected.id
+    element.warehouse = {
+      id: warehouse.id,
+      name: warehouse.name
+    }
+    element.productType = [
+      {
+        id: productType.value.id,
+        name: productType.value.productType
+      }
+    ]
+    if (element.idProductType2) {
+      const productType2 = productTypes.find((p) => p.id === element.idProductType2)
+      delete element.idProductType2
+      element.productType.push({
+        id: productType2.value.id,
+        name: productType2.value.productType
+      })
+    }
+
     const { [field]: data } = get()
     const index = data.findIndex((e) => e.id === element.id)
     if (index === -1) {
+      const newElement = await createData(element)
       set((state) => ({
         ...state,
-        [field]: [element, ...data],
+        [field]: [newElement, ...data],
         editModal: false
       }))
     }
     if (index !== -1) {
-      data[index] = element
+      const newElement = await updateData(element)
+      data[index] = newElement
       set((state) => ({
         ...state,
         [field]: [...data],
@@ -56,8 +90,12 @@ export const useWarehouseStore = create((set, get) => ({
       }))
     }
   },
-  removeElement: (field) => {
+  removeElement: async (field) => {
     const { [field]: data, selected } = get()
+    const deletedFlag = await deleteData(selected.id)
+    if (!deletedFlag) {
+      return
+    }
     const index = data.findIndex((e) => e.id === selected.id)
     if (index !== -1) {
       data.splice(index, 1)
@@ -67,5 +105,13 @@ export const useWarehouseStore = create((set, get) => ({
         alert: false
       }))
     }
+  },
+  fetchWarehousesFromApi: async () => {
+    const newWarehouses = await fetchWarehouses()
+    set((state) => ({ ...state, warehouses: newWarehouses }))
+  },
+  fetchProductTypesFromApi: async () => {
+    const newProductTypes = await fetchProductTypes()
+    set((state) => ({ ...state, productTypes: newProductTypes }))
   }
 }))

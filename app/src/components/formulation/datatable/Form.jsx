@@ -1,50 +1,8 @@
 import { useState } from 'react'
 
+import { useRecipesStore } from '@/stores'
 import { ComboBox } from '@/components/form/ComboBox'
 import { InfiniteInput } from './InfiniteInput'
-
-const products = [
-  {
-    id: 1,
-    name: 'Cyrille'
-  },
-  {
-    id: 2,
-    name: 'Aharon'
-  },
-  {
-    id: 3,
-    name: 'Jedidiah'
-  },
-  {
-    id: 4,
-    name: 'Wain'
-  },
-  {
-    id: 5,
-    name: 'Lou'
-  },
-  {
-    id: 6,
-    name: 'Tedda'
-  },
-  {
-    id: 7,
-    name: 'Virgie'
-  },
-  {
-    id: 8,
-    name: 'Kev'
-  },
-  {
-    id: 9,
-    name: 'Martitia'
-  },
-  {
-    id: 10,
-    name: 'Parry'
-  }
-]
 
 /**
  *
@@ -53,6 +11,7 @@ const products = [
  */
 export function Form({ selectedRow, submitAction, modalId, field }) {
   const [isEmpty, setIsEmpty] = useState(false)
+  const { detailProductsData, productsData } = useRecipesStore()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -72,22 +31,26 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     setIsEmpty(newIsEmpty)
 
     if (newIsEmpty) return
-    data.idProduct = data['product[id]']
-    data.productName = data['product[name]']
+
+    // DEFINING THE PRODUCT
+    data.product = {
+      id: data['product[id]'],
+      name: data['product[name]']
+    }
     delete data['product[id]']
     delete data['product[name]']
 
     const firstInfiniteInput = []
     const firstInfiniteNameInput = []
     const secondInfiniteInput = []
-    const rawMaterials = []
+    const details = []
     for (const [key, value] of formData.entries()) {
       if (key.includes('firstInfiniteInput') && key.includes('name')) {
         firstInfiniteNameInput.push(value)
         delete data[key]
       }
       if (key.includes('firstInfiniteInput') && key.includes('id')) {
-        firstInfiniteInput.push(Number(value))
+        firstInfiniteInput.push(value)
         delete data[key]
       }
       if (key.includes('secondInfiniteInput')) {
@@ -96,15 +59,14 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
       }
     }
     firstInfiniteInput.forEach((id, index) => {
-      rawMaterials.push({
-        idProduct: id,
+      details.push({
+        id: id,
         name: firstInfiniteNameInput[index],
         quantity: secondInfiniteInput[index]
       })
     })
-    data.rawMaterials = rawMaterials
+    data.details = details
 
-    // console.log(data)
     submitAction(data, field)
   }
   return (
@@ -113,22 +75,6 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
         className='mx-auto mt-4 flex flex-col items-center gap-2'
         onSubmit={handleSubmit}
       >
-        <input
-          className='hidden'
-          type='number'
-          name='id'
-          defaultValue={
-            Object.keys(selectedRow).length === 0 ? modalId : selectedRow.id
-          }
-        />
-        <input
-          className='hidden'
-          type='text'
-          name='unity'
-          defaultValue={
-            Object.keys(selectedRow).length === 0 ? 'Litros' : selectedRow.unity
-          }
-        />
         <div className='flex w-full gap-8'>
           <div className='flex flex-1 flex-col gap-2'>
             <input
@@ -145,20 +91,20 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
               placeholder='Nombre Formula'
             />
             <InfiniteInput
-              data={products}
-              rawMaterials={selectedRow.rawMaterials}
+              data={detailProductsData}
+              rawMaterials={selectedRow.details}
               placeholder='Cantidad'
             />
           </div>
           <div className='flex flex-1 flex-col gap-2'>
             <h3 className='text-xl font-bold'>Producto</h3>
             <ComboBox
-              data={products}
+              data={productsData}
               dataDisplayAttribute='name'
               name='product'
               defaultSelected={
-                Object.keys(selectedRow).length !== 0
-                  && selectedRow.productName
+                Object.keys(selectedRow).length !== 0 &&
+                selectedRow.product.name
               }
             />
             <input
@@ -173,6 +119,19 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                   : selectedRow.quantity
               }
               placeholder='Cantidad'
+            />
+            <input
+              className={`input w-full max-w-none ${
+                isEmpty && 'border-rose-500'
+              }`}
+              type='text'
+              name='unity'
+              defaultValue={
+                Object.keys(selectedRow).length === 0
+                  ? ''
+                  : selectedRow.unity
+              }
+              placeholder='Unidad de medida'
             />
           </div>
         </div>

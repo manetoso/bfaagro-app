@@ -1,4 +1,4 @@
-import { convertToDBSchema } from '@/services/recipesServices'
+import { fetchProductsForDetails, createData, updateData, deleteData } from '@/services/recipesServices'
 import { create } from 'zustand'
 
 export const FIELDS_TYPES = {
@@ -7,6 +7,8 @@ export const FIELDS_TYPES = {
 
 export const useRecipesStore = create((set, get) => ({
   recipesData: [],
+  detailProductsData: [],
+  productsData: [],
   editModal: false,
   alert: false,
   selected: {},
@@ -32,19 +34,20 @@ export const useRecipesStore = create((set, get) => ({
     set((state) => ({ ...state, [field]: newData }))
   },
   addOrEditElement: async (element, field) => {
-    const elementToDBSchema = await convertToDBSchema(element)
-    console.log({ element, elementToDBSchema })
-    const { [field]: data } = get()
+    const { [field]: data, selected } = get()
+    element.id = selected.id
     const index = data.findIndex((e) => e.id === element.id)
     if (index === -1) {
+      const newElement = await createData(element)
       set((state) => ({
         ...state,
-        [field]: [element, ...data],
+        [field]: [newElement, ...data],
         editModal: false
       }))
     }
     if (index !== -1) {
-      data[index] = element
+      const newElement = await updateData(element)
+      data[index] = newElement
       set((state) => ({
         ...state,
         [field]: [...data],
@@ -52,8 +55,12 @@ export const useRecipesStore = create((set, get) => ({
       }))
     }
   },
-  removeElement: (field) => {
+  removeElement: async (field) => {
     const { [field]: data, selected } = get()
+    const deletedFlag = await deleteData(selected.id)
+    if (!deletedFlag) {
+      return
+    }
     const index = data.findIndex((e) => e.id === selected.id)
     if (index !== -1) {
       data.splice(index, 1)
@@ -63,5 +70,9 @@ export const useRecipesStore = create((set, get) => ({
         alert: false
       }))
     }
+  },
+  fetchProductsForDetailsFromApi: async () => {
+    const { material, products } = await fetchProductsForDetails()
+    set((state) => ({ ...state, detailProductsData: material, productsData: products }))
   }
 }))
