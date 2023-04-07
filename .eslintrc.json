@@ -8,6 +8,7 @@
         "component": false,
         "html": false
       }
-    ]
+    ],
+    "multiline-ternary": "off",
   }
 }

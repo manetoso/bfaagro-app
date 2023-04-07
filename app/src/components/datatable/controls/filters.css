@@ -1,0 +1,3 @@
+#filters-input:checked ~ table thead tr th div .filter-input {
+	display: inline-block;
+}
