@@ -127,6 +127,28 @@ export async function fetchProductsForDetails() {
   }
 }
 
+export async function fetchUnityTypes() {
+  try {
+    const resp = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/tiposdocumentos/unidad`
+    )
+    /**
+     * The respponse body from the request.
+     * @typedef {{ _id: string, TIPO_DOCUMENTO: string, VALOR: { ID_TIPO_UNIDAD: number, TIPO_UNIDAD: string } }[]} ProductTypesBody
+     * @type {{body: ProductTypesBody}} - The Products Types response body.
+     */
+    const json = await resp.json()
+
+    const data = json.body.map((productType) => ({
+      id: productType.VALOR.ID_TIPO_UNIDAD,
+      unityType: productType.VALOR.TIPO_UNIDAD
+    }))
+    return data
+  } catch (error) {
+    throw new Error('Error searching product types')
+  }
+}
+
 /**
  *
  * @param {{ recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }} data

@@ -1,6 +1,7 @@
 import {
   fetchWarehouses,
   fetchProductTypes,
+  fetchUnityTypes,
   createData,
   updateData,
   deleteData
@@ -19,6 +20,7 @@ export const useWarehouseStore = create((set, get) => ({
   packagingData: [],
   warehouses: [],
   productTypes: [],
+  unityTypes: [],
   editModal: false,
   alert: false,
   selected: {},
@@ -112,6 +114,7 @@ export const useWarehouseStore = create((set, get) => ({
   },
   fetchProductTypesFromApi: async () => {
     const newProductTypes = await fetchProductTypes()
-    set((state) => ({ ...state, productTypes: newProductTypes }))
+    const newUnityTypes = await fetchUnityTypes()
+    set((state) => ({ ...state, productTypes: newProductTypes, unityTypes: newUnityTypes }))
   }
 }))

@@ -1,4 +1,4 @@
-import { fetchProductsForDetails, createData, updateData, deleteData } from '@/services/recipesServices'
+import { fetchProductsForDetails, fetchUnityTypes, createData, updateData, deleteData } from '@/services/recipesServices'
 import { create } from 'zustand'
 
 export const FIELDS_TYPES = {
@@ -9,6 +9,7 @@ export const useRecipesStore = create((set, get) => ({
   recipesData: [],
   detailProductsData: [],
   productsData: [],
+  unityTypes: [],
   editModal: false,
   alert: false,
   selected: {},
@@ -73,6 +74,7 @@ export const useRecipesStore = create((set, get) => ({
   },
   fetchProductsForDetailsFromApi: async () => {
     const { material, products } = await fetchProductsForDetails()
-    set((state) => ({ ...state, detailProductsData: material, productsData: products }))
+    const newUnityTypes = await fetchUnityTypes()
+    set((state) => ({ ...state, detailProductsData: material, productsData: products, unityTypes: newUnityTypes }))
   }
 }))
