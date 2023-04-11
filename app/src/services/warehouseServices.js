@@ -55,6 +55,28 @@ export async function fetchProductTypes() {
   }
 }
 
+export async function fetchUnityTypes() {
+  try {
+    const resp = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/tiposdocumentos/unidad`
+    )
+    /**
+     * The respponse body from the request.
+     * @typedef {{ _id: string, TIPO_DOCUMENTO: string, VALOR: { ID_TIPO_UNIDAD: number, TIPO_UNIDAD: string } }[]} ProductTypesBody
+     * @type {{body: ProductTypesBody}} - The Products Types response body.
+     */
+    const json = await resp.json()
+
+    const data = json.body.map((productType) => ({
+      id: productType.VALOR.ID_TIPO_UNIDAD,
+      unityType: productType.VALOR.TIPO_UNIDAD
+    }))
+    return data
+  } catch (error) {
+    throw new Error('Error searching product types')
+  }
+}
+
 /**
  *
  * @returns {{ id: string, name: string, quantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string }[]} products data
@@ -113,8 +135,8 @@ export async function createData(data) {
 }
 
 /**
- * 
- * @param {{ id: string, name: string, quantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string }} data 
+ *
+ * @param {{ id: string, name: string, quantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string }} data
  * @returns { { id: string, name: string, quantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string } } product data
  */
 export async function updateData(data) {

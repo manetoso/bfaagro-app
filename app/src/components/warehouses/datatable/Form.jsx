@@ -19,12 +19,16 @@ export function Form({
   // SETTING THE DEFAULT VALUE FOR THE PRODUCT TYPE ( THE WAREHOHSE'S PRODUCT TYPE )
   let firstProductType = productType.id
   // CHECKING IF THE ROW HAS MORE THAN ONE PRODUCT TYPE
-  const [secondTypeCheck, setSecondTypeCheck] = useState(selectedRow.productType?.length > 1 ? true : false)
-  const { productTypes } = useWarehouseStore()
+  const [secondTypeCheck, setSecondTypeCheck] = useState(
+    selectedRow.productType?.length > 1 ? true : false
+  )
+  const { productTypes, unityTypes } = useWarehouseStore()
 
   if (selectedRow.productType?.length > 0) {
     // OBTAINING THE VALUE OF THE FIRST PRODUCT TYPE ( IN CASE OF EDITING A ROW )
-    firstProductType = productTypes.find((x) => x.value.productType === selectedRow.productType[0].name).id
+    firstProductType = productTypes.find(
+      (x) => x.value.productType === selectedRow.productType[0].name
+    ).id
   }
 
   const handleSubmit = (e) => {
@@ -45,6 +49,10 @@ export function Form({
     const newIsEmpty = Object.values(data).some((x) => x === null || x === '')
     setIsEmpty(newIsEmpty)
     if (newIsEmpty) return
+
+    data.unity = data['unity[unityType]']
+    delete data['unity[id]']
+    delete data['unity[unityType]']
 
     // CHECKING IF THE SECOND PRODUCT TYPE IS CHECKED
     if (data['productType[id]']) {
@@ -81,14 +89,13 @@ export function Form({
           }
           placeholder='Cantidad'
         />
-        <input
-          className={`input w-full ${isEmpty && 'border-rose-500'}`}
-          type='text'
+        <ComboBox
+          data={unityTypes}
+          dataDisplayAttribute='unityType'
           name='unity'
-          defaultValue={
+          defaultSelected={
             Object.keys(selectedRow).length === 0 ? '' : selectedRow.unity
           }
-          placeholder='Unidad de Medida'
         />
         <input
           className={`input w-full ${isEmpty && 'border-rose-500'}`}
@@ -126,7 +133,9 @@ export function Form({
             ]}
             dataDisplayAttribute='productType'
             name='productType'
-            defaultSelected={selectedRow.productType && selectedRow.productType[1].name}
+            defaultSelected={
+              selectedRow.productType && selectedRow.productType[1].name
+            }
           />
         )}
         <button type='submit' className='btn'>
