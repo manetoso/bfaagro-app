@@ -11,7 +11,7 @@ import { InfiniteInput } from './InfiniteInput'
  */
 export function Form({ selectedRow, submitAction, modalId, field }) {
   const [isEmpty, setIsEmpty] = useState(false)
-  const { detailProductsData, productsData } = useRecipesStore()
+  const { detailProductsData, productsData, unityTypes } = useRecipesStore()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -39,6 +39,10 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     }
     delete data['product[id]']
     delete data['product[name]']
+
+    data.unity = data['unity[unityType]']
+    delete data['unity[id]']
+    delete data['unity[unityType]']
 
     const firstInfiniteInput = []
     const firstInfiniteNameInput = []
@@ -75,7 +79,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
         className='mx-auto mt-4 flex flex-col items-center gap-2'
         onSubmit={handleSubmit}
       >
-        <div className='flex w-full gap-8'>
+        <div className='flex flex-col md:flex-row w-full gap-8'>
           <div className='flex flex-1 flex-col gap-2'>
             <input
               className={`w-full text-xl font-bold focus:outline-none ${
@@ -120,18 +124,13 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
               }
               placeholder='Cantidad'
             />
-            <input
-              className={`input w-full max-w-none ${
-                isEmpty && 'border-rose-500'
-              }`}
-              type='text'
+            <ComboBox
+              data={unityTypes}
+              dataDisplayAttribute='unityType'
               name='unity'
-              defaultValue={
-                Object.keys(selectedRow).length === 0
-                  ? ''
-                  : selectedRow.unity
+              defaultSelected={
+                Object.keys(selectedRow).length === 0 ? '' : selectedRow.unity
               }
-              placeholder='Unidad de medida'
             />
           </div>
         </div>
