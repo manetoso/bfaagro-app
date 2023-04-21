@@ -1,18 +1,21 @@
 import { Schema, model } from 'mongoose'
 
-const TIPOS_DOCUMENTOS = new Schema({
-  TIPO_DOCUMENTO: {
-    type: String,
-    required: true
+const TIPOS_DOCUMENTOS = new Schema(
+  {
+    TIPO_DOCUMENTO: {
+      type: String,
+      required: true
+    },
+    VALOR: {
+      type: String,
+      required: true
+    }
   },
-  VALOR: {
-    type: Object,
-    required: true
-  }
-})
+  { timestamps: true }
+)
 
 TIPOS_DOCUMENTOS.methods.toJSON = function () {
-  const { __v, ...tiposDocumentos } = this.toObject()
+  const { __v, createdAt, updatedAt, ...tiposDocumentos } = this.toObject()
   return tiposDocumentos
 }
 

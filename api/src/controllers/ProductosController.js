@@ -4,13 +4,8 @@ import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
 
 const createProducto = async (req = request, res = response) => {
   try {
-    const {
-      NOMBRE_PRODUCTO,
-      CANTIDAD,
-      UNIDAD_MEDIDA,
-      TIPO_PRODUCTO,
-      ALMACEN
-    } = req.body
+    const { NOMBRE_PRODUCTO, CANTIDAD, UNIDAD_MEDIDA, TIPO_PRODUCTO, ALMACEN } =
+      req.body
     const producto = {
       NOMBRE_PRODUCTO,
       CANTIDAD,
@@ -21,13 +16,13 @@ const createProducto = async (req = request, res = response) => {
     const actionDB = await PRODUCTOS.create(producto)
     return serverOkMessage(res, actionDB, 201)
   } catch (error) {
-    return serverErrorMessage(res, error)
+    return serverErrorMessage(res)
   }
 }
 
 const findProductos = async (req = request, res = response) => {
   try {
-    const actionDB = await PRODUCTOS.find()
+    const actionDB = await PRODUCTOS.find().sort({ createdAt: -1 })
     return serverOkMessage(res, actionDB)
   } catch (error) {
     return serverErrorMessage(res)
@@ -60,11 +55,9 @@ const deleteProducto = async (req = request, res = response) => {
 const findProductosByType = async (req = request, res = response) => {
   try {
     const id = req.params.idTipoProducto
-    let actionDB = await PRODUCTOS.aggregate([
-      {
-        $match: { 'TIPO_PRODUCTO.ID_TIPO_PRODUCTO': id }
-      }
-    ])
+    let actionDB = await PRODUCTOS.find({
+      'TIPO_PRODUCTO.ID_TIPO_PRODUCTO': id
+    })
     if (actionDB.length === 0) {
       actionDB = {
         ok: true,
@@ -73,7 +66,7 @@ const findProductosByType = async (req = request, res = response) => {
     }
     return serverOkMessage(res, actionDB)
   } catch (error) {
-    return serverErrorMessage(res, error)
+    return serverErrorMessage(res)
   }
 }
 

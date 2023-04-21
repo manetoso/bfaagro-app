@@ -10,7 +10,7 @@ const createFormula = async (req = request, res = response) => {
     const actionDB = await FORMULAS.create(formula)
     return serverOkMessage(res, actionDB, 201)
   } catch (error) {
-    return serverErrorMessage(res, error)
+    return serverErrorMessage(res)
   }
 }
 const findFormulas = async (req = request, res = response) => {
