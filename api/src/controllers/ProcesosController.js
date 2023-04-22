@@ -64,7 +64,6 @@ const updateProceso = async (req = request, res = response) => {
     const idProccess = req.params.idProceso
     const { PROCESO, ...data } = req.body
     const dbProccess = await validateStatusBeFinalizado(idProccess)
-    console.log(dbProccess)
     if (dbProccess) {
       return serverErrorMessage(
         res,
