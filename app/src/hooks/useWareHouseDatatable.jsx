@@ -4,11 +4,9 @@ import { createColumnHelper } from '@tanstack/react-table'
 import { DropdownMenu } from '@/components/datatable'
 import { useWarehouseStore, FIELDS_TYPES } from '@/stores/useWarehouseStore'
 import { formatNumberToString } from '@/utils/utils'
-import {
-  fetchData,
-  fetchWarehouses,
-  fetchProductTypes
-} from '@/services/warehouseServices'
+
+import { fetchData } from '@/services/warehouseServices'
+import { fetchProductTypes, fetchWarehouses } from '@/services/globalServices'
 
 const DEFAULT_FIELD = FIELDS_TYPES.RAW_MATERIAL
 

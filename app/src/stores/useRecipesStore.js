@@ -1,4 +1,5 @@
-import { fetchProductsForDetails, fetchUnityTypes, createData, updateData, deleteData } from '@/services/recipesServices'
+import { fetchProductsForDetails, createData, updateData, deleteData } from '@/services/recipesServices'
+import { fetchUnityTypes } from '@/services/globalServices'
 import { create } from 'zustand'
 
 export const FIELDS_TYPES = {

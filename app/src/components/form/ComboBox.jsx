@@ -1,20 +1,22 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Combobox, Transition } from '@headlessui/react'
 
 import { Selector } from '🚀'
 
 /**
  *
- * @param {{data: Array<any>, dataDisplayAttribute: string, defaultSelected: string, emptyMessage: string, name: string, onChange: () => void}} props Data to display, attribute to display, message to show when data is empty and name of the combobox
+ * @param {{data: Array<any>, dataDisplayAttribute: string, defaultSelected: string, emptyMessage: string, name: string, onChange: () => void, getSelected: () => void}} props Data to display, attribute to display, message to show when data is empty and name of the combobox
  * @returns ComboBox component
  */
 export function ComboBox({
   data,
   dataDisplayAttribute,
   defaultSelected,
+  hasError,
   emptyMessage = 'No encontrado.',
   name = 'combobox',
-  onChange = () => {}
+  onChange = () => {},
+  getSelected = () => {}
 }) {
   const [selected, setSelected] = useState(
     defaultSelected
@@ -39,6 +41,11 @@ export function ComboBox({
     setQuery(event.target.value)
     onChange(event)
   }
+
+  useEffect(() => {
+    getSelected(selected)
+  }, [selected])
+  
 
   return (
     <Combobox name={name} value={selected} onChange={setSelected}>

@@ -4,13 +4,18 @@ import { Card, CardsContainer } from '@/components/navigationCard'
 export const routesList = [
   {
     title: 'Almacenes',
-    description: 'Administra almacenes',
+    description: 'Revisa y administra niveles de inventario de materia prima, productos y embalajes.',
     to: '/app/produccion/almacenes/materia-prima'
   },
   {
-    title: 'Formulas',
-    description: 'Administra ventas',
+    title: 'Fórmulas',
+    description: 'Administras el catálogo de fórmulas de productos.',
     to: '/app/produccion/formulas'
+  },
+  {
+    title: 'Procesos',
+    description: 'Revisa y administra los procesos de creación de productos.',
+    to: '/app/produccion/procesos'
   }
 ]
 

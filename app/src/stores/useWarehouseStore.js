@@ -1,11 +1,9 @@
 import {
-  fetchWarehouses,
-  fetchProductTypes,
-  fetchUnityTypes,
   createData,
   updateData,
   deleteData
 } from '@/services/warehouseServices'
+import { fetchProductTypes, fetchUnityTypes, fetchWarehouses } from '@/services/globalServices'
 import { create } from 'zustand'
 
 export const FIELDS_TYPES = {
