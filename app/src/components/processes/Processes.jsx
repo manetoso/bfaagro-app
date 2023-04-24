@@ -1,4 +1,4 @@
-import { ProcessesDatatable } from './datatable'
+import { ProcessesDatatable, ProcessesKanva } from './datatable'
 
 import { useProcessesDatatable } from '@/hooks/useProcessesDatatable'
 import { FIELDS_TYPES } from '@/stores/useRecipesStore'
@@ -32,6 +32,12 @@ export function Processes() {
         editModal={editModal}
         field={FIELDS_TYPES.RECIPES}
       />
+      <div className='overflow-x-scroll'>
+        <ProcessesKanva
+          processesData={recipesData}
+          toggleEditModal={toggleEditModal}
+        />
+      </div>
     </>
   )
 }

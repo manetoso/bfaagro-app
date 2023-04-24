@@ -2,11 +2,18 @@ import { useEffect, useMemo } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
 
 import { DropdownMenu } from '@/components/datatable'
-import { useRecipesStore, FIELDS_TYPES } from '@/stores/useRecipesStore'
-import { fetchData } from '@/services/recipesServices'
-import { formatNumberToString } from '@/utils/utils'
+// import { DropdownMenu } from '@/components/processes/datatable'
+import { useProcessesStore, FIELDS_TYPES } from '@/stores/useProcessesStore'
+import { fetchData } from '@/services/processesServices'
 
 const DEFAULT_FIELD = FIELDS_TYPES.RECIPES
+
+const STATUS_LABEL = {
+  Pendiente: 'bg-amber-100 text-amber-500',
+  Terminado: 'bg-emerald-100 text-emerald-500',
+  Cancelado: 'bg-rose-100 text-rose-500',
+  Revisión: 'bg-sky-100 text-sky-500'
+}
 
 /**
  *
@@ -26,8 +33,8 @@ export const useProcessesDatatable = ({ field }) => {
     setDataFilds,
     addOrEditElement,
     removeElement,
-    fetchProductsForDetailsFromApi
-  } = useRecipesStore()
+    fetchExtraData
+  } = useProcessesStore()
 
   const FETCH_DATA_BY_FIELD = {
     [FIELDS_TYPES.RECIPES]: () => {
@@ -40,8 +47,8 @@ export const useProcessesDatatable = ({ field }) => {
   const columnHelper = createColumnHelper()
   const columns = useMemo(
     () => [
-      columnHelper.accessor('recipeName', {
-        header: 'Nombre',
+      columnHelper.accessor('recipeData.product.name', {
+        header: 'Producto',
         cell: (info) => (
           <span className='flex items-center justify-between gap-2 font-bold'>
             {info.getValue()}{' '}
@@ -55,14 +62,25 @@ export const useProcessesDatatable = ({ field }) => {
         ),
         footer: (props) => props.column.id
       }),
-      columnHelper.accessor('quantity', {
-        header: 'Cantidad',
-        cell: (info) => formatNumberToString(info.getValue()),
+      columnHelper.accessor('recipeData.recipeName', {
+        header: 'Formula',
+        cell: (info) => info.getValue(),
         footer: (props) => props.column.id
       }),
-      columnHelper.accessor('product.name', {
-        header: 'Producto',
+      columnHelper.accessor('warehouseName', {
+        header: 'Almacén',
         cell: (info) => info.getValue(),
+        footer: (props) => props.column.id
+      }),
+      columnHelper.accessor('status', {
+        header: 'Estado',
+        cell: (info) => (
+          <span>
+            <span className={`rounded-full px-4 py-1 font-semibold ${STATUS_LABEL[info.getValue()]}`}>
+              {info.getValue()}
+            </span>
+          </span>
+        ),
         footer: (props) => props.column.id
       })
     ],
@@ -71,7 +89,7 @@ export const useProcessesDatatable = ({ field }) => {
 
   // FETCHING DATA FROM THE API
   const getData = useMemo(async () => {
-    await fetchProductsForDetailsFromApi()
+    await fetchExtraData()
     const apiData = await FETCH_DATA_BY_FIELD[localField]()
     setDataFilds(apiData, localField)
     return apiData

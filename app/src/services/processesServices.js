@@ -1,40 +1,41 @@
 /**
  *
- * @returns {Promise<{ id: string, recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }[]>} - The recipes.
+ * @returns {{ id: string, recipeId: string, warehouseId: string, recipeData: { id: string, recipeName: string, quantity: string, unity: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string }[] } }[]} - The recipes.
  */
 export async function fetchData() {
   try {
-    const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/formulas`)
+    const resp = await fetch('http://localhost:5173/processes.json')
+    // const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/formulas`)
     /**
      * The respponse body from the request.
-     * @typedef { { _id: string, NOMBRE_FORMULA: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { CANTIDAD: number, ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }[] } } RecipesBody
-     * @type {{body: RecipesBody[]}} - The Recipes response body.
+     * @typedef { { _id: string, ID_FORMULA: string, ID_ALMACEN: string, FORMULA_DETALLE: { _id: string, NOMBRE_FORMULA: string, CANTIDAD: string, UNIDAD_MEDIDA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: string }[] } } } ProcessesBody
+     * @type {{body: ProcessesBody[]}} - The Recipes response body.
      */
     const json = await resp.json()
-    const data = json.body.map((recipe) => ({
-      id: recipe._id,
-      recipeName: recipe.NOMBRE_FORMULA,
-      quantity: recipe.CANTIDAD,
-      unity: recipe.UNIDAD_MEDIDA,
-      product: {
-        id: recipe.PRODUCTO.ID_PRODUCTO,
-        name: recipe.PRODUCTO.NOMBRE_PRODUCTO
-      },
-      details: recipe.FORMULACION_DETALLE.map((material) => ({
-        id: material.ID_PRODUCTO,
-        name: material.NOMBRE_PRODUCTO,
-        quantity: material.CANTIDAD
-      }))
+    const data = json.body.map((process) => ({
+      id: process._id,
+      recipeId: process.ID_FORMULA,
+      warehouseId: process.ID_ALMACEN,
+      recipeData: {
+        recipeName: process.FORMULA_DETALLE.NOMBRE_FORMULA,
+        quantity: process.FORMULA_DETALLE.CANTIDAD,
+        unity: process.FORMULA_DETALLE.UNIDAD_MEDIDA,
+        product: {
+          id: process.FORMULA_DETALLE.PRODUCTO.ID_PRODUCTO,
+          name: process.FORMULA_DETALLE.PRODUCTO.NOMBRE_PRODUCTO
+        }
+      }
     }))
+    console.log({ data })
     return data
   } catch (error) {
-    throw new Error('Error searching recipes')
+    throw new Error('Error searching processes')
   }
 }
 
 /**
- * 
- * @param {{ recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }} data 
+ *
+ * @param {{ recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }} data
  * @returns {{ id: string, recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }}
  */
 export async function createData(data) {
@@ -56,20 +57,23 @@ export async function createData(data) {
 }
 
 /**
- * 
- * @param {{ id: string, recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }} data 
+ *
+ * @param {{ id: string, recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }} data
  * @returns {{ id: string, recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }}
  */
 export async function updateData(data) {
   try {
     const elementToDBSchema = convertToDBSchema(data)
-    const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/formulas/${data.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(elementToDBSchema)
-    })
+    const resp = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/formulas/${data.id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(elementToDBSchema)
+      }
+    )
     const json = await resp.json()
     const respFormated = convertToAppSchema(json.body)
     return respFormated
@@ -100,9 +104,9 @@ export async function deleteData(id) {
 
 /**
  *
- * @returns {{ id: string, name: string, quantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string }[]} products data
+ * @returns {{ id: string, name: string, quantity: number, unity: string }[]} products data
  */
-export async function fetchProductsForDetails() {
+export async function fetchRawMaterial() {
   try {
     const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/productos`)
     /**
@@ -111,17 +115,16 @@ export async function fetchProductsForDetails() {
      * @type {{body: ProductsBody[]}} - The Products Types response body.
      */
     const json = await resp.json()
-    const filtered1 = json.body.filter((x) => x.TIPO_PRODUCTO.some((y) => y.TIPO_PRODUCTO === 'MATERIA PRIMA'))
-    const filtered2 = json.body.filter((x) => x.TIPO_PRODUCTO.some((y) => y.TIPO_PRODUCTO === 'PRODUCTOS'))
-    const material = filtered1.map((product) => ({
+    const filtered1 = json.body.filter((x) =>
+      x.TIPO_PRODUCTO.some((y) => y.TIPO_PRODUCTO === 'MATERIA PRIMA')
+    )
+    const materials = filtered1.map((product) => ({
       id: product._id,
-      name: product.NOMBRE_PRODUCTO
+      name: product.NOMBRE_PRODUCTO,
+      quantity: product.CANTIDAD,
+      unity: product.UNIDAD_MEDIDA,
     }))
-    const products = filtered2.map((product) => ({
-      id: product._id,
-      name: product.NOMBRE_PRODUCTO
-    }))
-    return { material, products }
+    return materials
   } catch (error) {
     throw new Error('Error searching products for details')
   }

@@ -28,6 +28,7 @@ export async function fetchData() {
     }))
     return data
   } catch (error) {
+    console.log({ error })
     throw new Error('Error searching recipes')
   }
 }
@@ -112,7 +113,8 @@ export async function fetchProductsForDetails() {
      */
     const json = await resp.json()
     const filtered1 = json.body.filter((x) => x.TIPO_PRODUCTO.some((y) => y.TIPO_PRODUCTO === 'MATERIA PRIMA'))
-    const filtered2 = json.body.filter((x) => x.TIPO_PRODUCTO.some((y) => y.TIPO_PRODUCTO === 'PRODUCTOS'))
+    const filtered2 = json.body.filter((x) => x.TIPO_PRODUCTO.some((y) => y.TIPO_PRODUCTO === 'PRODUCTO TERMINADO'))
+    console.log({ filtered1, filtered2 });
     const material = filtered1.map((product) => ({
       id: product._id,
       name: product.NOMBRE_PRODUCTO
@@ -134,14 +136,14 @@ export async function fetchUnityTypes() {
     )
     /**
      * The respponse body from the request.
-     * @typedef {{ _id: string, TIPO_DOCUMENTO: string, VALOR: { ID_TIPO_UNIDAD: number, TIPO_UNIDAD: string } }[]} ProductTypesBody
+     * @typedef {{ _id: string, TIPO_DOCUMENTO: string, VALOR: string }[]} ProductTypesBody
      * @type {{body: ProductTypesBody}} - The Products Types response body.
      */
     const json = await resp.json()
 
     const data = json.body.map((productType) => ({
-      id: productType.VALOR.ID_TIPO_UNIDAD,
-      unityType: productType.VALOR.TIPO_UNIDAD
+      id: productType._id,
+      unityType: productType.VALOR
     }))
     return data
   } catch (error) {

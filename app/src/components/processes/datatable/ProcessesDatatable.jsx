@@ -32,7 +32,7 @@ export function ProcessesDatatable({
       <EmptyModal
         closeModal={() => toggleEditModal({})}
         isOpen={editModal}
-        title={Object.keys(selected).length === 0 ? 'Agregar' : 'Editar'}
+        title={Object.keys(selected).length === 0 ? 'Generar Proceso' : 'Editar'}
       >
         <Form
           selectedRow={selected}
