@@ -13,13 +13,13 @@ const createTipoDocumento = async (req = request, res = response) => {
     const actionDB = await TIPOS_DOCUMENTOS.create(typeDocument)
     return serverOkMessage(res, actionDB, 201)
   } catch (error) {
-    return serverErrorMessage(res, error)
+    return serverErrorMessage(res)
   }
 }
 
 const findTiposDocumentos = async (req = request, res = response) => {
   try {
-    const actionDB = await TIPOS_DOCUMENTOS.find()
+    const actionDB = await TIPOS_DOCUMENTOS.find().sort({ createdAt: -1 })
     return serverOkMessage(res, actionDB)
   } catch (error) {
     return serverErrorMessage(res)

@@ -12,4 +12,6 @@ const databaseConnect = async () => {
   }
 }
 
-export default databaseConnect
+const mongooseConnection = mongoose.connection
+
+export { databaseConnect, mongooseConnection }

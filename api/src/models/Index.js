@@ -1,10 +1,7 @@
-import ALMACENES from './Almacenes'
-import PRODUCTOS from './Productos'
-import PROCESOS from './Procesos'
-import FORMULAS from './Formulas'
-export default {
-  ALMACENES,
-  PRODUCTOS,
-  PROCESOS,
-  FORMULAS
-}
+import ALMACENES from './Almacenes.js'
+import PRODUCTOS from './Productos.js'
+import PROCESOS from './Procesos.js'
+import FORMULAS from './Formulas.js'
+import TIPOS_DOCUMENTOS from './TiposDocumentos.js'
+
+export { ALMACENES, PRODUCTOS, PROCESOS, FORMULAS, TIPOS_DOCUMENTOS }

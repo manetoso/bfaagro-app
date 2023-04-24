@@ -1,47 +1,51 @@
 import { Schema, model } from 'mongoose'
 
-const PRODUCTOS = new Schema({
-  NOMBRE_PRODUCTO: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  CANTIDAD: {
-    type: Number,
-    required: true
-  },
-  UNIDAD_MEDIDA: {
-    type: String,
-    required: true
-  },
-  TIPO_PRODUCTO: [
-    {
-      _id: false,
-      ID_TIPO_PRODUCTO: {
-        type: String,
+const PRODUCTOS = new Schema(
+  {
+    NOMBRE_PRODUCTO: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    CANTIDAD: {
+      type: Number,
+      required: true
+    },
+    UNIDAD_MEDIDA: {
+      type: String,
+      required: true
+    },
+    TIPO_PRODUCTO: [
+      {
+        _id: false,
+        ID_TIPO_PRODUCTO: {
+          type: Schema.Types.ObjectId,
+          ref: 'TIPOS_DOCUMENTOS',
+          required: true
+        },
+        TIPO_PRODUCTO: {
+          type: String,
+          required: true
+        }
+      }
+    ],
+    ALMACEN: {
+      ID_ALMACEN: {
+        type: Schema.Types.ObjectId,
+        ref: 'ALMACENES',
         required: true
       },
-      TIPO_PRODUCTO: {
+      NOMBRE_ALMACEN: {
         type: String,
         required: true
       }
     }
-  ],
-  ALMACEN: {
-    ID_ALMACEN: {
-      type: Schema.Types.ObjectId,
-      ref: 'ALMACENES',
-      required: true
-    },
-    NOMBRE_ALMACEN: {
-      type: String,
-      required: true
-    }
-  }
-})
+  },
+  { timestamps: true }
+)
 
 PRODUCTOS.methods.toJSON = function () {
-  const { __v, ...productos } = this.toObject()
+  const { __v, createdAt, updatedAt, ...productos } = this.toObject()
   return productos
 }
 

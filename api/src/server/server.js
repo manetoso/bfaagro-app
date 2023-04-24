@@ -1,6 +1,6 @@
 import cors from 'cors'
 import express from 'express'
-import databaseConnect from '../database/DatabaseConfig.js'
+import { databaseConnect } from '../database/DatabaseConfig.js'
 import hola from '../routes/hola.routes.js'
 import {
   AlmacenesRouter,
@@ -8,7 +8,8 @@ import {
   FormulasRouter,
   EmbalajesProducto,
   ProductosEmbalajados,
-  TiposDocumentos
+  TiposDocumentos,
+  Procesos
 } from '../routes/index.routes.js'
 
 class Server {
@@ -23,7 +24,8 @@ class Server {
       productos: '/api/productos',
       embalajeProducto: '/api/embalajesproducto',
       productosEmbalajados: '/api/productosembalajados',
-      tiposDocumentos: '/api/tiposdocumentos'
+      tiposDocumentos: '/api/tiposdocumentos',
+      procesos: '/api/procesos'
     }
 
     // Func to Connect DB
@@ -53,6 +55,7 @@ class Server {
     this.app.use(this.paths.embalajeProducto, EmbalajesProducto)
     this.app.use(this.paths.productosEmbalajados, ProductosEmbalajados)
     this.app.use(this.paths.tiposDocumentos, TiposDocumentos)
+    this.app.use(this.paths.procesos, Procesos)
   }
 
   listen() {
