@@ -1,5 +1,6 @@
 import {
   findProcesos,
+  findInProcessAndPending,
   createProceso,
   deleteProceso,
   updateStatusProceso,
@@ -11,6 +12,7 @@ import { validateStockToProcess, validateStatusChange } from '../middlewares/Ind
 const router = Router()
 
 router.get('/', [], findProcesos)
+router.get('/proccess_pending', [], findInProcessAndPending)
 router.post('/', [validateStockToProcess], createProceso)
 router.put('/:idProceso', [], updateProceso)
 router.put('/editar_estado/:idProceso', [validateStatusChange], updateStatusProceso)

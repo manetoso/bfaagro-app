@@ -59,12 +59,25 @@ const findProcesos = async (req = request, res = response) => {
   }
 }
 
+const findInProcessAndPending = async (req = request, res = response) => {
+  try {
+    const actionDB = await PROCESOS.find({
+      $or: [
+        { 'PROCESO.ESTADO': 'PENDIENTE' },
+        { 'PROCESO.ESTADO': 'EN PROCESO' }
+      ]
+    }).sort({ createdAt: -1 })
+    return serverOkMessage(res, actionDB)
+  } catch (error) {
+    return serverErrorMessage(res)
+  }
+}
+
 const updateProceso = async (req = request, res = response) => {
   try {
     const idProccess = req.params.idProceso
     const { PROCESO, ...data } = req.body
     const dbProccess = await validateStatusBeFinalizado(idProccess)
-    console.log(dbProccess)
     if (dbProccess) {
       return serverErrorMessage(
         res,
@@ -85,7 +98,10 @@ const updateStatusProceso = async (req = request, res = response) => {
   try {
     const idProccess = req.params.idProceso
     const data = req.body
-    const proccess = validateStatusBeFinalizado(false, data.PROCESO.ESTADO)
+    const proccess = await validateStatusBeFinalizado(
+      false,
+      data.PROCESO.ESTADO
+    )
     if (proccess) {
       data.FORMULACION_DETALLE.forEach(async (product) => {
         const dbProduct = await PRODUCTOS.findById(product.ID_PRODUCTO)
@@ -143,8 +159,9 @@ const validateStatusBeFinalizado = async (idProccess, ESTADO) => {
 }
 
 export {
-  createProceso,
   findProcesos,
+  findInProcessAndPending,
+  createProceso,
   updateProceso,
   deleteProceso,
   updateStatusProceso
