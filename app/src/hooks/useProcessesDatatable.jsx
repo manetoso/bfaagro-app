@@ -6,13 +6,13 @@ import { DropdownMenu } from '@/components/datatable'
 import { useProcessesStore, FIELDS_TYPES } from '@/stores/useProcessesStore'
 import { fetchData } from '@/services/processesServices'
 
-const DEFAULT_FIELD = FIELDS_TYPES.RECIPES
+const DEFAULT_FIELD = FIELDS_TYPES.PROCESSES
 
 const STATUS_LABEL = {
-  Pendiente: 'bg-amber-100 text-amber-500',
-  Terminado: 'bg-emerald-100 text-emerald-500',
-  Cancelado: 'bg-rose-100 text-rose-500',
-  Revisión: 'bg-sky-100 text-sky-500'
+  PENDIENTE: 'bg-stone-200 text-stone-500',
+  'EN PROCESO': 'bg-amber-100 text-amber-500',
+  'PENDIENTE DE VALIDAR': 'bg-sky-100 text-sky-500',
+  FINALIZADO: 'bg-emerald-100 text-emerald-500'
 }
 
 /**
@@ -23,7 +23,7 @@ const STATUS_LABEL = {
 export const useProcessesDatatable = ({ field }) => {
   const localField = FIELDS_TYPES[field] || DEFAULT_FIELD
   const {
-    recipesData,
+    processesData,
     editModal,
     alert,
     selected,
@@ -37,8 +37,8 @@ export const useProcessesDatatable = ({ field }) => {
   } = useProcessesStore()
 
   const FETCH_DATA_BY_FIELD = {
-    [FIELDS_TYPES.RECIPES]: () => {
-      console.warn('recipesData')
+    [FIELDS_TYPES.PROCESSES]: () => {
+      console.warn('processesData')
       return fetchData()
     }
   }
@@ -67,16 +67,20 @@ export const useProcessesDatatable = ({ field }) => {
         cell: (info) => info.getValue(),
         footer: (props) => props.column.id
       }),
-      columnHelper.accessor('warehouseName', {
+      columnHelper.accessor('warehouse.name', {
         header: 'Almacén',
         cell: (info) => info.getValue(),
         footer: (props) => props.column.id
       }),
-      columnHelper.accessor('status', {
+      columnHelper.accessor('status.value', {
         header: 'Estado',
         cell: (info) => (
           <span>
-            <span className={`rounded-full px-4 py-1 font-semibold ${STATUS_LABEL[info.getValue()]}`}>
+            <span
+              className={`rounded-full px-4 py-1 font-semibold ${
+                STATUS_LABEL[info.getValue()]
+              }`}
+            >
               {info.getValue()}
             </span>
           </span>
@@ -102,7 +106,7 @@ export const useProcessesDatatable = ({ field }) => {
   }, [])
 
   return {
-    recipesData,
+    processesData,
     editModal,
     alert,
     selected,

@@ -4,13 +4,6 @@ import { useProcessesStore } from '@/stores'
 import { DetailInput } from './DetailInput'
 import { ComboBox } from '@/components/form/ComboBox'
 
-const STATUS = [
-  { id: 1, value: 'Pendiente' },
-  { id: 2, value: 'Revisión' },
-  { id: 3, value: 'Terminado' },
-  { id: 4, value: 'Cancelado' }
-]
-
 const detailsIds = []
 const detailsOldMaterialId = []
 const detailsOldQuantity = []
@@ -35,6 +28,13 @@ const DETAILS = [
   }
 ]
 
+const STATUS_LABEL = {
+  PENDIENTE: 'bg-stone-200 text-stone-500',
+  'EN PROCESO': 'bg-amber-100 text-amber-500',
+  'PENDIENTE DE VALIDAR': 'bg-sky-100 text-sky-500',
+  FINALIZADO: 'bg-emerald-100 text-emerald-500'
+}
+
 /**
  *
  * @param {{selectedRow: object, submitAction: () => void, modalId: number, field: string}} props State and function to close the modal
@@ -43,8 +43,15 @@ const DETAILS = [
 export function Form({ selectedRow, submitAction, modalId, field }) {
   const [isEmpty, setIsEmpty] = useState(false)
   const [recipeSelected, setRecipeSelected] = useState(null)
-  const { materials, recipes, warehouses, error, removeError } =
-    useProcessesStore()
+  const {
+    materials,
+    recipes,
+    warehouses,
+    error,
+    removeError,
+    processesStatus,
+    changeProcessStatus
+  } = useProcessesStore()
 
   useEffect(() => {
     removeError()
@@ -52,6 +59,10 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
 
   const comboBoxOnChange = (item) => {
     setRecipeSelected(item)
+  }
+
+  const handleChangeProcessStatus = () => {
+    changeProcessStatus(selectedRow.id, field)
   }
 
   const handleSubmit = (e) => {
@@ -93,24 +104,32 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     }
 
     const formatedData = {
-      id: selectedRow?.id || String(modalId),
-      status: data['status[value]'],
+      id: selectedRow?.id || 0,
       recipeId: data['recipeId[id]'],
-      warehouseId: data['warehouseId[id]'],
-      warehouseName: data['warehouseId[name]'],
+      status: {
+        id: data['status[id]'],
+        value: data['status[value]']
+      },
+      warehouse: {
+        id: data['warehouseId[id]'],
+        name: data['warehouseId[name]']
+      },
       recipeData: {
-        quantity: data['recipeId[quantity]'],
-        unity: data['recipeId[unity]'],
+        // quantity: data['recipeId[quantity]'],
+        // unity: data['recipeId[unity]'],
         recipeName: data['recipeId[recipeName]'],
         product: {
           id: data['recipeId[product][id]'],
           name: data['recipeId[product][name]']
-        }
-      },
-      replaceDetails: details
+        },
+        details: recipeSelected?.details
+      }
+      // replaceDetails: details
     }
+    // console.log({ formatedData, field })
     submitAction(formatedData, field)
   }
+
   return (
     <>
       <form
@@ -120,9 +139,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
         <div className='flex w-full flex-col gap-8 md:flex-row'>
           <div
             className={`flex flex-1 flex-col gap-2 ${
-              (selectedRow.status === 'Terminado' ||
-                selectedRow.status === 'Cancelado') &&
-              'hidden'
+              selectedRow.status?.value && 'hidden'
             }`}
           >
             <div
@@ -155,19 +172,6 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                   }
                 />
               </div>
-            </div>
-            <div
-              className={`${Object.keys(selectedRow).length === 0 && 'hidden'}`}
-            >
-              <label className='text-black/50'>Estado:</label>
-              <ComboBox
-                data={STATUS}
-                dataDisplayAttribute='value'
-                name='status'
-                defaultSelected={
-                  Object.keys(selectedRow).length !== 0 && selectedRow.status
-                }
-              />
             </div>
           </div>
           <div className='flex flex-1 flex-col gap-2'>
@@ -239,10 +243,26 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
             </div>
           </div>
         </div>
-        <button type='submit' className='btn self-end'>
+        <button
+          type='submit'
+          className={`btn self-end ${selectedRow.status?.value && 'hidden'}`}
+        >
           Guardar
         </button>
       </form>
+      {selectedRow.status?.value && (
+        <div className='mx-auto mt-4 flex flex-col items-end gap-2'>
+          <span>
+            Estado:{' '}
+            <strong className={`rounded-full px-4 py-1 ${STATUS_LABEL[selectedRow.status?.value]}`}>
+              {selectedRow.status?.value}
+            </strong>
+          </span>
+          <button type='submit' className='btn' onClick={handleChangeProcessStatus}>
+            Siguiente Estado
+          </button>
+        </div>
+      )}
     </>
   )
 }

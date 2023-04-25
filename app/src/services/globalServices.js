@@ -66,6 +66,24 @@ export async function fetchProductTypes() {
 
 /**
  *
+ * @returns {{ id: string, value: string }[]} Process Status types data
+ */
+export async function fetchProcessStatusTypes() {
+  try {
+    const resp = await fetchTypes('estado')
+
+    const data = resp.map((productType) => ({
+      id: productType.id,
+      value: productType.value
+    }))
+    return data
+  } catch (error) {
+    throw new Error('Error searching processes status types')
+  }
+}
+
+/**
+ *
  * @returns {{ id: string, name: string, warehouseType: { id: number, name: string } }[]} warehouse data
  */
 export async function fetchWarehouses() {

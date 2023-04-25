@@ -66,7 +66,7 @@ export const useWareHouseDatatable = ({ field }) => {
      */
     [FIELDS_TYPES.PRODUCTS]: async (data) => {
       console.warn('products')
-      return prepareDataByfield(data, 'PRODUCTOS')
+      return prepareDataByfield(data, 'PRODUCTO TERMINADO')
     },
     /**
      *

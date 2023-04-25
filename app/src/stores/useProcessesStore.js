@@ -7,17 +7,18 @@ import {
   deleteData
 } from '@/services/processesServices'
 import { fetchData as fetchRecipes } from '@/services/recipesServices'
-import { fetchWarehouses } from '@/services/globalServices'
+import { fetchWarehouses, fetchProcessStatusTypes } from '@/services/globalServices'
 
 export const FIELDS_TYPES = {
-  RECIPES: 'recipesData'
+  PROCESSES: 'processesData'
 }
 
 export const useProcessesStore = create((set, get) => ({
-  recipesData: [],
+  processesData: [],
   materials: [],
   recipes: [],
   warehouses: [],
+  processesStatus: [],
   error: {
     message: '',
     status: false,
@@ -65,50 +66,62 @@ export const useProcessesStore = create((set, get) => ({
   },
   addOrEditElement: async (element, field) => {
     const { [field]: data, selected } = get()
-    if (
-      element.recipeId === '642f40279c913da51d9aef60' &&
-      element.replaceDetails.length === 0
-    ) {
-      set((state) => ({
-        ...state,
-        error: {
-          message: 'No hay suficiente producto en almacén',
-          status: true,
-          details: [
-            {
-              id: '642f21e19c913da51d9aedf3',
-              name: 'CALI STROGEN (LTS)',
-              quantity: 10
-            },
-            {
-              id: '642ef1359c913da51d9aeb62',
-              name: 'BFOSFO (LTS)',
-              quantity: 10
-            }
-          ]
-        }
-      }))
-      return
-    }
-    // element.id = selected.id
+    // if (
+    //   element.recipeId === '642f40279c913da51d9aef60' &&
+    //   element.replaceDetails.length === 0
+    // ) {
+    //   set((state) => ({
+    //     ...state,
+    //     error: {
+    //       message: 'No hay suficiente producto en almacén',
+    //       status: true,
+    //       details: [
+    //         {
+    //           id: '642f21e19c913da51d9aedf3',
+    //           name: 'CALI STROGEN (LTS)',
+    //           quantity: 10
+    //         },
+    //         {
+    //           id: '642ef1359c913da51d9aeb62',
+    //           name: 'BFOSFO (LTS)',
+    //           quantity: 10
+    //         }
+    //       ]
+    //     }
+    //   }))
+    //   return
+    // }
+    element.id = selected.id
     const index = data.findIndex((e) => e.id === element.id)
     if (index === -1) {
-      // const newElement = await createData(element)
+      const newElement = await createData(element)
       set((state) => ({
         ...state,
-        // [field]: [newElement, ...data],
-        [field]: [element, ...data],
+        [field]: [newElement, ...data],
         editModal: false
       }))
     }
+    // if (index !== -1) {
+    //   // const newElement = await updateData(element)
+    //   // data[index] = newElement
+    //   data[index] = element
+    //   set((state) => ({
+    //     ...state,
+    //     [field]: [...data],
+    //     editModal: false
+    //   }))
+    // }
+  },
+  changeProcessStatus: async (id, field) => {
+    const { [field]: data } = get()
+    const index = data.findIndex((e) => e.id === id)
     if (index !== -1) {
-      // const newElement = await updateData(element)
-      // data[index] = newElement
-      data[index] = element
+      const newElement = await updateData(element)
+      data[index] = newElement
       set((state) => ({
         ...state,
         [field]: [...data],
-        editModal: false
+        detailModal: false
       }))
     }
   },
@@ -135,12 +148,14 @@ export const useProcessesStore = create((set, get) => ({
     const recipes = await fetchRecipes()
     const warehouses = await fetchWarehouses()
     const materials = await fetchRawMaterial()
+    const processesStatus = await fetchProcessStatusTypes()
     console.log({ recipes, warehouses, materials })
     set((state) => ({
       ...state,
       materials,
       recipes,
-      warehouses
+      warehouses,
+      processesStatus
     }))
   }
 }))

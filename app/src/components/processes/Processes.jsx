@@ -1,7 +1,7 @@
 import { ProcessesDatatable, ProcessesKanva } from './datatable'
 
 import { useProcessesDatatable } from '@/hooks/useProcessesDatatable'
-import { FIELDS_TYPES } from '@/stores/useRecipesStore'
+import { FIELDS_TYPES } from '@/stores/useProcessesStore'
 
 export function Processes() {
   const {
@@ -11,16 +11,16 @@ export function Processes() {
     removeElement,
     selected,
     columns,
-    recipesData,
+    processesData,
     toggleAddModal,
     toggleAlert,
     toggleEditModal
-  } = useProcessesDatatable({ field: FIELDS_TYPES.RECIPES })
+  } = useProcessesDatatable({ field: FIELDS_TYPES.PROCESSES })
   return (
     <>
       <ProcessesDatatable
         columns={columns}
-        data={recipesData}
+        data={processesData}
         title='Procesos'
         toggleAddModal={toggleAddModal}
         toggleAlert={toggleAlert}
@@ -30,11 +30,11 @@ export function Processes() {
         removeElement={removeElement}
         alert={alert}
         editModal={editModal}
-        field={FIELDS_TYPES.RECIPES}
+        field={FIELDS_TYPES.PROCESSES}
       />
       <div className='overflow-x-scroll'>
         <ProcessesKanva
-          processesData={recipesData}
+          processesData={processesData}
           toggleEditModal={toggleEditModal}
         />
       </div>
