@@ -1,6 +1,8 @@
+import toast from 'react-hot-toast'
+
 /**
  *
- * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, warehouse: { id: string, name: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string }[] } }} - The processes.
+ * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, warehouse: { id: string, name: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string }[] }, createdAt: string, createdAtFormatted: string }} - The processes.
  */
 export async function fetchData() {
   try {
@@ -35,7 +37,13 @@ export async function fetchData() {
           name: detail.NOMBRE_PRODUCTO,
           quantity: detail.CANTIDAD
         }))
-      }
+      },
+      createdAt: process.createdAt,
+      createdAtFormatted: new Date(process.createdAt).toLocaleDateString('es-MX', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      })
     }))
     console.log({ data })
     return data
@@ -47,7 +55,7 @@ export async function fetchData() {
 /**
  *
  * @param {{ recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }} data
- * @returns {{ id: string, recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }}
+ * @returns {{data: { id: string, recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }, error: {errors: {product: string, requested: number, existing: number, missing: number}[], msg: string}}}
  */
 export async function createData(data) {
   try {
@@ -66,9 +74,17 @@ export async function createData(data) {
       body: JSON.stringify(elementToSend)
     })
     const json = await resp.json()
-    const respFormated = convertToAppSchema(json.body)
-    return respFormated
+    if (!json.error) {
+      const respFormated = convertToAppSchema(json.body)
+      toast.success('Proceso creado con éxito')
+      return { data: respFormated, error: { errors: [], msg: '' } }
+    } else {
+      toast.error(json.msg)
+      const { errors, msg } = convertCreateErrorToAppSchema(json)
+      return { data: {}, error: { errors, msg } }
+    }
   } catch (error) {
+    toast.error('Error eliminando proceso')
     throw new Error('Error creating new recipe')
   }
 }
@@ -86,13 +102,15 @@ export async function updateData({ id }) {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
-        },
+        }
       }
     )
     const json = await resp.json()
     const respFormated = convertToAppSchema(json.body)
+    toast.success('Proceso actualizado con éxito')
     return respFormated
   } catch (error) {
+    toast.error('Error actualizando proceso')
     throw new Error('Error updating recipe')
   }
 }
@@ -105,14 +123,20 @@ export async function updateData({ id }) {
 export async function deleteData(id) {
   try {
     const resp = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/formulas/${id}`,
+      `${import.meta.env.VITE_API_BASE_URL}/procesos/${id}`,
       {
         method: 'DELETE'
       }
     )
     const json = await resp.json()
+    if (json.error) {
+      toast.error(json.error)
+    } else {
+      toast.success('Proceso eliminado con éxito')
+    }
     return json.error ? false : true
   } catch (error) {
+    toast.error('Error eliminando proceso')
     throw new Error('Error deleting recipe')
   }
 }
@@ -184,7 +208,7 @@ export function convertToDBSchema(data) {
 /**
  *
  * @param {{ _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, ALMACEN: { ID_ALMACEN: string, NOMBRE_ALMACEN: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number }[] }, createdAt: string, updatedAt: string }} data
- * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, warehouse: { id: string, name: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string }[] } }} - The recipe to App Schema.
+ * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, warehouse: { id: string, name: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string }[] }, createdAt: string, createdAtFormatted: string }} - The recipe to App Schema.
  */
 export function convertToAppSchema(data) {
   try {
@@ -212,7 +236,36 @@ export function convertToAppSchema(data) {
           name: detail.NOMBRE_PRODUCTO,
           quantity: detail.CANTIDAD
         }))
-      }
+      },
+      createdAt: data.createdAt,
+      createdAtFormatted: new Date(data.createdAt).toLocaleDateString('es-MX', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      })
+    }
+    return appSchemaLike
+  } catch (error) {
+    console.log(error)
+    throw new Error('Error converting to App Schema')
+  }
+}
+
+/**
+ *
+ * @param {{error: {CANTIDAAD_EXISTENTE: number, CANTIDAD_FALTANTE: number, CANTIDAD_SOLICITADA: number, PRODUCTO: string}[], msg: string}} error
+ * @returns {{errors: {product: string, requested: number, existing: number, missing: number}[], msg: string}} - The error to App Schema.
+ */
+export function convertCreateErrorToAppSchema({ error, msg }) {
+  try {
+    const appSchemaLike = {
+      errors: error.map((x) => ({
+        product: x.PRODUCTO,
+        requested: x.CANTIDAD_SOLICITADA,
+        existing: x.CANTIDAAD_EXISTENTE,
+        missing: x.CANTIDAD_FALTANTE
+      })),
+      msg
     }
     return appSchemaLike
   } catch (error) {

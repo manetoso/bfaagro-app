@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useProcessesStore } from '@/stores'
 import { DetailInput } from './DetailInput'
@@ -7,7 +7,9 @@ import { ComboBox } from '@/components/form/ComboBox'
 const detailsIds = []
 const detailsOldMaterialId = []
 const detailsOldQuantity = []
+const detailsOldName = []
 const detailsQuantity = []
+const detailsName = []
 
 const DETAILS = [
   {
@@ -23,8 +25,16 @@ const DETAILS = [
     array: detailsOldQuantity
   },
   {
+    name: 'oldName',
+    array: detailsOldName
+  },
+  {
     name: 'newQuantity',
     array: detailsQuantity
+  },
+  {
+    name: 'name',
+    array: detailsName
   }
 ]
 
@@ -50,7 +60,8 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     error,
     removeError,
     processesStatus,
-    changeProcessStatus
+    changeProcessStatus,
+    selected
   } = useProcessesStore()
 
   useEffect(() => {
@@ -84,6 +95,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     if (newIsEmpty) return
 
     const details = []
+    const detailsChanged = []
 
     if (error.status) {
       for (const [key, value] of formData.entries()) {
@@ -96,12 +108,40 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
       detailsIds.forEach((id, index) => {
         details.push({
           id,
-          oldMaterialId: detailsOldMaterialId[index],
-          oldQuantity: detailsOldQuantity[index] || 0,
-          quantity: detailsQuantity[index]
+          name: detailsName[index],
+          quantity: Number(detailsQuantity[index])
+        })
+        details.push({
+          id: detailsOldMaterialId[index],
+          name: detailsOldName[index],
+          quantity: Number(detailsOldQuantity[index]) || 0
+        })
+        detailsChanged.push({
+          id: detailsOldMaterialId[index],
+          name: detailsOldName[index],
+          quantity: Number(detailsOldQuantity[index]) || 0
         })
       })
     }
+
+    const recipeDetailsFiltered = recipeSelected?.details.filter((x) =>
+      detailsChanged.some((y) => y.id !== x.id)
+    )
+    const newRecipe = [...recipeDetailsFiltered, ...details]
+    const newRecipeFiltered = newRecipe.reduce((acc, current) => {
+      const x = acc.find((item) => item.id === current.id)
+      if (!x) {
+        return acc.concat([current])
+      } else {
+        x.quantity += current.quantity
+        return acc
+      }
+    }, [])
+    newRecipeFiltered.forEach((x, index) => {
+      if (x.quantity === 0) {
+        newRecipeFiltered.splice(index, 1)
+      }
+    })
 
     const formatedData = {
       id: selectedRow?.id || 0,
@@ -122,11 +162,9 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
           id: data['recipeId[product][id]'],
           name: data['recipeId[product][name]']
         },
-        details: recipeSelected?.details
+        details: error.status ? newRecipeFiltered : recipeSelected?.details
       }
-      // replaceDetails: details
     }
-    // console.log({ formatedData, field })
     submitAction(formatedData, field)
   }
 
@@ -183,43 +221,26 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                 del producto <strong>{recipeSelected?.product.name}</strong>:
               </p>
               <ul className='mt-2 list-disc pl-6'>
-                {recipeSelected?.details.map((detail, index) => {
-                  return (
-                    <li key={index}>
-                      {detail.name}
-                      {', '}
-                      {detail.quantity} {recipeSelected?.unity}
-                    </li>
-                  )
-                })}
-              </ul>
-              {selectedRow.replaceDetails?.length > 0 && (
-                <div className='mt-4'>
-                  <p className='text-sm font-bold text-amber-600'>
-                    Formula Editada *
-                  </p>
-                  <ul className='mt-2 list-disc pl-6'>
-                    {selectedRow.replaceDetails.map((detail, index) => {
+                {selected.recipeData
+                  ? selectedRow.recipeData?.details.map((detail, index) => {
                       return (
-                        <Fragment key={index}>
-                          {detail.oldQuantity > 0 && (
-                            <li>
-                              {detail.oldMaterialId}
-                              {', '}
-                              {detail.oldQuantity}
-                            </li>
-                          )}
-                          <li>
-                            {detail.id}
-                            {', '}
-                            {detail.quantity}
-                          </li>
-                        </Fragment>
+                        <li key={index}>
+                          {detail.name}
+                          {', '}
+                          {detail.quantity} {recipeSelected?.unity}
+                        </li>
+                      )
+                    })
+                  : recipeSelected?.details.map((detail, index) => {
+                      return (
+                        <li key={index}>
+                          {detail.name}
+                          {', '}
+                          {detail.quantity} {recipeSelected?.unity}
+                        </li>
                       )
                     })}
-                  </ul>
-                </div>
-              )}
+              </ul>
               {error.status && (
                 <div className='mt-2'>
                   <p className='text-sm font-bold text-red-500'>
@@ -254,13 +275,24 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
         <div className='mx-auto mt-4 flex flex-col items-end gap-2'>
           <span>
             Estado:{' '}
-            <strong className={`rounded-full px-4 py-1 ${STATUS_LABEL[selectedRow.status?.value]}`}>
+            <strong
+              className={`rounded-full px-4 py-1 ${
+                STATUS_LABEL[selectedRow.status?.value]
+              }`}
+            >
               {selectedRow.status?.value}
             </strong>
           </span>
-          <button type='submit' className='btn' onClick={handleChangeProcessStatus}>
-            Siguiente Estado
-          </button>
+          {selectedRow.status?.value !==
+            processesStatus[processesStatus.length - 1].value && (
+            <button
+              type='submit'
+              className='btn mt-2'
+              onClick={handleChangeProcessStatus}
+            >
+              Siguiente Estado
+            </button>
+          )}
         </div>
       )}
     </>

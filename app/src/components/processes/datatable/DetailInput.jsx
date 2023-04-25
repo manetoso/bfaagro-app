@@ -27,6 +27,12 @@ export function DetailInput({ detail, index, materials, isEmpty }) {
         <input
           type='text'
           className='hidden'
+          name={`material[${index}][oldName]`}
+          defaultValue={detail.name}
+        />
+        <input
+          type='text'
+          className='hidden'
           name={`material[${index}][oldMaterialId]`}
           defaultValue={detail.id}
         />

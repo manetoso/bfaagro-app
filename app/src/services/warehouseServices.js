@@ -1,3 +1,5 @@
+import toast from 'react-hot-toast'
+
 /**
  *
  * @returns {{ id: string, name: string, quantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string }[]} products data
@@ -49,8 +51,10 @@ export async function createData(data) {
     })
     const json = await resp.json()
     const respFormated = convertToAppSchema(json.body)
+    toast.success('Producto creado con éxito')
     return respFormated
   } catch (error) {
+    toast.error('Error creando nuevo producto')
     throw new Error('Error creating new product')
   }
 }
@@ -75,8 +79,10 @@ export async function updateData(data) {
     )
     const json = await resp.json()
     const respFormated = convertToAppSchema(json.body)
+    toast.success('Producto actualizado con éxito')
     return respFormated
   } catch (error) {
+    toast.error('Error actualizando producto')
     throw new Error('Error updating product')
   }
 }
@@ -95,8 +101,10 @@ export async function deleteData(id) {
       }
     )
     const json = await resp.json()
+    toast.success('Producto eliminado con éxito')
     return json.error ? false : true
   } catch (error) {
+    toast.error('Error eliminando producto')
     throw new Error('Error deleting product')
   }
 }

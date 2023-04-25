@@ -7,7 +7,10 @@ import {
   deleteData
 } from '@/services/processesServices'
 import { fetchData as fetchRecipes } from '@/services/recipesServices'
-import { fetchWarehouses, fetchProcessStatusTypes } from '@/services/globalServices'
+import {
+  fetchWarehouses,
+  fetchProcessStatusTypes
+} from '@/services/globalServices'
 
 export const FIELDS_TYPES = {
   PROCESSES: 'processesData'
@@ -65,36 +68,33 @@ export const useProcessesStore = create((set, get) => ({
     set((state) => ({ ...state, [field]: newData }))
   },
   addOrEditElement: async (element, field) => {
-    const { [field]: data, selected } = get()
-    // if (
-    //   element.recipeId === '642f40279c913da51d9aef60' &&
-    //   element.replaceDetails.length === 0
-    // ) {
-    //   set((state) => ({
-    //     ...state,
-    //     error: {
-    //       message: 'No hay suficiente producto en almacén',
-    //       status: true,
-    //       details: [
-    //         {
-    //           id: '642f21e19c913da51d9aedf3',
-    //           name: 'CALI STROGEN (LTS)',
-    //           quantity: 10
-    //         },
-    //         {
-    //           id: '642ef1359c913da51d9aeb62',
-    //           name: 'BFOSFO (LTS)',
-    //           quantity: 10
-    //         }
-    //       ]
-    //     }
-    //   }))
-    //   return
-    // }
+    const { [field]: data, selected, materials } = get()
     element.id = selected.id
     const index = data.findIndex((e) => e.id === element.id)
     if (index === -1) {
-      const newElement = await createData(element)
+      const {
+        data: newElement,
+        error: { errors, msg }
+      } = await createData(element)
+      if (errors.length > 0) {
+        const details = errors.map((e) => {
+          const product = materials.find((m) => m.name === e.product)
+          return {
+            id: product.id,
+            name: product.name,
+            quantity: e.existing
+          }
+        })
+        set((state) => ({
+          ...state,
+          error: {
+            message: 'No hay suficiente materia prima para realizar el proceso, por favor sustituya los productos o agregue más materia prima *',
+            status: true,
+            details
+          }
+        }))
+        return
+      }
       set((state) => ({
         ...state,
         [field]: [newElement, ...data],
@@ -116,21 +116,21 @@ export const useProcessesStore = create((set, get) => ({
     const { [field]: data } = get()
     const index = data.findIndex((e) => e.id === id)
     if (index !== -1) {
-      const newElement = await updateData(element)
+      const newElement = await updateData({ id })
       data[index] = newElement
       set((state) => ({
         ...state,
         [field]: [...data],
-        detailModal: false
+        editModal: false
       }))
     }
   },
   removeElement: async (field) => {
     const { [field]: data, selected } = get()
-    // const deletedFlag = await deleteData(selected.id)
-    // if (!deletedFlag) {
-    //   return
-    // }
+    const deletedFlag = await deleteData(selected.id)
+    if (!deletedFlag) {
+      return
+    }
     const index = data.findIndex((e) => e.id === selected.id)
     if (index !== -1) {
       data.splice(index, 1)

@@ -50,8 +50,10 @@ export async function createData(data) {
     })
     const json = await resp.json()
     const respFormated = convertToAppSchema(json.body)
+    toast.success('Receta creada con éxito')
     return respFormated
   } catch (error) {
+    toast.error('Error creando nueva receta')
     throw new Error('Error creating new recipe')
   }
 }
@@ -73,8 +75,10 @@ export async function updateData(data) {
     })
     const json = await resp.json()
     const respFormated = convertToAppSchema(json.body)
+    toast.success('Receta actualizada con éxito')
     return respFormated
   } catch (error) {
+    toast.error('Error actualizando receta')
     throw new Error('Error updating recipe')
   }
 }
@@ -93,8 +97,10 @@ export async function deleteData(id) {
       }
     )
     const json = await resp.json()
+    toast.success('Receta eliminada con éxito')
     return json.error ? false : true
   } catch (error) {
+    toast.error('Error eliminando receta')
     throw new Error('Error deleting recipe')
   }
 }

@@ -6,51 +6,48 @@ import { EmptyModal } from '@/components/alert'
 import { ProcessesDetails } from './'
 
 const STATUS_COLOR = {
-  Pendiente: 'text-amber-500',
-  Revisión: 'text-sky-500',
-  Terminado: 'text-emerald-500',
-  Cancelado: 'text-rose-500'
+  PENDIENTE: 'text-stone-500',
+  'EN PROCESO': 'text-amber-500',
+  'PENDIENTE DE VALIDAR': 'text-sky-500'
 }
 const STATUS_BG_COLOR = {
-  Pendiente: 'bg-amber-100',
-  Revisión: 'bg-sky-100',
-  Terminado: 'bg-emerald-100',
-  Cancelado: 'bg-rose-100'
+  PENDIENTE: 'bg-stone-200',
+  'EN PROCESO': 'bg-amber-100',
+  'PENDIENTE DE VALIDAR': 'bg-sky-100'
 }
 
-function KanvaCard({ recipe, addOrEditElement, field, openModal }) {
+function KanvaCard({ process, changeProcessStatus, field, openModal }) {
   const handleFinish = () => {
-    addOrEditElement(
-      {
-        ...recipe,
-        status: 'Revisión'
-      },
+    changeProcessStatus(
+      process.id,
       field
     )
   }
   return (
     <div
       className={`flex min-w-full flex-col gap-2 rounded-md p-2 shadow-md ${
-        STATUS_BG_COLOR[recipe.status]
+        STATUS_BG_COLOR[process.status.value]
       }`}
     >
       <span>
         <label>Producto:</label>
         <h6 className='font-bold'>
-          {recipe.recipeData.product.name}, {recipe.recipeData.quantity}{' '}
-          {recipe.recipeData.unity}
+          {process.recipeData.product.name}, {process.recipeData.quantity}{' '}
+          {process.recipeData.unity}
         </h6>
       </span>
       <span>
         <label>Almacen:</label>
-        <h6 className='font-bold'>{recipe.warehouseName}</h6>
+        <h6 className='font-bold'>{process.warehouse.name}</h6>
       </span>
       <span>
         <label>Fecha:</label>
-        {/* <h6 className='font-bold'></h6> */}
+        <h6 className='font-bold'>
+          {process.createdAtFormatted}
+        </h6>
       </span>
       <span className='flex justify-end gap-2 md:flex-row md:gap-2'>
-        {recipe.status === 'Pendiente' ? (
+        {process.status.value !== 'PENDIENTE DE VALIDAR' ? (
           <>
             <button
               onClick={openModal}
@@ -58,7 +55,7 @@ function KanvaCard({ recipe, addOrEditElement, field, openModal }) {
             >
               Detalle
             </button>
-            {recipe.status === 'Pendiente' && (
+            {process.status.value !== 'PENDIENTE DE VALIDAR' && (
               <button onClick={handleFinish} className='btn-sm'>
                 Terminar
               </button>
@@ -66,9 +63,11 @@ function KanvaCard({ recipe, addOrEditElement, field, openModal }) {
           </>
         ) : (
           <strong
-            className={`w-full px-1 text-right ${STATUS_COLOR[recipe.status]}`}
+            className={`w-full px-1 text-right ${
+              STATUS_COLOR[process.status.value]
+            }`}
           >
-            {recipe.status}
+            {process.status.value}
           </strong>
         )}
       </span>
@@ -81,26 +80,30 @@ export function ProcessesKanva({ processesData }) {
   const [reviewProcesses, setReviewProcesses] = useState([])
   const [doneProcesses, setDoneProcesses] = useState([])
   const {
-    addOrEditElement,
     recipes,
     materials,
     detailModal,
     toggleDetailModal,
-    selected
+    selected,
+    processesStatus,
+    changeProcessStatus
   } = useProcessesStore()
 
   useMemo(() => {
     if (processesData.length > 0) {
       setTodoProcesses(
-        processesData.filter((process) => process.status === 'Pendiente')
+        processesData.filter(
+          (process) => process.status?.value === processesStatus[0].value
+        )
       )
       setReviewProcesses(
-        processesData.filter((process) => process.status === 'Revisión')
+        processesData.filter(
+          (process) => process.status?.value === processesStatus[1].value
+        )
       )
       setDoneProcesses(
         processesData.filter(
-          (process) =>
-            process.status === 'Terminado' || process.status === 'Cancelado'
+          (process) => process.status?.value === processesStatus[2].value
         )
       )
     }
@@ -109,33 +112,44 @@ export function ProcessesKanva({ processesData }) {
     <>
       <section className='mt-4 grid min-w-[46rem] grid-cols-3 rounded-md border-2'>
         <div className='flex min-h-[10rem] w-full flex-col items-center gap-4 border-r-2 p-4'>
-          <h3 className='font-bold text-amber-500'>Pendiente</h3>
+          <h3 className='font-bold text-stone-500'>PENDIENTE</h3>
           {todoProcesses.length > 0 &&
-            todoProcesses.map((recipe) => (
+            todoProcesses.map((process) => (
               <KanvaCard
-                key={recipe.id}
-                recipe={recipe}
-                field={FIELDS_TYPES.RECIPES}
-                openModal={() => toggleDetailModal(recipe)}
-                addOrEditElement={addOrEditElement}
+                key={process.id}
+                process={process}
+                field={FIELDS_TYPES.PROCESSES}
+                openModal={() => toggleDetailModal(process)}
+                changeProcessStatus={changeProcessStatus}
               />
             ))}
         </div>
         <div className='flex min-h-[10rem] w-full flex-col items-center gap-4 border-r-2 p-4'>
-          <h3 className='font-bold text-sky-500'>Revisión</h3>
+          <h3 className='font-bold text-amber-500'>EN PROCESO</h3>
           {reviewProcesses.length > 0 &&
-            reviewProcesses.map((recipe) => (
-              <KanvaCard key={recipe.id} recipe={recipe} />
+            reviewProcesses.map((process) => (
+              <KanvaCard
+                key={process.id}
+                process={process}
+                field={FIELDS_TYPES.PROCESSES}
+                openModal={() => toggleDetailModal(process)}
+                changeProcessStatus={changeProcessStatus}
+              />
             ))}
         </div>
         <div className='flex min-h-[10rem] w-full flex-col items-center gap-4 p-4'>
           <h3 className='font-bold'>
-            <strong className='text-emerald-500'>Terminado</strong> /{' '}
-            <strong className='text-rose-500'>Cancelado</strong>
+            <strong className='text-sky-500'>PENDIENTE DE VALIDAR</strong>
           </h3>
           {doneProcesses.length > 0 &&
-            doneProcesses.map((recipe) => (
-              <KanvaCard key={recipe.id} recipe={recipe} />
+            doneProcesses.map((process) => (
+              <KanvaCard
+                key={process.id}
+                process={process}
+                field={FIELDS_TYPES.PROCESSES}
+                openModal={() => toggleDetailModal(process)}
+                changeProcessStatus={changeProcessStatus}
+              />
             ))}
         </div>
       </section>
@@ -145,7 +159,7 @@ export function ProcessesKanva({ processesData }) {
         title='Detalle del proceso'
       >
         <ProcessesDetails
-          recipe={selected}
+          process={selected}
           recipes={recipes}
           materials={materials}
         />

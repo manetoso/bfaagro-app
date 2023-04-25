@@ -1,4 +1,5 @@
 import { ProcessesDatatable, ProcessesKanva } from './datatable'
+import { CustomToast } from '@/components/toast'
 
 import { useProcessesDatatable } from '@/hooks/useProcessesDatatable'
 import { FIELDS_TYPES } from '@/stores/useProcessesStore'
@@ -18,6 +19,7 @@ export function Processes() {
   } = useProcessesDatatable({ field: FIELDS_TYPES.PROCESSES })
   return (
     <>
+      <CustomToast />
       <ProcessesDatatable
         columns={columns}
         data={processesData}
