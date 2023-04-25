@@ -1,62 +1,5 @@
 /**
  *
- * @returns {{ id: string, name: string, warehouseType: { id: number, name: string } }[]} warehouse data
- */
-export async function fetchWarehouses() {
-  try {
-    const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/almacenes`)
-    /**
-     * The respponse body from the request.
-     * @typedef {{ _id: string, NOMBRE_ALMACEN: string, TIPO_ALMACEN: { ID_TIPO_ALMACEN: number, TIPO_ALMACEN: string } }[]} WarehousesBody
-     * @type {{body: WarehousesBody}} - The Warehouses response body.
-     */
-    const json = await resp.json()
-
-    const data = json.body.map((warehouse) => ({
-      id: warehouse._id,
-      name: warehouse.NOMBRE_ALMACEN,
-      warehouseType: {
-        id: warehouse.TIPO_ALMACEN.ID_TIPO_ALMACEN,
-        name: warehouse.TIPO_ALMACEN.TIPO_ALMACEN
-      }
-    }))
-    return data
-  } catch (error) {
-    throw new Error('Error searching warehouses')
-  }
-}
-
-/**
- *
- * @returns {{ id: string, value: { id: number, productType: string } }[]} product types data
- */
-export async function fetchProductTypes() {
-  try {
-    const resp = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/tiposdocumentos/producto`
-    )
-    /**
-     * The respponse body from the request.
-     * @typedef {{ _id: string, TIPO_DOCUMENTO: string, VALOR: { ID_TIPO_PRODUCTO: number, TIPO_PRODUCTO: string } }[]} ProductTypesBody
-     * @type {{body: ProductTypesBody}} - The Products Types response body.
-     */
-    const json = await resp.json()
-
-    const data = json.body.map((productType) => ({
-      id: productType._id,
-      value: {
-        id: productType.VALOR.ID_TIPO_PRODUCTO,
-        productType: productType.VALOR.TIPO_PRODUCTO
-      }
-    }))
-    return data
-  } catch (error) {
-    throw new Error('Error searching product types')
-  }
-}
-
-/**
- *
  * @returns {{ id: string, name: string, quantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string }[]} products data
  */
 export async function fetchData() {
@@ -113,8 +56,8 @@ export async function createData(data) {
 }
 
 /**
- * 
- * @param {{ id: string, name: string, quantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string }} data 
+ *
+ * @param {{ id: string, name: string, quantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string }} data
  * @returns { { id: string, name: string, quantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string } } product data
  */
 export async function updateData(data) {
