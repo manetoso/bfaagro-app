@@ -4,12 +4,13 @@ import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
 
 const createProducto = async (req = request, res = response) => {
   try {
-    const { NOMBRE_PRODUCTO, CANTIDAD, UNIDAD_MEDIDA, TIPO_PRODUCTO, ALMACEN } =
+    const { NOMBRE_PRODUCTO, CANTIDAD, UNIDAD_MEDIDA, CANTIDAD_MINIMA, TIPO_PRODUCTO, ALMACEN } =
       req.body
     const producto = {
       NOMBRE_PRODUCTO,
       CANTIDAD,
       UNIDAD_MEDIDA,
+      CANTIDAD_MINIMA,
       TIPO_PRODUCTO,
       ALMACEN
     }
