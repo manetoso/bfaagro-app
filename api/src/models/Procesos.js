@@ -49,20 +49,13 @@ const PROCESOS = new Schema(
           CANTIDAD: {
             type: Number,
             required: true
-          }
+          },
+          UNIDAD_MEDIDA: {
+            type: String,
+            required: true
+          },
         }
       ]
-    },
-    ALMACEN: {
-      ID_ALMACEN: {
-        type: Schema.Types.ObjectId,
-        ref: 'ALMACENES',
-        required: true
-      },
-      NOMBRE_ALMACEN: {
-        type: String,
-        required: true
-      }
     }
   },
   { timestamps: true }

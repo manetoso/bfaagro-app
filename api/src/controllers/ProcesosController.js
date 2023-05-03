@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import {
   PROCESOS,
   FORMULAS,
@@ -6,6 +7,7 @@ import {
 } from '../models/Index.js'
 import { request, response } from 'express'
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
+import { checkMinAmountProduct } from '../helpers/Index.js'
 
 const createProceso = async (req = request, res = response) => {
   try {
@@ -13,8 +15,6 @@ const createProceso = async (req = request, res = response) => {
     const {
       ID_FORMULA,
       FORMULACION_DETALLE = [],
-      ID_ALMACEN,
-      NOMBRE_ALMACEN
     } = req.body
     // Buscamos la Formula por el ID
     const formula = await FORMULAS.findById(ID_FORMULA)
@@ -37,10 +37,6 @@ const createProceso = async (req = request, res = response) => {
           NOMBRE_PRODUCTO: formula.PRODUCTO.NOMBRE_PRODUCTO
         },
         FORMULACION_DETALLE
-      },
-      ALMACEN: {
-        ID_ALMACEN,
-        NOMBRE_ALMACEN
       }
     }
     const actionDB = await PROCESOS.create(process)
@@ -94,9 +90,17 @@ const updateProceso = async (req = request, res = response) => {
   }
 }
 const updateStatusProceso = async (req = request, res = response) => {
+  //Iniciamos la sesion
+  const sesion = await mongoose.startSession()
   try {
+    let actionDB = null
+    let checksMinAmountProducts = []
+    let amountsProducts = {}
     const idProccess = req.params.idProceso
     const data = req.body
+    //Iniciamos la transacción
+    sesion.startTransaction()
+    const proccessDBUsed = await PROCESOS.findById(idProccess)
     const proccess = await validateStatusBeFinalizado(
       false,
       data.PROCESO.ESTADO
@@ -108,14 +112,43 @@ const updateStatusProceso = async (req = request, res = response) => {
         await PRODUCTOS.findByIdAndUpdate(dbProduct._id, dbProduct, {
           new: true
         })
-      })
+        // Checamos que los productos restados no hallan llegado a su nivel minimo de inventario    
+        if(checkMinAmountProduct(dbProduct)) {
+          amountsProducts = {
+            'PRODUCTO': dbProduct.NOMBRE_PRODUCTO,
+            'CANTIDAD': dbProduct.CANTIDAD,
+            'CANTIDAD_MINIMA': dbProduct.CANTIDAD_MINIMA,
+            'DIFERENCIA': dbProduct.CANTIDAD_MINIMA - dbProduct.CANTIDAD
+          }
+          checksMinAmountProducts.push(amountsProducts)
+        }
+      })      
+      // Consultamos la Formula Usada para sumar la cantidad de Producto que esta produce
+      const formulaUsed = await FORMULAS.findById(proccessDBUsed.FORMULA.ID_FORMULA)
+      // Consultamos el producto que se obtiene con la Formula, el id del producto ya viene embebido en el modelo de proceso
+      let productMade = await PRODUCTOS.findById(formulaUsed.PRODUCTO.ID_PRODUCTO)
+      // Sumamos la cantidad que hace la formula al producto y guardamos
+      productMade.CANTIDAD += formulaUsed.CANTIDAD
+      actionDB = await PRODUCTOS.findByIdAndUpdate(productMade._id,productMade)
     }
-    const actionDB = await PROCESOS.findByIdAndUpdate(idProccess, data, {
+    actionDB = await PROCESOS.findByIdAndUpdate(idProccess, data, {
       new: true
     })
-    return serverOkMessage(res, actionDB)
+    const result = {
+      actionDB,
+      checksMinAmountProducts
+    }    
+    // Commit a la transacción
+    await sesion.commitTransaction()
+    return serverOkMessage(res, result)
   } catch (error) {
-    return serverErrorMessage(res)
+    console.log(error);
+    //abortamos la transaacción en caso de fallar
+    await sesion.abortTransaction()
+    return serverErrorMessage(res,error)
+  } finally {
+    // Cerramos la traansacción
+    await sesion.endSession()
   }
 }
 

@@ -15,6 +15,10 @@ const PRODUCTOS = new Schema(
       type: String,
       required: true
     },
+    CANTIDAD_MINIMA:{
+      type: Number,
+      required: true
+    },
     TIPO_PRODUCTO: [
       {
         _id: false,
