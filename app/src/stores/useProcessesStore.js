@@ -149,7 +149,6 @@ export const useProcessesStore = create((set, get) => ({
     const warehouses = await fetchWarehouses()
     const materials = await fetchRawMaterial()
     const processesStatus = await fetchProcessStatusTypes()
-    console.log({ recipes, warehouses, materials })
     set((state) => ({
       ...state,
       materials,

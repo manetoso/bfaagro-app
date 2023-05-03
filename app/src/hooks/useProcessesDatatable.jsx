@@ -86,7 +86,12 @@ export const useProcessesDatatable = ({ field }) => {
           </span>
         ),
         footer: (props) => props.column.id
-      })
+      }),
+      columnHelper.accessor('createdAtFormatted', {
+        header: 'Fecha de creación',
+        cell: (info) => info.getValue(),
+        footer: (props) => props.column.id
+      }),
     ],
     []
   )

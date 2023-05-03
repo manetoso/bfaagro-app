@@ -18,10 +18,7 @@ const STATUS_BG_COLOR = {
 
 function KanvaCard({ process, changeProcessStatus, field, openModal }) {
   const handleFinish = () => {
-    changeProcessStatus(
-      process.id,
-      field
-    )
+    changeProcessStatus(process.id, field)
   }
   return (
     <div
@@ -42,9 +39,7 @@ function KanvaCard({ process, changeProcessStatus, field, openModal }) {
       </span>
       <span>
         <label>Fecha:</label>
-        <h6 className='font-bold'>
-          {process.createdAtFormatted}
-        </h6>
+        <h6 className='font-bold'>{process.createdAtFormatted}</h6>
       </span>
       <span className='flex justify-end gap-2 md:flex-row md:gap-2'>
         {process.status.value !== 'PENDIENTE DE VALIDAR' ? (
@@ -57,7 +52,7 @@ function KanvaCard({ process, changeProcessStatus, field, openModal }) {
             </button>
             {process.status.value !== 'PENDIENTE DE VALIDAR' && (
               <button onClick={handleFinish} className='btn-sm'>
-                Terminar
+                Sig. Estado
               </button>
             )}
           </>
@@ -138,9 +133,7 @@ export function ProcessesKanva({ processesData }) {
             ))}
         </div>
         <div className='flex min-h-[10rem] w-full flex-col items-center gap-4 p-4'>
-          <h3 className='font-bold'>
-            <strong className='text-sky-500'>PENDIENTE DE VALIDAR</strong>
-          </h3>
+          <h3 className='font-bold text-sky-500'>PENDIENTE DE VALIDAR</h3>
           {doneProcesses.length > 0 &&
             doneProcesses.map((process) => (
               <KanvaCard

@@ -10,16 +10,20 @@ export function Navigation() {
   const inputRef = useRef()
   return (
     <>
-      <nav className='fixed top-0 z-50 flex w-screen gap-2 bg-white py-2 px-4 border-b-2 border-black'>
-        <IconButton htmlFor={menuCheckboxId}>
-          <Menu />
-        </IconButton>
-        {!window.location.pathname.includes('app/inicio') && (
-          <IconButton onClick={() => history.back()}>
-            <ChevronBack />
-            Atras
+      <nav className='fixed top-0 z-50 w-screen border-b-2 border-black bg-white'>
+        <div className='mx-auto flex max-w-[1000px] gap-2 p-2'>
+          <IconButton htmlFor={menuCheckboxId}>
+            <Menu />
           </IconButton>
-        )}
+          {!window.location.pathname.includes('app/inicio') && (
+            <>
+              <IconButton onClick={() => history.back()}>
+                <ChevronBack />
+                Atras
+              </IconButton>
+            </>
+          )}
+        </div>
       </nav>
       <input id={menuCheckboxId} ref={inputRef} type='checkbox' hidden />
       <label id='aside-bg' htmlFor={menuCheckboxId} />

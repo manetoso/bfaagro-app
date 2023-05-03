@@ -44,7 +44,7 @@ export const useWareHouseDatatable = ({ field }) => {
   const prepareDataByfield = async (data, field) => {
     const warehouses = await fetchWarehouses()
     const productTypes = await fetchProductTypes()
-    setWarehouse(warehouses.find((x) => x.name === field))
+    setWarehouse(warehouses.find((x) => x.warehouseType.name === field))
     setProductType(productTypes.find((x) => x.value.productType === field))
     return data.filter((x) => x.productType.some((y) => y.name === field))
   }
