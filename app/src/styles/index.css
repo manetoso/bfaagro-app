@@ -46,6 +46,9 @@ body {
   .btn {
     @apply inline-flex cursor-pointer justify-center rounded-md bg-black px-7 py-2 text-sm font-medium text-white transition-all duration-200 ease-in-out hover:bg-black/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-1;
   }
+  .btn-sm {
+    @apply inline-flex cursor-pointer justify-center rounded-md bg-black px-4 py-2 text-sm font-medium text-white transition-all duration-200 ease-in-out hover:bg-black/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-1 md:px-7 md:py-2;
+  }
   .input {
     @apply max-w-xs rounded-md border-2 border-black/25 p-2 focus:border-black focus:outline-none;
   }

@@ -54,6 +54,7 @@ const findProcesos = async (req = request, res = response) => {
     return serverErrorMessage(res)
   }
 }
+
 const findInProcessAndPending = async (req = request, res = response) => {
   try {
     const actionDB = await PROCESOS.find({

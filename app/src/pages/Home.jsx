@@ -14,7 +14,7 @@ export const routesList = [
   },
   {
     title: 'Producción',
-    description: 'Administra almacenes',
+    description: 'Administra almacenes, fórmulas y procesos',
     to: '/app/produccion/inicio'
   },
   {
