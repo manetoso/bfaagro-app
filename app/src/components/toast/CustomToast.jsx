@@ -6,10 +6,18 @@ export function CustomToast() {
       position='top-right'
       toastOptions={{
         success: {
-          className: 'bg-emerald-600 text-white'
+          // className: 'bg-emerald-600 text-white',
+          style: {
+            backgroundColor: '#059669',
+            color: '#fff'
+          }
         },
         error: {
-          className: 'bg-rose-600 text-white'
+          // className: 'bg-rose-600 text-white'
+          style: {
+            backgroundColor: '#e11d48',
+            color: '#fff'
+          }
         }
       }}
     />

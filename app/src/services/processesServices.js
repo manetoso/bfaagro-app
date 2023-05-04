@@ -286,7 +286,11 @@ export function convertToAppSchemaUpdate(data) {
         toast.error(
           `¡Nivel Mínimo Alcanzado!
           La cantidad de ${check.PRODUCTO} sobrepasa la cantidad mínima establecida por: ${check.DIFERENCIA} unidades.`,
-          { icon: '🚧', className: 'bg-amber-500 text-white', duration: 5000 }
+          {
+            icon: '🚧',
+            style: { backgroundColor: '#f59e0b', color: '#fff' },
+            duration: 5000
+          }
         )
       })
     }
