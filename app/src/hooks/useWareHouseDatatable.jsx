@@ -4,11 +4,9 @@ import { createColumnHelper } from '@tanstack/react-table'
 import { DropdownMenu } from '@/components/datatable'
 import { useWarehouseStore, FIELDS_TYPES } from '@/stores/useWarehouseStore'
 import { formatNumberToString } from '@/utils/utils'
-import {
-  fetchData,
-  fetchWarehouses,
-  fetchProductTypes
-} from '@/services/warehouseServices'
+
+import { fetchData } from '@/services/warehouseServices'
+import { fetchProductTypes, fetchWarehouses } from '@/services/globalServices'
 
 const DEFAULT_FIELD = FIELDS_TYPES.RAW_MATERIAL
 
@@ -46,7 +44,7 @@ export const useWareHouseDatatable = ({ field }) => {
   const prepareDataByfield = async (data, field) => {
     const warehouses = await fetchWarehouses()
     const productTypes = await fetchProductTypes()
-    setWarehouse(warehouses.find((x) => x.name === field))
+    setWarehouse(warehouses.find((x) => x.warehouseType.name === field))
     setProductType(productTypes.find((x) => x.value.productType === field))
     return data.filter((x) => x.productType.some((y) => y.name === field))
   }
@@ -68,7 +66,7 @@ export const useWareHouseDatatable = ({ field }) => {
      */
     [FIELDS_TYPES.PRODUCTS]: async (data) => {
       console.warn('products')
-      return prepareDataByfield(data, 'PRODUCTOS')
+      return prepareDataByfield(data, 'PRODUCTO TERMINADO')
     },
     /**
      *
@@ -102,12 +100,36 @@ export const useWareHouseDatatable = ({ field }) => {
       }),
       columnHelper.accessor('quantity', {
         header: 'Cantidad',
-        cell: (info) => formatNumberToString(info.getValue()),
+        cell: (info) => (
+          <span
+            className={`${
+              info.getValue() <= info.row.original.minQuantity &&
+              'font-bold text-rose-500'
+            }`}
+          >
+            {formatNumberToString(info.getValue())}
+          </span>
+        ),
         footer: (props) => props.column.id
       }),
       columnHelper.accessor('unity', {
         header: 'Unidad de Medida',
         cell: (info) => info.getValue(),
+        footer: (props) => props.column.id
+      }),
+      columnHelper.accessor('minQuantity', {
+        header: 'Cantidad Mínima',
+        cell: (info) => {
+          if (info.row.original.quantity <= info.getValue()) {
+            return (
+              <span className='font-bold text-rose-500'>
+                {formatNumberToString(info.getValue())} (Mínimo alcanzado)
+              </span>
+            )
+          } else {
+            return formatNumberToString(info.getValue())
+          }
+        },
         footer: (props) => props.column.id
       })
     ],

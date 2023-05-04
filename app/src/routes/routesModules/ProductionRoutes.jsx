@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 
-import { Formulation, Production, Warehouses } from '@/pages'
+import { Formulation, Processes, Production, Warehouses } from '@/pages'
 import { ProtectedRoute } from '@/components/layout'
 import { Packaging, Products, RawMaterial } from '@/components/warehouses'
 
@@ -73,6 +73,40 @@ export function ProductionRoutes({ permissions, roles }) {
           </ProtectedRoute>
         }
       />
+      <Route
+        path='procesos'
+        element={
+          <ProtectedRoute
+            isAllow={permissions.includes('write') && roles.includes('admin')}
+            redirectPath='/app/produccion/inicio'
+          >
+            <Processes />
+          </ProtectedRoute>
+        }
+      >
+        <Route
+          path='tabla'
+          element={
+            <ProtectedRoute
+              isAllow={permissions.includes('write') && roles.includes('admin')}
+              redirectPath='/app/produccion/inicio'
+            >
+              <Processes />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='porHacer'
+          element={
+            <ProtectedRoute
+              isAllow={permissions.includes('write') && roles.includes('admin')}
+              redirectPath='/app/produccion/inicio'
+            >
+              <Processes />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
     </Routes>
   )
 }

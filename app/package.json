@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -14,6 +14,7 @@
     "framer-motion": "^10.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.4.0",
     "react-router-dom": "^6.9.0",
     "zustand": "^4.3.6"
   },

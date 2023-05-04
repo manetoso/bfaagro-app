@@ -13,7 +13,7 @@ const createAlmacen = async (req = request, res = response) => {
     const actionDB = await ALMACENES.create(almacen)
     return serverOkMessage(res, actionDB, 201)
   } catch (error) {
-    return serverErrorMessage(res, error)
+    return serverErrorMessage(res)
   }
 }
 

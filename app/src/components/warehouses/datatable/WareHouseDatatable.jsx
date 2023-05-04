@@ -1,4 +1,5 @@
 import { Datatable } from '../../datatable'
+import { CustomToast } from '@/components/toast'
 import { DeleteAlert, EmptyModal } from '../../alert'
 import { Form } from '.'
 
@@ -20,6 +21,7 @@ export function WareHouseDatatable({
 }) {
   return (
     <div className='relative mt-4'>
+      <CustomToast />
       <Datatable
         columns={columns}
         data={data}

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { useWarehouseStore } from '@/stores'
-import { ComboBox } from '@/components/form/ComboBox'
+import { ComboBox, Input } from '@/components/form'
 
 /**
  *
@@ -29,6 +29,15 @@ export function Form({
     firstProductType = productTypes.find(
       (x) => x.value.productType === selectedRow.productType[0].name
     ).id
+  }
+
+  const handleMinMaxValue = (e, minValue, maxValue) => {
+    if (e.target.value > maxValue) {
+      e.target.value = maxValue
+    }
+    if (e.target.value < minValue) {
+      e.target.value = minValue
+    }
   }
 
   const handleSubmit = (e) => {
@@ -80,16 +89,33 @@ export function Form({
           }
           placeholder='Nombre'
         />
-        <input
-          className={`input w-full ${isEmpty && 'border-rose-500'}`}
-          type='number'
-          name='quantity'
+        <Input
           defaultValue={
             Object.keys(selectedRow).length === 0 ? '' : selectedRow.quantity
           }
-          placeholder='Cantidad'
+          id='quantity'
+          isEmpty={isEmpty}
+          label='Cantidad'
+          name='quantity'
+          onChange={(e) => handleMinMaxValue(e, 0, 999999999)}
+          placeholder='30'
+          type='number'
+        />
+        <Input
+          defaultValue={
+            Object.keys(selectedRow).length === 0 ? '' : selectedRow.minQuantity
+          }
+          id='minQuantity'
+          isEmpty={isEmpty}
+          label='Cantidad Mínima'
+          name='minQuantity'
+          onChange={(e) => handleMinMaxValue(e, 0, 999999999)}
+          placeholder='10'
+          type='number'
         />
         <ComboBox
+          id='unityType'
+          label='Unidad de Medida'
           data={unityTypes}
           dataDisplayAttribute='unityType'
           name='unity'

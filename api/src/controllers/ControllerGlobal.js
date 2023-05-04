@@ -2,14 +2,13 @@ import { response } from 'express'
 
 const serverErrorMessage = (res = response, body = {}, status = 500) => {
   if (body !== {}) {
-    console.log(body)
     return res.status(status).json({
-      msg: 'Hubo un error en el servidor',
+      msg: 'Hubo un error',
       error: body
     })
   } else {
     return res.status(status).json({
-      msg: 'Hubo un error en el servidor'
+      msg: 'Hubo un error'
     })
   }
 }

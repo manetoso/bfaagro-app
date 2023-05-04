@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { useRecipesStore } from '@/stores'
-import { ComboBox } from '@/components/form/ComboBox'
+import { ComboBox } from '@/components/form'
 import { InfiniteInput } from './InfiniteInput'
 
 /**
