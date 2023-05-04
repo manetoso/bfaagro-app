@@ -34,10 +34,6 @@ function KanvaCard({ process, changeProcessStatus, field, openModal }) {
         </h6>
       </span>
       <span>
-        <label>Almacen:</label>
-        <h6 className='font-bold'>{process.warehouse.name}</h6>
-      </span>
-      <span>
         <label>Fecha:</label>
         <h6 className='font-bold'>{process.createdAtFormatted}</h6>
       </span>

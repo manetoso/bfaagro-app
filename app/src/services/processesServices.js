@@ -2,14 +2,14 @@ import toast from 'react-hot-toast'
 
 /**
  *
- * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, warehouse: { id: string, name: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string }[] }, createdAt: string, createdAtFormatted: string }} - The processes.
+ * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, warehouse: { id: string, name: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string, unity: string }[] }, createdAt: string, createdAtFormatted: string }} - The processes.
  */
 export async function fetchData() {
   try {
     const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/procesos`)
     /**
      * The respponse body from the request.
-     * @typedef { { _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, ALMACEN: { ID_ALMACEN: string, NOMBRE_ALMACEN: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number }[] }, createdAt: string, updatedAt: string } ProcessesBody
+     * @typedef { { _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, createdAt: string, updatedAt: string } ProcessesBody
      * @type {{body: ProcessesBody[]}} - The Recipes response body.
      */
     const json = await resp.json()
@@ -19,10 +19,6 @@ export async function fetchData() {
       status: {
         id: process.PROCESO.ID_ESTADO,
         value: process.PROCESO.ESTADO
-      },
-      warehouse: {
-        id: process.ALMACEN.ID_ALMACEN,
-        name: process.ALMACEN.NOMBRE_ALMACEN
       },
       recipeData: {
         recipeName: process.FORMULA.NOMBRE_FORMULA,
@@ -35,15 +31,19 @@ export async function fetchData() {
         details: process.FORMULA.FORMULACION_DETALLE.map((detail) => ({
           id: detail.ID_PRODUCTO,
           name: detail.NOMBRE_PRODUCTO,
-          quantity: detail.CANTIDAD
+          quantity: detail.CANTIDAD,
+          unity: detail.UNIDAD_MEDIDA
         }))
       },
       createdAt: process.createdAt,
-      createdAtFormatted: new Date(process.createdAt).toLocaleDateString('es-MX', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
-      })
+      createdAtFormatted: new Date(process.createdAt).toLocaleDateString(
+        'es-MX',
+        {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric'
+        }
+      )
     }))
     return data
   } catch (error) {
@@ -61,8 +61,6 @@ export async function createData(data) {
     const elementToDBSchema = convertToDBSchema(data)
     const elementToSend = {
       ID_FORMULA: elementToDBSchema.FORMULA.ID_FORMULA,
-      ID_ALMACEN: elementToDBSchema.ALMACEN.ID_ALMACEN,
-      NOMBRE_ALMACEN: elementToDBSchema.ALMACEN.NOMBRE_ALMACEN,
       FORMULACION_DETALLE: elementToDBSchema.FORMULA.FORMULACION_DETALLE
     }
     const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/procesos`, {
@@ -105,7 +103,7 @@ export async function updateData({ id }) {
       }
     )
     const json = await resp.json()
-    const respFormated = convertToAppSchema(json.body)
+    const respFormated = convertToAppSchemaUpdate(json.body)
     toast.success('Proceso actualizado con éxito')
     return respFormated
   } catch (error) {
@@ -170,16 +168,12 @@ export async function fetchRawMaterial() {
 
 /**
  *
- * @param {{ recipeId: string, status: { id: string, value: string }, warehouse: { id: string, name: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] } }} data
- * @returns {{ PROCESO: { ID_ESTADO: string, ESTADO: string }, ALMACEN: { ID_ALMACEN: string, NOMBRE_ALMACEN: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number }[] } }} - The recipe to DB Schema.
+ * @param {{ recipeId: string, status: { id: string, value: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: number, unity: string }[] } }} data
+ * @returns {{ PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] } }} - The recipe to DB Schema.
  */
 export function convertToDBSchema(data) {
   try {
     const dbSchemaLike = {
-      ALMACEN: {
-        ID_ALMACEN: data.warehouse.id,
-        NOMBRE_ALMACEN: data.warehouse.name
-      },
       PROCESO: {
         ID_ESTADO: data.status.id,
         ESTADO: data.status.value
@@ -194,7 +188,8 @@ export function convertToDBSchema(data) {
         FORMULACION_DETALLE: data.recipeData.details.map((detail) => ({
           ID_PRODUCTO: detail.id,
           NOMBRE_PRODUCTO: detail.name,
-          CANTIDAD: detail.quantity
+          CANTIDAD: detail.quantity,
+          UNIDAD_MEDIDA: detail.unity
         }))
       }
     }
@@ -206,8 +201,8 @@ export function convertToDBSchema(data) {
 
 /**
  *
- * @param {{ _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, ALMACEN: { ID_ALMACEN: string, NOMBRE_ALMACEN: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number }[] }, createdAt: string, updatedAt: string }} data
- * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, warehouse: { id: string, name: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string }[] }, createdAt: string, createdAtFormatted: string }} - The recipe to App Schema.
+ * @param {{ _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, createdAt: string, updatedAt: string }} data
+ * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string, unity: string }[] }, createdAt: string, createdAtFormatted: string }} - The recipe to App Schema.
  */
 export function convertToAppSchema(data) {
   try {
@@ -217,10 +212,6 @@ export function convertToAppSchema(data) {
       status: {
         id: data.PROCESO.ID_ESTADO,
         value: data.PROCESO.ESTADO
-      },
-      warehouse: {
-        id: data.ALMACEN.ID_ALMACEN,
-        name: data.ALMACEN.NOMBRE_ALMACEN
       },
       recipeData: {
         recipeName: data.FORMULA.NOMBRE_FORMULA,
@@ -233,7 +224,8 @@ export function convertToAppSchema(data) {
         details: data.FORMULA.FORMULACION_DETALLE.map((detail) => ({
           id: detail.ID_PRODUCTO,
           name: detail.NOMBRE_PRODUCTO,
-          quantity: detail.CANTIDAD
+          quantity: detail.CANTIDAD,
+          unity: detail.UNIDAD_MEDIDA
         }))
       },
       createdAt: data.createdAt,
@@ -245,7 +237,61 @@ export function convertToAppSchema(data) {
     }
     return appSchemaLike
   } catch (error) {
-    console.log(error)
+    throw new Error('Error converting to App Schema')
+  }
+}
+
+/**
+ *
+ * @param {{actionDB: { _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, createdAt: string, updatedAt: string }, checksMinAmountProducts: { CANTIDAD: number, CANTIDAD_MINIMA: number, DIFERENCIA: number, PRODUCTO: string }[] }} data
+ * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string, unity: string }[] }, createdAt: string, createdAtFormatted: string }} - The recipe to App Schema.
+ */
+export function convertToAppSchemaUpdate(data) {
+  console.log({ data })
+  try {
+    const appSchemaLike = {
+      id: data.actionDB._id,
+      recipeId: data.actionDB.FORMULA.ID_FORMULA,
+      status: {
+        id: data.actionDB.PROCESO.ID_ESTADO,
+        value: data.actionDB.PROCESO.ESTADO
+      },
+      recipeData: {
+        recipeName: data.actionDB.FORMULA.NOMBRE_FORMULA,
+        // quantity: data.actionDB.FORMULA_DETALLE.CANTIDAD,
+        // unity: data.actionDB.FORMULA_DETALLE.UNIDAD_MEDIDA,
+        product: {
+          id: data.actionDB.FORMULA.PRODUCTO.ID_PRODUCTO,
+          name: data.actionDB.FORMULA.PRODUCTO.NOMBRE_PRODUCTO
+        },
+        details: data.actionDB.FORMULA.FORMULACION_DETALLE.map((detail) => ({
+          id: detail.ID_PRODUCTO,
+          name: detail.NOMBRE_PRODUCTO,
+          quantity: detail.CANTIDAD,
+          unity: detail.UNIDAD_MEDIDA
+        }))
+      },
+      createdAt: data.actionDB.createdAt,
+      createdAtFormatted: new Date(data.actionDB.createdAt).toLocaleDateString(
+        'es-MX',
+        {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric'
+        }
+      )
+    }
+    if (data.checksMinAmountProducts.length > 0) {
+      data.checksMinAmountProducts.forEach((check) => {
+        toast.error(
+          `¡Nivel Mínimo Alcanzado!
+          La cantidad de ${check.PRODUCTO} sobrepasa la cantidad mínima establecida por: ${check.DIFERENCIA} unidades.`,
+          { icon: '🚧', className: 'bg-amber-500 text-white', duration: 5000 }
+        )
+      })
+    }
+    return appSchemaLike
+  } catch (error) {
     throw new Error('Error converting to App Schema')
   }
 }

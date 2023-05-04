@@ -143,6 +143,28 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
       }
     })
 
+    let recipeDetails
+    if (error.status) {
+      recipeDetails = newRecipeFiltered.map((x) => ({
+        id: x.id,
+        name: x.name,
+        quantity: x.quantity
+      }))
+    } else {
+      recipeDetails = recipeSelected?.details.map((x) => ({
+        id: x.id,
+        name: x.name,
+        quantity: x.quantity
+      }))
+    }
+    recipeDetails.forEach((x) => {
+      materials.forEach((y) => {
+        if (x.id === y.id) {
+          x.unity = y.unity
+        }
+      })
+    })
+
     const formatedData = {
       id: selectedRow?.id || 0,
       recipeId: data['recipeId[id]'],
@@ -150,10 +172,10 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
         id: data['status[id]'],
         value: data['status[value]']
       },
-      warehouse: {
-        id: data['warehouseId[id]'],
-        name: data['warehouseId[name]']
-      },
+      // warehouse: {
+      //   id: data['warehouseId[id]'],
+      //   name: data['warehouseId[name]']
+      // },
       recipeData: {
         // quantity: data['recipeId[quantity]'],
         // unity: data['recipeId[unity]'],
@@ -162,7 +184,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
           id: data['recipeId[product][id]'],
           name: data['recipeId[product][name]']
         },
-        details: error.status ? newRecipeFiltered : recipeSelected?.details
+        details: recipeDetails
       }
     }
     submitAction(formatedData, field)
@@ -198,7 +220,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                   getSelected={(item) => comboBoxOnChange(item)}
                 />
               </div>
-              <div>
+              {/* <div>
                 <label className='text-black/50'>Almacén:</label>
                 <ComboBox
                   data={warehouses}
@@ -209,7 +231,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                     selectedRow.warehouseName
                   }
                 />
-              </div>
+              </div> */}
             </div>
           </div>
           <div className='flex flex-1 flex-col gap-2'>

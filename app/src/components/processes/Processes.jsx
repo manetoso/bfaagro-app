@@ -20,26 +20,30 @@ export function Processes() {
   return (
     <>
       <CustomToast />
-      <ProcessesDatatable
-        columns={columns}
-        data={processesData}
-        title='Procesos'
-        toggleAddModal={toggleAddModal}
-        toggleAlert={toggleAlert}
-        toggleEditModal={toggleEditModal}
-        selected={selected}
-        addOrEditElement={addOrEditElement}
-        removeElement={removeElement}
-        alert={alert}
-        editModal={editModal}
-        field={FIELDS_TYPES.PROCESSES}
-      />
-      <div className='overflow-x-scroll'>
-        <ProcessesKanva
-          processesData={processesData}
+      {window.location.href.includes('tabla') && (
+        <ProcessesDatatable
+          columns={columns}
+          data={processesData}
+          title='Procesos'
+          toggleAddModal={toggleAddModal}
+          toggleAlert={toggleAlert}
           toggleEditModal={toggleEditModal}
+          selected={selected}
+          addOrEditElement={addOrEditElement}
+          removeElement={removeElement}
+          alert={alert}
+          editModal={editModal}
+          field={FIELDS_TYPES.PROCESSES}
         />
-      </div>
+      )}
+      {window.location.href.includes('porHacer') && (
+        <div className='overflow-x-scroll'>
+          <ProcessesKanva
+            processesData={processesData}
+            toggleEditModal={toggleEditModal}
+          />
+        </div>
+      )}
     </>
   )
 }

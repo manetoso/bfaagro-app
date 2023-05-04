@@ -100,12 +100,36 @@ export const useWareHouseDatatable = ({ field }) => {
       }),
       columnHelper.accessor('quantity', {
         header: 'Cantidad',
-        cell: (info) => formatNumberToString(info.getValue()),
+        cell: (info) => (
+          <span
+            className={`${
+              info.getValue() <= info.row.original.minQuantity &&
+              'font-bold text-rose-500'
+            }`}
+          >
+            {formatNumberToString(info.getValue())}
+          </span>
+        ),
         footer: (props) => props.column.id
       }),
       columnHelper.accessor('unity', {
         header: 'Unidad de Medida',
         cell: (info) => info.getValue(),
+        footer: (props) => props.column.id
+      }),
+      columnHelper.accessor('minQuantity', {
+        header: 'Cantidad Mínima',
+        cell: (info) => {
+          if (info.row.original.quantity <= info.getValue()) {
+            return (
+              <span className='font-bold text-rose-500'>
+                {formatNumberToString(info.getValue())} (Mínimo alcanzado)
+              </span>
+            )
+          } else {
+            return formatNumberToString(info.getValue())
+          }
+        },
         footer: (props) => props.column.id
       })
     ],

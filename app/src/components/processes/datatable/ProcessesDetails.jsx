@@ -6,7 +6,7 @@ export function ProcessesDetails({ process, recipes, materials }) {
   }
   return (
     <div className='mt-4'>
-      <div className='grid grid-cols-2 gap-2 md:grid-cols-3'>
+      <div className='grid grid-cols-2 gap-2'>
         <span>
           <label>Formula:</label>
           <h6 className='font-bold'>{process.recipeData.recipeName}</h6>
@@ -14,13 +14,8 @@ export function ProcessesDetails({ process, recipes, materials }) {
         <span>
           <label>Producto:</label>
           <h6 className='font-bold'>
-            {process.recipeData.product.name}, {process.recipeData.quantity}{' '}
-            {process.recipeData.unity}
+            {process.recipeData.product.name}
           </h6>
-        </span>
-        <span>
-          <label>Almacén:</label>
-          <h6 className='font-bold'>{process.warehouse.name}</h6>
         </span>
       </div>
       <div className='mt-4'>

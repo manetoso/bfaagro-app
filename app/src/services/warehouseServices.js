@@ -2,14 +2,14 @@ import toast from 'react-hot-toast'
 
 /**
  *
- * @returns {{ id: string, name: string, quantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string }[]} products data
+ * @returns {{ id: string, name: string, quantity: number, minQuantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string }[]} products data
  */
 export async function fetchData() {
   try {
     const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/productos`)
     /**
      * The respponse body from the request.
-     * @typedef { { _id: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, ALMACEN: { ID_ALMACEN: string, NOMBRE_ALMACEN: string }, TIPO_PRODUCTO: { ID_TIPO_PRODUCTO: number, TIPO_PRODUCTO: string }[] } } ProductsBody
+     * @typedef { { _id: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, CANTIDAD_MINIMA: number, UNIDAD_MEDIDA: string, ALMACEN: { ID_ALMACEN: string, NOMBRE_ALMACEN: string }, TIPO_PRODUCTO: { ID_TIPO_PRODUCTO: number, TIPO_PRODUCTO: string }[] } } ProductsBody
      * @type {{body: ProductsBody[]}} - The Products Types response body.
      */
     const json = await resp.json()
@@ -18,6 +18,7 @@ export async function fetchData() {
       id: product._id,
       name: product.NOMBRE_PRODUCTO,
       quantity: product.CANTIDAD,
+      minQuantity: product.CANTIDAD_MINIMA,
       unity: product.UNIDAD_MEDIDA,
       warehouse: {
         id: product.ALMACEN.ID_ALMACEN,
@@ -36,8 +37,8 @@ export async function fetchData() {
 
 /**
  *
- * @param {{ name: string, quantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string }} data
- * @returns { { id: string, name: string, quantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string } } product data
+ * @param {{ name: string, quantity: number, minQuantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string }} data
+ * @returns { { id: string, name: string, quantity: number, minQuantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string } } product data
  */
 export async function createData(data) {
   try {
@@ -111,14 +112,15 @@ export async function deleteData(id) {
 
 /**
  *
- * @param { { name: string, quantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string } } data
- * @returns { { _id: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, ALMACEN: { ID_ALMACEN: string, NOMBRE_ALMACEN: string }, TIPO_PRODUCTO: { ID_TIPO_PRODUCTO: number, TIPO_PRODUCTO: string }[] } } dbSchemaLike
+ * @param { { name: string, quantity: number, minQuantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string } } data
+ * @returns { { _id: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, CANTIDAD_MINIMA: number, UNIDAD_MEDIDA: string, ALMACEN: { ID_ALMACEN: string, NOMBRE_ALMACEN: string }, TIPO_PRODUCTO: { ID_TIPO_PRODUCTO: number, TIPO_PRODUCTO: string }[] } } dbSchemaLike
  */
 export function convertToDBSchema(data) {
   try {
     const dbSchemaLike = {
       NOMBRE_PRODUCTO: data.name,
       CANTIDAD: data.quantity,
+      CANTIDAD_MINIMA: data.minQuantity,
       UNIDAD_MEDIDA: data.unity,
       ALMACEN: {
         ID_ALMACEN: data.warehouse.id,
@@ -137,8 +139,8 @@ export function convertToDBSchema(data) {
 
 /**
  *
- * @param { { _id: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, ALMACEN: { ID_ALMACEN: string, NOMBRE_ALMACEN: string }, TIPO_PRODUCTO: { ID_TIPO_PRODUCTO: number, TIPO_PRODUCTO: string }[] } } object
- * @returns { { id: string, name: string, quantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string } } appSchemaLike
+ * @param { { _id: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, CANTIDAD_MINIMA: number, UNIDAD_MEDIDA: string, ALMACEN: { ID_ALMACEN: string, NOMBRE_ALMACEN: string }, TIPO_PRODUCTO: { ID_TIPO_PRODUCTO: number, TIPO_PRODUCTO: string }[] } } object
+ * @returns { { id: string, name: string, quantity: number, minQuantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string } } appSchemaLike
  */
 export function convertToAppSchema(object) {
   try {
@@ -146,6 +148,7 @@ export function convertToAppSchema(object) {
       id: object._id,
       name: object.NOMBRE_PRODUCTO,
       quantity: object.CANTIDAD,
+      minQuantity: object.CANTIDAD_MINIMA,
       unity: object.UNIDAD_MEDIDA,
       warehouse: {
         id: object.ALMACEN.ID_ALMACEN,

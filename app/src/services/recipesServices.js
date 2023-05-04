@@ -120,7 +120,7 @@ export async function fetchProductsForDetails() {
     const json = await resp.json()
     const filtered1 = json.body.filter((x) => x.TIPO_PRODUCTO.some((y) => y.TIPO_PRODUCTO === 'MATERIA PRIMA'))
     const filtered2 = json.body.filter((x) => x.TIPO_PRODUCTO.some((y) => y.TIPO_PRODUCTO === 'PRODUCTO TERMINADO'))
-    console.log({ filtered1, filtered2 });
+    // console.log({ filtered1, filtered2 });
     const material = filtered1.map((product) => ({
       id: product._id,
       name: product.NOMBRE_PRODUCTO

@@ -67,11 +67,6 @@ export const useProcessesDatatable = ({ field }) => {
         cell: (info) => info.getValue(),
         footer: (props) => props.column.id
       }),
-      columnHelper.accessor('warehouse.name', {
-        header: 'Almacén',
-        cell: (info) => info.getValue(),
-        footer: (props) => props.column.id
-      }),
       columnHelper.accessor('status.value', {
         header: 'Estado',
         cell: (info) => (

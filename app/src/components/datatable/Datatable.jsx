@@ -30,7 +30,7 @@ export function Datatable({ columns, data, title = 'Table', addHandler }) {
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    debugTable: true
+    debugTable: process.env.NODE_ENV === 'development'
   })
 
   return (

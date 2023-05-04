@@ -14,8 +14,13 @@ export const routesList = [
   },
   {
     title: 'Procesos',
-    description: 'Revisa y administra los procesos de creación de productos.',
-    to: '/app/produccion/procesos'
+    description: 'Crea, revisa y administra los procesos de creación de productos.',
+    to: '/app/produccion/procesos/tabla'
+  },
+  {
+    title: 'Procesos por Hacer',
+    description: 'Da seguimiento a los procesos de creación de productos.',
+    to: '/app/produccion/procesos/porHacer'
   }
 ]
 
