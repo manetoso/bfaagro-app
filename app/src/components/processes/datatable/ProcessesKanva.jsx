@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react'
 import { FIELDS_TYPES, useProcessesStore } from '@/stores/useProcessesStore'
 
 import { EmptyModal } from '@/components/alert'
+import { PROCESSES_STATUS } from '@/utils/consts'
 import { ProcessesDetails } from './'
 
 const STATUS_COLOR = {
@@ -84,17 +85,29 @@ export function ProcessesKanva({ processesData }) {
     if (processesData.length > 0) {
       setTodoProcesses(
         processesData.filter(
-          (process) => process.status?.value === processesStatus[0].value
+          (process) =>
+            process.status?.value ===
+            processesStatus.filter(
+              (status) => status.value === PROCESSES_STATUS.PENDING
+            )[0].value
         )
       )
       setReviewProcesses(
         processesData.filter(
-          (process) => process.status?.value === processesStatus[1].value
+          (process) =>
+            process.status?.value ===
+            processesStatus.filter(
+              (status) => status.value === PROCESSES_STATUS.IN_PROCESS
+            )[0].value
         )
       )
       setDoneProcesses(
         processesData.filter(
-          (process) => process.status?.value === processesStatus[2].value
+          (process) =>
+            process.status?.value ===
+            processesStatus.filter(
+              (status) => status.value === PROCESSES_STATUS.TO_BE_VALIDATED
+            )[0].value
         )
       )
     }

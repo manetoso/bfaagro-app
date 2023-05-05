@@ -1,3 +1,5 @@
+import toast from 'react-hot-toast'
+
 /**
  *
  * @returns {Promise<{ id: string, recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }[]>} - The recipes.
