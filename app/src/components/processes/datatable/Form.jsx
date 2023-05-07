@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useProcessesStore } from '@/stores'
 import { DetailInput } from './DetailInput'
 import { ComboBox } from '@/components/form/ComboBox'
+import { PROCESSES_STATUS } from '@/utils/consts'
 
 const detailsIds = []
 const detailsOldMaterialId = []
@@ -306,7 +307,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
             </strong>
           </span>
           {selectedRow.status?.value !==
-            processesStatus[processesStatus.length - 1].value && (
+            PROCESSES_STATUS.FINISHED && (
             <button
               type='submit'
               className='btn mt-2'
