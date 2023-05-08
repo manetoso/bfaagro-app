@@ -16,8 +16,8 @@ export function Input({
   type
 }) {
   return (
-    <div className="w-full flex flex-col">
-      <label className='text-gray-600 font-bold' htmlFor={id}>
+    <div className='flex w-full flex-col'>
+      <label className='font-bold text-gray-600' htmlFor={id}>
         {label}
       </label>
       <input
@@ -30,6 +30,7 @@ export function Input({
         placeholder={placeholder}
         required={required}
         type={type}
+        step={type === 'number' ? '0.01' : undefined}
         // type=''
       />
     </div>
