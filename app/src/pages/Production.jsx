@@ -21,6 +21,11 @@ export const routesList = [
     title: 'Procesos por Hacer',
     description: 'Da seguimiento a los procesos de creación de productos.',
     to: '/app/produccion/procesos/porHacer'
+  },
+  {
+    title: 'Embalaje',
+    description: 'Empaca productos que estén listos para su distribución.',
+    to: '/app/produccion/embalajes'
   }
 ]
 

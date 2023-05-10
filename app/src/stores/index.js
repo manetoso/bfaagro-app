@@ -1,4 +1,5 @@
 export { useAuthStore } from './useAuthStore'
+export { usePackagingStore } from './usePackagingStore'
 export { useProcessesStore } from './useProcessesStore'
 export { useRecipesStore } from './useRecipesStore'
 export { useWarehouseStore } from './useWarehouseStore'
