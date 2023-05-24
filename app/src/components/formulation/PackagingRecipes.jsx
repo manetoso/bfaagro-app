@@ -3,7 +3,7 @@ import { RecipesDatatable } from './datatable'
 import { useRecipesDatatable } from '@/hooks/useRecipesDatatable'
 import { FIELDS_TYPES } from '@/stores/useRecipesStore'
 
-export function Recipes() {
+export function PackagingRecipes() {
   const {
     addOrEditElement,
     alert,
@@ -15,13 +15,13 @@ export function Recipes() {
     toggleAddModal,
     toggleAlert,
     toggleEditModal
-  } = useRecipesDatatable({ field: FIELDS_TYPES.RECIPES })
+  } = useRecipesDatatable({ field: FIELDS_TYPES.PACKAGING })
   return (
     <>
       <RecipesDatatable
         columns={columns}
         data={recipesData}
-        title='Fórmulas Productos'
+        title='Fórmulas Embalaje'
         toggleAddModal={toggleAddModal}
         toggleAlert={toggleAlert}
         toggleEditModal={toggleEditModal}

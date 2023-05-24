@@ -10,7 +10,7 @@ export const routesList = [
   {
     title: 'Fórmulas',
     description: 'Administras el catálogo de fórmulas de productos.',
-    to: '/app/produccion/formulas'
+    to: '/app/produccion/formulas/productos'
   },
   {
     title: 'Procesos',

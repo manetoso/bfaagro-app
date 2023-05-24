@@ -3,17 +3,16 @@ import { useMemo, useState } from 'react'
 import { FIELDS_TYPES, useProcessesStore } from '@/stores/useProcessesStore'
 
 import { EmptyModal } from '@/components/alert'
+import { PROCESSES_STATUS } from '@/utils/consts'
 import { ProcessesDetails } from './'
 
 const STATUS_COLOR = {
-  PENDIENTE: 'text-stone-500',
-  'EN PROCESO': 'text-amber-500',
-  'PENDIENTE DE VALIDAR': 'text-sky-500'
+  PENDIENTE: 'text-amber-500',
+  FINALIZADO: 'text-sky-500'
 }
 const STATUS_BG_COLOR = {
-  PENDIENTE: 'bg-stone-200',
-  'EN PROCESO': 'bg-amber-100',
-  'PENDIENTE DE VALIDAR': 'bg-sky-100'
+  PENDIENTE: 'bg-amber-200',
+  FINALIZADO: 'bg-sky-100'
 }
 
 function KanvaCard({ process, changeProcessStatus, field, openModal }) {
@@ -38,7 +37,7 @@ function KanvaCard({ process, changeProcessStatus, field, openModal }) {
         <h6 className='font-bold'>{process.createdAtFormatted}</h6>
       </span>
       <span className='flex justify-end gap-2 md:flex-row md:gap-2'>
-        {process.status.value !== 'PENDIENTE DE VALIDAR' ? (
+        {process.status.value !== PROCESSES_STATUS.FINISHED ? (
           <>
             <button
               onClick={openModal}
@@ -46,7 +45,7 @@ function KanvaCard({ process, changeProcessStatus, field, openModal }) {
             >
               Detalle
             </button>
-            {process.status.value !== 'PENDIENTE DE VALIDAR' && (
+            {process.status.value !== PROCESSES_STATUS.FINISHED && (
               <button onClick={handleFinish} className='btn-sm'>
                 Sig. Estado
               </button>
@@ -68,7 +67,6 @@ function KanvaCard({ process, changeProcessStatus, field, openModal }) {
 
 export function ProcessesKanva({ processesData }) {
   const [todoProcesses, setTodoProcesses] = useState([])
-  const [reviewProcesses, setReviewProcesses] = useState([])
   const [doneProcesses, setDoneProcesses] = useState([])
   const {
     recipes,
@@ -82,28 +80,43 @@ export function ProcessesKanva({ processesData }) {
 
   useMemo(() => {
     if (processesData.length > 0) {
+      const todayDate = new Date()
       setTodoProcesses(
         processesData.filter(
-          (process) => process.status?.value === processesStatus[0].value
-        )
-      )
-      setReviewProcesses(
-        processesData.filter(
-          (process) => process.status?.value === processesStatus[1].value
+          (process) =>
+            process.status?.value ===
+            processesStatus.filter(
+              (status) => status.value === PROCESSES_STATUS.PENDING
+            )[0].value
         )
       )
       setDoneProcesses(
-        processesData.filter(
-          (process) => process.status?.value === processesStatus[2].value
-        )
+        processesData.filter((process) => {
+          const processDate = new Date(process.createdAt)
+          const msBetweenDates = Math.abs(
+            processDate.getTime() - todayDate.getTime()
+          )
+          const daysBetweenDates = Math.floor(
+            msBetweenDates / (24 * 60 * 60 * 1000)
+          )
+          const isProcessFromThisMonth = daysBetweenDates <= 30
+          return (
+            process.status?.value ===
+              processesStatus.filter(
+                (status) => status.value === PROCESSES_STATUS.FINISHED
+              )[0].value && isProcessFromThisMonth
+          )
+        })
       )
     }
   }, [processesData])
   return (
     <>
-      <section className='mt-4 grid min-w-[46rem] grid-cols-3 rounded-md border-2'>
+      <section className='mt-4 grid max-h-[80vh] min-w-[46rem] grid-cols-2 overflow-y-auto rounded-md border-2'>
         <div className='flex min-h-[10rem] w-full flex-col items-center gap-4 border-r-2 p-4'>
-          <h3 className='font-bold text-stone-500'>PENDIENTE</h3>
+          <h3 className='font-bold text-amber-500'>
+            {PROCESSES_STATUS.PENDING}
+          </h3>
           {todoProcesses.length > 0 &&
             todoProcesses.map((process) => (
               <KanvaCard
@@ -115,21 +128,10 @@ export function ProcessesKanva({ processesData }) {
               />
             ))}
         </div>
-        <div className='flex min-h-[10rem] w-full flex-col items-center gap-4 border-r-2 p-4'>
-          <h3 className='font-bold text-amber-500'>EN PROCESO</h3>
-          {reviewProcesses.length > 0 &&
-            reviewProcesses.map((process) => (
-              <KanvaCard
-                key={process.id}
-                process={process}
-                field={FIELDS_TYPES.PROCESSES}
-                openModal={() => toggleDetailModal(process)}
-                changeProcessStatus={changeProcessStatus}
-              />
-            ))}
-        </div>
         <div className='flex min-h-[10rem] w-full flex-col items-center gap-4 p-4'>
-          <h3 className='font-bold text-sky-500'>PENDIENTE DE VALIDAR</h3>
+          <h3 className='font-bold text-sky-500'>
+            {PROCESSES_STATUS.FINISHED}
+          </h3>
           {doneProcesses.length > 0 &&
             doneProcesses.map((process) => (
               <KanvaCard

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useProcessesStore } from '@/stores'
 import { DetailInput } from './DetailInput'
 import { ComboBox } from '@/components/form/ComboBox'
+import { PROCESSES_STATUS } from '@/utils/consts'
 
 const detailsIds = []
 const detailsOldMaterialId = []
@@ -39,9 +40,7 @@ const DETAILS = [
 ]
 
 const STATUS_LABEL = {
-  PENDIENTE: 'bg-stone-200 text-stone-500',
-  'EN PROCESO': 'bg-amber-100 text-amber-500',
-  'PENDIENTE DE VALIDAR': 'bg-sky-100 text-sky-500',
+  PENDIENTE: 'bg-amber-200 text-amber-500',
   FINALIZADO: 'bg-emerald-100 text-emerald-500'
 }
 
@@ -305,8 +304,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
               {selectedRow.status?.value}
             </strong>
           </span>
-          {selectedRow.status?.value !==
-            processesStatus[processesStatus.length - 1].value && (
+          {selectedRow.status?.value !== PROCESSES_STATUS.FINISHED && (
             <button
               type='submit'
               className='btn mt-2'

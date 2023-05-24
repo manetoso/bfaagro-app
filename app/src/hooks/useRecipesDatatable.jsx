@@ -32,7 +32,7 @@ export const useRecipesDatatable = ({ field }) => {
   const FETCH_DATA_BY_FIELD = {
     [FIELDS_TYPES.RECIPES]: () => {
       console.warn('recipesData')
-      return fetchData()
+      return fetchData({ field })
     }
   }
 
@@ -71,7 +71,7 @@ export const useRecipesDatatable = ({ field }) => {
 
   // FETCHING DATA FROM THE API
   const getData = useMemo(async () => {
-    await fetchProductsForDetailsFromApi()
+    await fetchProductsForDetailsFromApi({ field })
     const apiData = await FETCH_DATA_BY_FIELD[localField]()
     setDataFilds(apiData, localField)
     return apiData

@@ -21,9 +21,5 @@
     "prettier": "^2.8.4",
     "prettier-plugin-tailwindcss": "^0.2.4",
     "standard": "^17.0.0"
-  },
-  "dependencies": {
-    "express-validator": "^7.0.1",
-    "mongoose": "^7.0.3"
   }
 }

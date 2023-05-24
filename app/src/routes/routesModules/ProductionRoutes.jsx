@@ -72,7 +72,30 @@ export function ProductionRoutes({ permissions, roles }) {
             <Formulation />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route
+          path='productos'
+          element={
+            <ProtectedRoute
+              isAllow={permissions.includes('write') && roles.includes('admin')}
+              redirectPath='/app/produccion/inicio'
+            >
+              <Formulation />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='embalaje'
+          element={
+            <ProtectedRoute
+              isAllow={permissions.includes('write') && roles.includes('admin')}
+              redirectPath='/app/produccion/inicio'
+            >
+              <Formulation />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
       <Route
         path='procesos'
         element={
