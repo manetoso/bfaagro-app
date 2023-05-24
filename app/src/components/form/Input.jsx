@@ -1,6 +1,6 @@
 /**
  *
- * @param {{defaultValue: string, disabled: boolean, id: string, isEmpty: boolean, label: string, name: string, noMaxWith: boolean onChange: () => void, placeholder: string, required: boolean, type: 'text' | 'number'}} param0
+ * @param {{defaultValue: string, disabled: boolean, id: string, isEmpty: boolean, label: string, name: string, onChange: () => void, placeholder: string, required: boolean, type: 'text' | 'number'}} param0
  * @returns {JSX.Element} Input
  */
 export function Input({
@@ -10,7 +10,6 @@ export function Input({
   isEmpty,
   label,
   name,
-  noMaxWith,
   onChange,
   placeholder,
   required = true,
@@ -22,9 +21,7 @@ export function Input({
         {label}
       </label>
       <input
-        className={`input w-full ${noMaxWith && 'max-w-none'} ${
-          isEmpty && 'border-rose-500'
-        }`}
+        className={`input w-full ${isEmpty && 'border-rose-500'}`}
         defaultValue={defaultValue}
         disabled={disabled}
         id={id}
