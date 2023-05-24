@@ -1,15 +1,18 @@
 import toast from 'react-hot-toast'
+import { FIELDS_TYPES } from '@/stores/useRecipesStore'
+import { PRODUCT_TYPES } from '@/utils/consts'
 
 /**
  *
+ * @param {{ field: string }} param - The field to search.
  * @returns {Promise<{ id: string, recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }[]>} - The recipes.
  */
-export async function fetchData() {
+export async function fetchData({ field }) {
   try {
     const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/formulas`)
     /**
      * The respponse body from the request.
-     * @typedef { { _id: string, NOMBRE_FORMULA: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { CANTIDAD: number, ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }[] } } RecipesBody
+     * @typedef { { _id: string, NOMBRE_FORMULA: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, TIPO_PRODUCTO: { ID_TIPO_PRODUCTO: string, TIPO_PRODUCTO: string }[] }, FORMULACION_DETALLE: { CANTIDAD: number, ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }[] } } RecipesBody
      * @type {{body: RecipesBody[]}} - The Recipes response body.
      */
     const json = await resp.json()
@@ -20,7 +23,11 @@ export async function fetchData() {
       unity: recipe.UNIDAD_MEDIDA,
       product: {
         id: recipe.PRODUCTO.ID_PRODUCTO,
-        name: recipe.PRODUCTO.NOMBRE_PRODUCTO
+        name: recipe.PRODUCTO.NOMBRE_PRODUCTO,
+        type: recipe.PRODUCTO.TIPO_PRODUCTO.map((type) => ({
+          id: type.ID_TIPO_PRODUCTO,
+          name: type.TIPO_PRODUCTO
+        }))
       },
       details: recipe.FORMULACION_DETALLE.map((material) => ({
         id: material.ID_PRODUCTO,
@@ -28,7 +35,22 @@ export async function fetchData() {
         quantity: material.CANTIDAD
       }))
     }))
-    return data
+    if (field === FIELDS_TYPES.RECIPES_PACKAGING) {
+      return data
+    } else {
+      return data.filter((recipe) => {
+        if (field === FIELDS_TYPES.RECIPES) {
+          return recipe.product.type.find(
+            (type) => type.name === PRODUCT_TYPES.FINISHED_PRODUCT
+          )
+        }
+        if (field === FIELDS_TYPES.PACKAGING) {
+          return recipe.product.type.find(
+            (type) => type.name === PRODUCT_TYPES.PACKAGING_PRODUCT
+          )
+        }
+      })
+    }
   } catch (error) {
     console.log({ error })
     throw new Error('Error searching recipes')
@@ -36,8 +58,8 @@ export async function fetchData() {
 }
 
 /**
- * 
- * @param {{ recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }} data 
+ *
+ * @param {{ recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }} data
  * @returns {{ id: string, recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }}
  */
 export async function createData(data) {
@@ -61,20 +83,23 @@ export async function createData(data) {
 }
 
 /**
- * 
- * @param {{ id: string, recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }} data 
+ *
+ * @param {{ id: string, recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }} data
  * @returns {{ id: string, recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }}
  */
 export async function updateData(data) {
   try {
     const elementToDBSchema = convertToDBSchema(data)
-    const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/formulas/${data.id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(elementToDBSchema)
-    })
+    const resp = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/formulas/${data.id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(elementToDBSchema)
+      }
+    )
     const json = await resp.json()
     const respFormated = convertToAppSchema(json.body)
     toast.success('Receta actualizada con éxito')
@@ -109,9 +134,10 @@ export async function deleteData(id) {
 
 /**
  *
+ * @param {{ field: string }} param - The field to search.
  * @returns {{ id: string, name: string, quantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string }[]} products data
  */
-export async function fetchProductsForDetails() {
+export async function fetchProductsForDetails({ field }) {
   try {
     const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/productos`)
     /**
@@ -120,9 +146,29 @@ export async function fetchProductsForDetails() {
      * @type {{body: ProductsBody[]}} - The Products Types response body.
      */
     const json = await resp.json()
-    const filtered1 = json.body.filter((x) => x.TIPO_PRODUCTO.some((y) => y.TIPO_PRODUCTO === 'MATERIA PRIMA'))
-    const filtered2 = json.body.filter((x) => x.TIPO_PRODUCTO.some((y) => y.TIPO_PRODUCTO === 'PRODUCTO TERMINADO'))
-    // console.log({ filtered1, filtered2 });
+    const filtered1 = json.body.filter((x) =>
+      x.TIPO_PRODUCTO.some((y) => {
+        if (field === FIELDS_TYPES.RECIPES) {
+          return y.TIPO_PRODUCTO === PRODUCT_TYPES.RAW_MATERIAL
+        }
+        if (field === FIELDS_TYPES.PACKAGING) {
+          return (
+            y.TIPO_PRODUCTO === PRODUCT_TYPES.FINISHED_PRODUCT ||
+            y.TIPO_PRODUCTO === PRODUCT_TYPES.PACKAGING_PRODUCT
+          )
+        }
+      })
+    )
+    const filtered2 = json.body.filter((x) =>
+      x.TIPO_PRODUCTO.some((y) => {
+        if (field === FIELDS_TYPES.RECIPES) {
+          return y.TIPO_PRODUCTO === PRODUCT_TYPES.FINISHED_PRODUCT
+        }
+        if (field === FIELDS_TYPES.PACKAGING) {
+          return y.TIPO_PRODUCTO === PRODUCT_TYPES.PACKAGING_PRODUCT
+        }
+      })
+    )
     const material = filtered1.map((product) => ({
       id: product._id,
       name: product.NOMBRE_PRODUCTO

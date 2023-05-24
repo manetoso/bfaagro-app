@@ -15,10 +15,19 @@ export function FormulationList({ handleClick }) {
         <>
           <li>
             <AsideButton
-              isActive={pathname.includes('formulas')}
-              label='Formulas'
+              isActive={pathname.includes('productos')}
+              label='Formulas Productos'
               onClick={() =>
-                handleClick('/app/produccion/formulas')
+                handleClick('/app/produccion/formulas/productos')
+              }
+            />
+          </li>
+          <li>
+            <AsideButton
+              isActive={pathname.includes('embalaje')}
+              label='Formulas Embalaje'
+              onClick={() =>
+                handleClick('/app/produccion/formulas/embalaje')
               }
             />
           </li>

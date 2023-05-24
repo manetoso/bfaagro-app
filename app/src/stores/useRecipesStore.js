@@ -1,9 +1,16 @@
-import { fetchProductsForDetails, createData, updateData, deleteData } from '@/services/recipesServices'
+import {
+  fetchProductsForDetails,
+  createData,
+  updateData,
+  deleteData
+} from '@/services/recipesServices'
 import { fetchUnityTypes } from '@/services/globalServices'
 import { create } from 'zustand'
 
 export const FIELDS_TYPES = {
-  RECIPES: 'recipesData'
+  RECIPES: 'recipesData',
+  PACKAGING: 'packagingData',
+  RECIPES_PACKAGING: 'recipes&packagingData'
 }
 
 export const useRecipesStore = create((set, get) => ({
@@ -73,9 +80,14 @@ export const useRecipesStore = create((set, get) => ({
       }))
     }
   },
-  fetchProductsForDetailsFromApi: async () => {
-    const { material, products } = await fetchProductsForDetails()
+  fetchProductsForDetailsFromApi: async ({ field }) => {
+    const { material, products } = await fetchProductsForDetails({ field })
     const newUnityTypes = await fetchUnityTypes()
-    set((state) => ({ ...state, detailProductsData: material, productsData: products, unityTypes: newUnityTypes }))
+    set((state) => ({
+      ...state,
+      detailProductsData: material,
+      productsData: products,
+      unityTypes: newUnityTypes
+    }))
   }
 }))

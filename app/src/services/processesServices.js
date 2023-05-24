@@ -71,6 +71,7 @@ export async function createData(data) {
       body: JSON.stringify(elementToSend)
     })
     const json = await resp.json()
+    console.log({json})
     if (!json.error) {
       const respFormated = convertToAppSchema(json.body)
       toast.success('Proceso creado con éxito')
@@ -78,6 +79,7 @@ export async function createData(data) {
     } else {
       toast.error(json.msg)
       const { errors, msg } = convertCreateErrorToAppSchema(json)
+      console.log({errors, msg})
       return { data: {}, error: { errors, msg } }
     }
   } catch (error) {
@@ -151,10 +153,10 @@ export async function fetchRawMaterial() {
      * @type {{body: ProductsBody[]}} - The Products Types response body.
      */
     const json = await resp.json()
-    const filtered1 = json.body.filter((x) =>
-      x.TIPO_PRODUCTO.some((y) => y.TIPO_PRODUCTO === 'MATERIA PRIMA')
-    )
-    const materials = filtered1.map((product) => ({
+    // const filtered1 = json.body.filter((x) =>
+    //   x.TIPO_PRODUCTO.some((y) => y.TIPO_PRODUCTO === 'MATERIA PRIMA')
+    // )
+    const materials = json.body.map((product) => ({
       id: product._id,
       name: product.NOMBRE_PRODUCTO,
       quantity: product.CANTIDAD,

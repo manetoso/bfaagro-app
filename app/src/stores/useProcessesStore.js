@@ -6,6 +6,7 @@ import {
   updateData,
   deleteData
 } from '@/services/processesServices'
+import { FIELDS_TYPES as RECIPES_FIELDS_TYPES } from '@/stores/useRecipesStore'
 import { fetchData as fetchRecipes } from '@/services/recipesServices'
 import {
   fetchWarehouses,
@@ -88,7 +89,8 @@ export const useProcessesStore = create((set, get) => ({
         set((state) => ({
           ...state,
           error: {
-            message: 'No hay suficiente materia prima para realizar el proceso, por favor sustituya los productos o agregue más materia prima *',
+            message:
+              'No hay suficiente producto para realizar el proceso, por favor sustituya los productos o agregue más *',
             status: true,
             details
           }
@@ -145,7 +147,9 @@ export const useProcessesStore = create((set, get) => ({
     set((state) => ({ ...state, error: { message: '', status: false } }))
   },
   fetchExtraData: async () => {
-    const recipes = await fetchRecipes()
+    const recipes = await fetchRecipes({
+      field: RECIPES_FIELDS_TYPES.RECIPES_PACKAGING
+    })
     const warehouses = await fetchWarehouses()
     const materials = await fetchRawMaterial()
     const processesStatus = await fetchProcessStatusTypes()
