@@ -56,7 +56,7 @@ export function ComboBox({
           <div className='relative w-full cursor-default overflow-hidden'>
             <Combobox.Input
               id={id}
-              className='input w-full max-w-none'
+              className='input w-full max-w-none pr-8'
               displayValue={(element) => element[dataDisplayAttribute]}
               onChange={localOnChange}
             />

@@ -41,12 +41,12 @@ export async function fetchData({ field }) {
       return data.filter((recipe) => {
         if (field === FIELDS_TYPES.RECIPES) {
           return recipe.product.type.find(
-            (type) => type.name === PRODUCT_TYPES.FINISHED_PRODUCT
+            (type) => type.name === PRODUCT_TYPES.SIMPLE_PRODUCT
           )
         }
         if (field === FIELDS_TYPES.PACKAGING) {
           return recipe.product.type.find(
-            (type) => type.name === PRODUCT_TYPES.PACKAGING_PRODUCT
+            (type) => type.name === PRODUCT_TYPES.FINISHED_PRODUCT
           )
         }
       })
@@ -146,15 +146,15 @@ export async function fetchProductsForDetails({ field }) {
      * @type {{body: ProductsBody[]}} - The Products Types response body.
      */
     const json = await resp.json()
+    console.log({field});
     const filtered1 = json.body.filter((x) =>
       x.TIPO_PRODUCTO.some((y) => {
         if (field === FIELDS_TYPES.RECIPES) {
-          return y.TIPO_PRODUCTO === PRODUCT_TYPES.RAW_MATERIAL
+          return y.TIPO_PRODUCTO === PRODUCT_TYPES.RAW_MATERIAL_PRODUCT
         }
         if (field === FIELDS_TYPES.PACKAGING) {
           return (
-            y.TIPO_PRODUCTO === PRODUCT_TYPES.FINISHED_PRODUCT ||
-            y.TIPO_PRODUCTO === PRODUCT_TYPES.PACKAGING_PRODUCT
+            y.TIPO_PRODUCTO !== PRODUCT_TYPES.RAW_MATERIAL_PRODUCT
           )
         }
       })
@@ -162,10 +162,10 @@ export async function fetchProductsForDetails({ field }) {
     const filtered2 = json.body.filter((x) =>
       x.TIPO_PRODUCTO.some((y) => {
         if (field === FIELDS_TYPES.RECIPES) {
-          return y.TIPO_PRODUCTO === PRODUCT_TYPES.FINISHED_PRODUCT
+          return y.TIPO_PRODUCTO === PRODUCT_TYPES.SIMPLE_PRODUCT
         }
         if (field === FIELDS_TYPES.PACKAGING) {
-          return y.TIPO_PRODUCTO === PRODUCT_TYPES.PACKAGING_PRODUCT
+          return y.TIPO_PRODUCTO === PRODUCT_TYPES.FINISHED_PRODUCT
         }
       })
     )

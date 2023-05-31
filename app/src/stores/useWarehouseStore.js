@@ -3,19 +3,25 @@ import {
   updateData,
   deleteData
 } from '@/services/warehouseServices'
-import { fetchProductTypes, fetchUnityTypes, fetchWarehouses } from '@/services/globalServices'
+import {
+  fetchProductTypes,
+  fetchUnityTypes,
+  fetchWarehouses
+} from '@/services/globalServices'
 import { create } from 'zustand'
 
 export const FIELDS_TYPES = {
   RAW_MATERIAL: 'rawMaterialData',
   PRODUCTS: 'productsData',
-  PACKAGING: 'packagingData'
+  PACKAGING: 'packagingData',
+  FINISHED_PRODUCTS: 'finishedProductsData'
 }
 
 export const useWarehouseStore = create((set, get) => ({
   rawMaterialData: [],
   productsData: [],
   packagingData: [],
+  finishedProductsData: [],
   warehouses: [],
   productTypes: [],
   unityTypes: [],
@@ -62,7 +68,9 @@ export const useWarehouseStore = create((set, get) => ({
       }
     ]
     if (element.idProductType2) {
-      const productType2 = productTypes.find((p) => p.id === element.idProductType2)
+      const productType2 = productTypes.find(
+        (p) => p.id === element.idProductType2
+      )
       delete element.idProductType2
       element.productType.push({
         id: productType2.value.id,
@@ -113,6 +121,10 @@ export const useWarehouseStore = create((set, get) => ({
   fetchProductTypesFromApi: async () => {
     const newProductTypes = await fetchProductTypes()
     const newUnityTypes = await fetchUnityTypes()
-    set((state) => ({ ...state, productTypes: newProductTypes, unityTypes: newUnityTypes }))
+    set((state) => ({
+      ...state,
+      productTypes: newProductTypes,
+      unityTypes: newUnityTypes
+    }))
   }
 }))
