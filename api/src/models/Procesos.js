@@ -56,6 +56,10 @@ const PROCESOS = new Schema(
           },
         }
       ]
+    },
+    CANTIDAD: {
+      type: Number,
+      default: 0
     }
   },
   { timestamps: true }
