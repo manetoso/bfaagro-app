@@ -15,6 +15,7 @@ const createProceso = async (req = request, res = response) => {
     const {
       ID_FORMULA,
       FORMULACION_DETALLE = [],
+      CANTIDAD
     } = req.body
     // Buscamos la Formula por el ID
     const formula = await FORMULAS.findById(ID_FORMULA)
@@ -37,7 +38,8 @@ const createProceso = async (req = request, res = response) => {
           NOMBRE_PRODUCTO: formula.PRODUCTO.NOMBRE_PRODUCTO
         },
         FORMULACION_DETALLE
-      }
+      },
+      CANTIDAD
     }
     const actionDB = await PROCESOS.create(process)
     return serverOkMessage(res, actionDB, 201)
@@ -109,7 +111,7 @@ const updateStatusProceso = async (req = request, res = response) => {
     if (proccess) {
       data.FORMULACION_DETALLE.forEach(async (product) => {
         const dbProduct = await PRODUCTOS.findById(product.ID_PRODUCTO)
-        dbProduct.CANTIDAD -= product.CANTIDAD
+        dbProduct.CANTIDAD = dbProduct.CANTIDAD - ( product.CANTIDAD * proccessDBUsed.CANTIDAD )
         await PRODUCTOS.findByIdAndUpdate(dbProduct._id, dbProduct, {
           new: true
         })

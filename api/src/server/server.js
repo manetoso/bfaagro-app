@@ -9,7 +9,9 @@ import {
   EmbalajesProducto,
   ProductosEmbalajados,
   TiposDocumentos,
-  Procesos
+  Procesos,
+  Usuarios,
+  Roles
 } from '../routes/index.routes.js'
 
 class Server {
@@ -25,7 +27,9 @@ class Server {
       embalajeProducto: '/api/embalajesproducto',
       productosEmbalajados: '/api/productosembalajados',
       tiposDocumentos: '/api/tiposdocumentos',
-      procesos: '/api/procesos'
+      procesos: '/api/procesos',
+      usuarios: '/api/usuarios',
+      roles: '/api/roles'
     }
 
     // Func to Connect DB
@@ -56,6 +60,8 @@ class Server {
     this.app.use(this.paths.productosEmbalajados, ProductosEmbalajados)
     this.app.use(this.paths.tiposDocumentos, TiposDocumentos)
     this.app.use(this.paths.procesos, Procesos)
+    this.app.use(this.paths.usuarios, Usuarios)
+    this.app.use(this.paths.roles, Roles)
   }
 
   listen() {

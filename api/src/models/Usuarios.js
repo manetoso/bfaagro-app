@@ -1,12 +1,6 @@
 import { Schema, model } from 'mongoose'
 
 const USUARIOS = new Schema({
-  ID_USUARIO: {
-    type: String,
-    unique: true,
-    index: true,
-    required: true
-  },
   USUARIO: {
     type: String,
     unique: true,
@@ -16,16 +10,25 @@ const USUARIOS = new Schema({
     type: String,
     required: true
   },
-  CORREO: {
-    type: String,
-    unique: true,
-    required: true
-  }
-})
+  ROLES: [
+    {
+      _id: false,
+      ID_ROL: {
+        type: Schema.Types.ObjectId,
+        ref: 'ROLES',
+        required: true
+      },
+      ROL: {
+        type: String,
+        required: true
+      }
+    }
+  ]
+}, { timestamps: true })
 
 USUARIOS.methods.toJSON = function () {
-  const { __v, ...usuarios } = this.toObject()
+  const { __v, CONTRASENA, ...usuarios } = this.toObject()
   return usuarios
 }
 
-export default model(USUARIOS, 'USUARIOS')
+export default model('USUARIOS', USUARIOS)
