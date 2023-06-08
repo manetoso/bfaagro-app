@@ -53,6 +53,7 @@ const STATUS_LABEL = {
 export function Form({ selectedRow, submitAction, modalId, field }) {
   const [isEmpty, setIsEmpty] = useState(false)
   const [recipeSelected, setRecipeSelected] = useState(null)
+  const [quantityInputValue, setQuantityInputValue] = useState(1)
   const {
     materials,
     recipes,
@@ -83,6 +84,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     if (e.target.value < minValue) {
       e.target.value = minValue
     }
+    setQuantityInputValue(e.target.value)
   }
 
   const handleSubmit = (e) => {
@@ -200,6 +202,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     // console.log({ formatedData })
     submitAction(formatedData, field)
   }
+  
 
   return (
     <>
@@ -232,7 +235,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                 />
               </div>
               <Input
-                defaultValue={1}
+                defaultValue={quantityInputValue}
                 id='quantity'
                 label='Cantidad de veces a realizar la formula'
                 name='quantity'
@@ -249,7 +252,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
               <p>
                 Materias Primas utilizadas para generar{' '}
                 <strong>{`${
-                  recipeSelected?.quantity * selectedRow?.quantity
+                  recipeSelected?.quantity * (selectedRow?.quantity || quantityInputValue > 0 && quantityInputValue)
                 } ${recipeSelected?.unity}`}</strong>{' '}
                 del producto <strong>{recipeSelected?.product.name}</strong>:
               </p>
@@ -260,7 +263,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                         <li key={index}>
                           {detail.name}
                           {', '}
-                          {detail.quantity * selectedRow.quantity}{' '}
+                          {detail.quantity * (selectedRow?.quantity || quantityInputValue > 0 && quantityInputValue)}{' '}
                           {recipeSelected?.unity}
                         </li>
                       )
@@ -270,7 +273,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                         <li key={index}>
                           {detail.name}
                           {', '}
-                          {detail.quantity * selectedRow.quantity}{' '}
+                          {detail.quantity * (selectedRow?.quantity || quantityInputValue > 0 && quantityInputValue)}{' '}
                           {recipeSelected?.unity}
                         </li>
                       )

@@ -85,7 +85,7 @@ const fixProductosByType = async (req = request, res = response) => {
     }
     await PRODUCTOS.updateMany(
       { 'TIPO_PRODUCTO.ID_TIPO_PRODUCTO': id },
-      { 'TIPO_PRODUCTO': { 'ID_TIPO_PRODUCTO': '647665a82294fafdce151119', 'TIPO_PRODUCTO': 'PRODUCTO' } },
+      { 'TIPO_PRODUCTO': { 'ID_TIPO_PRODUCTO': '64821e39e4a8e8a2779409b8', 'TIPO_PRODUCTO': 'PRODUCTO' } },
       // { 'TIPO_PRODUCTO': { 'ID_TIPO_PRODUCTO': '643e2ae605593b141f3ec205', 'TIPO_PRODUCTO': 'PRODUCTO TERMINADO' } },
       { multi: true }
     )
