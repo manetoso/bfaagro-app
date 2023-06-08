@@ -248,7 +248,9 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
             <div>
               <p>
                 Materias Primas utilizadas para generar{' '}
-                <strong>{`${recipeSelected?.quantity} ${recipeSelected?.unity}`}</strong>{' '}
+                <strong>{`${
+                  recipeSelected?.quantity * selectedRow?.quantity
+                } ${recipeSelected?.unity}`}</strong>{' '}
                 del producto <strong>{recipeSelected?.product.name}</strong>:
               </p>
               <ul className='mt-2 list-disc pl-6'>
@@ -258,7 +260,8 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                         <li key={index}>
                           {detail.name}
                           {', '}
-                          {detail.quantity} {recipeSelected?.unity}
+                          {detail.quantity * selectedRow.quantity}{' '}
+                          {recipeSelected?.unity}
                         </li>
                       )
                     })
@@ -267,7 +270,8 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                         <li key={index}>
                           {detail.name}
                           {', '}
-                          {detail.quantity} {recipeSelected?.unity}
+                          {detail.quantity * selectedRow.quantity}{' '}
+                          {recipeSelected?.unity}
                         </li>
                       )
                     })}
