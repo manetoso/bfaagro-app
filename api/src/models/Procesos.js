@@ -59,7 +59,7 @@ const PROCESOS = new Schema(
     },
     CANTIDAD: {
       type: Number,
-      default: 0
+      default: 1
     }
   },
   { timestamps: true }

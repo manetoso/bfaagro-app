@@ -15,7 +15,7 @@ const USUARIOS = new Schema({
       _id: false,
       ID_ROL: {
         type: Schema.Types.ObjectId,
-        ref: 'ROLES',
+        ref: 'TIPOS_DOCUMENTOS',
         required: true
       },
       ROL: {
