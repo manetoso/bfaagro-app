@@ -36,6 +36,13 @@ export function WarehouseList({ handleClick }) {
               onClick={() => handleClick('/app/produccion/almacenes/embalaje')}
             />
           </li>
+          <li>
+            <AsideButton
+              isActive={pathname.includes('prod-terminados')}
+              label='Productos Terminados'
+              onClick={() => handleClick('/app/produccion/almacenes/prod-terminados')}
+            />
+          </li>
         </>
       )}
     </>

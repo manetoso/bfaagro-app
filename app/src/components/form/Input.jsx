@@ -1,6 +1,6 @@
 /**
  *
- * @param {{defaultValue: string, disabled: boolean, id: string, isEmpty: boolean, label: string, name: string, onChange: () => void, placeholder: string, required: boolean, type: 'text' | 'number'}} param0
+ * @param {{defaultValue: string, disabled: boolean, id: string, isEmpty: boolean, label: string, name: string, onChange: () => void, placeholder: string, required: boolean, type: 'text' | 'number' | 'password'}} param0
  * @returns {JSX.Element} Input
  */
 export function Input({

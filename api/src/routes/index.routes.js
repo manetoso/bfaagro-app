@@ -5,6 +5,9 @@ import EmbalajesProducto from './EmbalajesProducto.routes.js'
 import ProductosEmbalajados from './ProductosEmbalajados.routes.js'
 import TiposDocumentos from './TiposDocumentos.routes.js'
 import Procesos from './Procesos.routes.js'
+import Usuarios from './Usuarios.routes.js'
+import Roles from './Roles.routes.js'
+
 export {
   AlmacenesRouter,
   FormulasRouter,
@@ -12,5 +15,7 @@ export {
   EmbalajesProducto,
   ProductosEmbalajados,
   TiposDocumentos,
-  Procesos
+  Procesos,
+  Usuarios,
+  Roles
 }

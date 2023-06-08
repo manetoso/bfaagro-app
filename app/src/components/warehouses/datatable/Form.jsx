@@ -160,7 +160,7 @@ export function Form({
             dataDisplayAttribute='productType'
             name='productType'
             defaultSelected={
-              selectedRow.productType && selectedRow.productType[1].name
+              selectedRow?.productType?.length > 1 && selectedRow.productType[1].name
             }
           />
         )}
