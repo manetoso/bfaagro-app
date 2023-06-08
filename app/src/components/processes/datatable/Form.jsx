@@ -4,6 +4,7 @@ import { useProcessesStore } from '@/stores'
 import { DetailInput } from './DetailInput'
 import { ComboBox } from '@/components/form/ComboBox'
 import { PROCESSES_STATUS } from '@/utils/consts'
+import { Input } from '@/components/form'
 
 const detailsIds = []
 const detailsOldMaterialId = []
@@ -73,6 +74,15 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
 
   const handleChangeProcessStatus = () => {
     changeProcessStatus(selectedRow.id, field)
+  }
+
+  const handleMinMaxValue = (e, minValue, maxValue) => {
+    if (e.target.value > maxValue) {
+      e.target.value = maxValue
+    }
+    if (e.target.value < minValue) {
+      e.target.value = minValue
+    }
   }
 
   const handleSubmit = (e) => {
@@ -184,8 +194,10 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
           name: data['recipeId[product][name]']
         },
         details: recipeDetails
-      }
+      },
+      quantity: data.quantity
     }
+    // console.log({ formatedData })
     submitAction(formatedData, field)
   }
 
@@ -207,7 +219,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
               }`}
             >
               <div>
-                <label className='text-black/50'>Formula:</label>
+                <label className='font-bold text-gray-600'>Formula:</label>
                 <ComboBox
                   data={recipes}
                   dataDisplayAttribute='recipeName'
@@ -219,18 +231,16 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                   getSelected={(item) => comboBoxOnChange(item)}
                 />
               </div>
-              {/* <div>
-                <label className='text-black/50'>Almacén:</label>
-                <ComboBox
-                  data={warehouses}
-                  dataDisplayAttribute='name'
-                  name='warehouseId'
-                  defaultSelected={
-                    Object.keys(selectedRow).length !== 0 &&
-                    selectedRow.warehouseName
-                  }
-                />
-              </div> */}
+              <Input
+                defaultValue={1}
+                id='quantity'
+                label='Cantidad de veces a realizar la formula'
+                name='quantity'
+                onChange={(e) => handleMinMaxValue(e, 0, 9999)}
+                placeholder='30'
+                required={false}
+                type='number'
+              />
             </div>
           </div>
           <div className='flex flex-1 flex-col gap-2'>
