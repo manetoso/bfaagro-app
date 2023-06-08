@@ -1,6 +1,7 @@
 import { USUARIOS } from '../models/Index.js'
 import { request, response } from 'express'
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
+import { generateJWT } from '../helpers/Index.js'
 import bcryptjs from 'bcryptjs'
 
 const createUsuario = async (req = request, res = response) => {
@@ -15,7 +16,7 @@ const createUsuario = async (req = request, res = response) => {
         return serverOkMessage(res, actionDB, 201)
     } catch (error) {
         console.log(error);
-        return serverErrorMessage(res,error)
+        return serverErrorMessage(res, error)
     }
 }
 
@@ -31,14 +32,18 @@ const login = async (req = request, res = response) => {
     try {
         const { USUARIO, CONTRASENA } = req.body
 
-        const actionDB = await USUARIOS.findOne({ USUARIO })
+        const actionDB = await USUARIOS.findOne({ USUARIO }).lean()
         if (actionDB) {
             const validPassword = bcryptjs.compareSync(CONTRASENA, actionDB.CONTRASENA)
-            if( !validPassword ){
+            if (!validPassword) {
                 return serverErrorMessage(res, '¡ERROR!. Revisa tus Credenciales!', 404)
+            } else {
+                // Generamos el jwt
+                const JWT = await generateJWT(actionDB._id)
+
+                const { USUARIO, ROLES } = actionDB
+                return serverOkMessage(res, {USUARIO, ROLES, JWT})
             }
-            
-            return serverOkMessage(res, actionDB)
         } else {
             return serverErrorMessage(res, '¡ERROR!. Revisa tus Credenciales!', 404)
         }

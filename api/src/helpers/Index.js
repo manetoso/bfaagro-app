@@ -1,3 +1,3 @@
 import { checkMinAmountProduct } from './CheckMinAmountProduct.js'
-
-export { checkMinAmountProduct }
+import {generateJWT} from './GenerateJwt.js'
+export { checkMinAmountProduct, generateJWT }

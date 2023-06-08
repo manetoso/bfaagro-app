@@ -21,8 +21,5 @@
     "prettier": "^2.8.4",
     "prettier-plugin-tailwindcss": "^0.2.4",
     "standard": "^17.0.0"
-  },
-  "dependencies": {
-    "bcryptjs": "^2.4.3"
   }
 }

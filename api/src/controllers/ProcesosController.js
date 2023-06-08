@@ -130,8 +130,9 @@ const updateStatusProceso = async (req = request, res = response) => {
       const formulaUsed = await FORMULAS.findById(proccessDBUsed.FORMULA.ID_FORMULA)
       // Consultamos el producto que se obtiene con la Formula, el id del producto ya viene embebido en el modelo de proceso
       let productMade = await PRODUCTOS.findById(formulaUsed.PRODUCTO.ID_PRODUCTO)
-      // Sumamos la cantidad que hace la formula al producto y guardamos
-      productMade.CANTIDAD += formulaUsed.CANTIDAD
+      // Sumamos la cantidad que hace la formula al producto y guardamos 
+      // Ahora la multiplicamos por la cantidad de veces que se hizo la formula
+      productMade.CANTIDAD += formulaUsed.CANTIDAD *  proccessDBUsed.CANTIDAD
       actionDB = await PRODUCTOS.findByIdAndUpdate(productMade._id,productMade)
     }
     actionDB = await PROCESOS.findByIdAndUpdate(idProccess, data, {
