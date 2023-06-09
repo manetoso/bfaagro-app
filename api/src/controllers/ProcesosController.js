@@ -15,6 +15,7 @@ const createProceso = async (req = request, res = response) => {
     const {
       ID_FORMULA,
       FORMULACION_DETALLE = [],
+      CANTIDAD
     } = req.body
     // Buscamos la Formula por el ID
     const formula = await FORMULAS.findById(ID_FORMULA)
@@ -37,7 +38,8 @@ const createProceso = async (req = request, res = response) => {
           NOMBRE_PRODUCTO: formula.PRODUCTO.NOMBRE_PRODUCTO
         },
         FORMULACION_DETALLE
-      }
+      },
+      CANTIDAD
     }
     const actionDB = await PROCESOS.create(process)
     return serverOkMessage(res, actionDB, 201)
@@ -109,7 +111,7 @@ const updateStatusProceso = async (req = request, res = response) => {
     if (proccess) {
       data.FORMULACION_DETALLE.forEach(async (product) => {
         const dbProduct = await PRODUCTOS.findById(product.ID_PRODUCTO)
-        dbProduct.CANTIDAD -= product.CANTIDAD
+        dbProduct.CANTIDAD = dbProduct.CANTIDAD - ( product.CANTIDAD * proccessDBUsed.CANTIDAD )
         await PRODUCTOS.findByIdAndUpdate(dbProduct._id, dbProduct, {
           new: true
         })
@@ -128,8 +130,9 @@ const updateStatusProceso = async (req = request, res = response) => {
       const formulaUsed = await FORMULAS.findById(proccessDBUsed.FORMULA.ID_FORMULA)
       // Consultamos el producto que se obtiene con la Formula, el id del producto ya viene embebido en el modelo de proceso
       let productMade = await PRODUCTOS.findById(formulaUsed.PRODUCTO.ID_PRODUCTO)
-      // Sumamos la cantidad que hace la formula al producto y guardamos
-      productMade.CANTIDAD += formulaUsed.CANTIDAD
+      // Sumamos la cantidad que hace la formula al producto y guardamos 
+      // Ahora la multiplicamos por la cantidad de veces que se hizo la formula
+      productMade.CANTIDAD += formulaUsed.CANTIDAD *  proccessDBUsed.CANTIDAD
       actionDB = await PRODUCTOS.findByIdAndUpdate(productMade._id,productMade)
     }
     actionDB = await PROCESOS.findByIdAndUpdate(idProccess, data, {

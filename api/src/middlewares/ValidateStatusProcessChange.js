@@ -30,17 +30,11 @@ const validateStatusChange = async (req = request, res = response, next) => {
 const calculateNextProccess = async (PROCESO) => {
   let nextProccessStatus = ''
   switch (PROCESO.ESTADO) {
-    case 'EN PROCESO':
-      nextProccessStatus = 'PENDIENTE DE VALIDAR'
-      break
-    case 'PENDIENTE DE VALIDAR':
-      nextProccessStatus = 'FINALIZADO'
-      break
     case 'FINALIZADO':
       nextProccessStatus = null
       break
     default:
-      nextProccessStatus = 'EN PROCESO'
+      nextProccessStatus = 'FINALIZADO'
       break
   }
   const nextProccess = await TIPOS_DOCUMENTOS.findOne({

@@ -4,6 +4,7 @@ import { useProcessesStore } from '@/stores'
 import { DetailInput } from './DetailInput'
 import { ComboBox } from '@/components/form/ComboBox'
 import { PROCESSES_STATUS } from '@/utils/consts'
+import { Input } from '@/components/form'
 
 const detailsIds = []
 const detailsOldMaterialId = []
@@ -40,9 +41,7 @@ const DETAILS = [
 ]
 
 const STATUS_LABEL = {
-  PENDIENTE: 'bg-stone-200 text-stone-500',
-  'EN PROCESO': 'bg-amber-100 text-amber-500',
-  'PENDIENTE DE VALIDAR': 'bg-sky-100 text-sky-500',
+  PENDIENTE: 'bg-amber-200 text-amber-500',
   FINALIZADO: 'bg-emerald-100 text-emerald-500'
 }
 
@@ -54,6 +53,7 @@ const STATUS_LABEL = {
 export function Form({ selectedRow, submitAction, modalId, field }) {
   const [isEmpty, setIsEmpty] = useState(false)
   const [recipeSelected, setRecipeSelected] = useState(null)
+  const [quantityInputValue, setQuantityInputValue] = useState(1)
   const {
     materials,
     recipes,
@@ -75,6 +75,16 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
 
   const handleChangeProcessStatus = () => {
     changeProcessStatus(selectedRow.id, field)
+  }
+
+  const handleMinMaxValue = (e, minValue, maxValue) => {
+    if (e.target.value > maxValue) {
+      e.target.value = maxValue
+    }
+    if (e.target.value < minValue) {
+      e.target.value = minValue
+    }
+    setQuantityInputValue(e.target.value)
   }
 
   const handleSubmit = (e) => {
@@ -186,10 +196,13 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
           name: data['recipeId[product][name]']
         },
         details: recipeDetails
-      }
+      },
+      quantity: data.quantity
     }
+    // console.log({ formatedData })
     submitAction(formatedData, field)
   }
+  
 
   return (
     <>
@@ -209,7 +222,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
               }`}
             >
               <div>
-                <label className='text-black/50'>Formula:</label>
+                <label className='font-bold text-gray-600'>Formula:</label>
                 <ComboBox
                   data={recipes}
                   dataDisplayAttribute='recipeName'
@@ -221,18 +234,16 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                   getSelected={(item) => comboBoxOnChange(item)}
                 />
               </div>
-              {/* <div>
-                <label className='text-black/50'>Almacén:</label>
-                <ComboBox
-                  data={warehouses}
-                  dataDisplayAttribute='name'
-                  name='warehouseId'
-                  defaultSelected={
-                    Object.keys(selectedRow).length !== 0 &&
-                    selectedRow.warehouseName
-                  }
-                />
-              </div> */}
+              <Input
+                defaultValue={quantityInputValue}
+                id='quantity'
+                label='Cantidad de veces a realizar la formula'
+                name='quantity'
+                onChange={(e) => handleMinMaxValue(e, 0, 9999)}
+                placeholder='30'
+                required={false}
+                type='number'
+              />
             </div>
           </div>
           <div className='flex flex-1 flex-col gap-2'>
@@ -240,7 +251,9 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
             <div>
               <p>
                 Materias Primas utilizadas para generar{' '}
-                <strong>{`${recipeSelected?.quantity} ${recipeSelected?.unity}`}</strong>{' '}
+                <strong>{`${
+                  recipeSelected?.quantity * (selectedRow?.quantity || quantityInputValue > 0 && quantityInputValue)
+                } ${recipeSelected?.unity}`}</strong>{' '}
                 del producto <strong>{recipeSelected?.product.name}</strong>:
               </p>
               <ul className='mt-2 list-disc pl-6'>
@@ -250,7 +263,8 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                         <li key={index}>
                           {detail.name}
                           {', '}
-                          {detail.quantity} {recipeSelected?.unity}
+                          {detail.quantity * (selectedRow?.quantity || quantityInputValue > 0 && quantityInputValue)}{' '}
+                          {recipeSelected?.unity}
                         </li>
                       )
                     })
@@ -259,7 +273,8 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                         <li key={index}>
                           {detail.name}
                           {', '}
-                          {detail.quantity} {recipeSelected?.unity}
+                          {detail.quantity * (selectedRow?.quantity || quantityInputValue > 0 && quantityInputValue)}{' '}
+                          {recipeSelected?.unity}
                         </li>
                       )
                     })}
@@ -306,8 +321,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
               {selectedRow.status?.value}
             </strong>
           </span>
-          {selectedRow.status?.value !==
-            PROCESSES_STATUS.FINISHED && (
+          {selectedRow.status?.value !== PROCESSES_STATUS.FINISHED && (
             <button
               type='submit'
               className='btn mt-2'

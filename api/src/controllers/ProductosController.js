@@ -71,10 +71,38 @@ const findProductosByType = async (req = request, res = response) => {
   }
 }
 
+const fixProductosByType = async (req = request, res = response) => {
+  try {
+    const id = req.params.idTipoProducto
+    let actionDB = await PRODUCTOS.find({
+      'TIPO_PRODUCTO.ID_TIPO_PRODUCTO': id
+    })
+    if (actionDB.length === 0) {
+      actionDB = {
+        ok: true,
+        msg: 'No hay productos del tipo solicitado'
+      }
+    }
+    await PRODUCTOS.updateMany(
+      { 'TIPO_PRODUCTO.ID_TIPO_PRODUCTO': id },
+      { 'TIPO_PRODUCTO': { 'ID_TIPO_PRODUCTO': '64821e39e4a8e8a2779409b8', 'TIPO_PRODUCTO': 'PRODUCTO' } },
+      // { 'TIPO_PRODUCTO': { 'ID_TIPO_PRODUCTO': '643e2ae605593b141f3ec205', 'TIPO_PRODUCTO': 'PRODUCTO TERMINADO' } },
+      { multi: true }
+    )
+    console.log(actionDB)
+    return serverOkMessage(res, actionDB)
+  } catch (error) {
+    console.log(error)
+    return serverErrorMessage(res)
+  }
+}
+
 export {
   createProducto,
   findProductos,
   deleteProducto,
   updateProducto,
-  findProductosByType
+  findProductosByType,
+  fixProductosByType
 }
+
