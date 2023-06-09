@@ -1,18 +1,20 @@
 import toast from 'react-hot-toast'
 
+import { bfaApi } from '@/api/bfaApi'
+
 /**
  *
  * @returns {{ id: string, name: string, quantity: number, minQuantity: number, unity: string, warehouse: { id: string, name: string }, productType: { id: number, name: string }[], idProductType: number, idWarehouse: string }[]} products data
  */
 export async function fetchData() {
   try {
-    const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/productos`)
+    const { data: resp } = await bfaApi.get('/productos')
     /**
      * The respponse body from the request.
      * @typedef { { _id: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, CANTIDAD_MINIMA: number, UNIDAD_MEDIDA: string, ALMACEN: { ID_ALMACEN: string, NOMBRE_ALMACEN: string }, TIPO_PRODUCTO: { ID_TIPO_PRODUCTO: number, TIPO_PRODUCTO: string }[] } } ProductsBody
      * @type {{body: ProductsBody[]}} - The Products Types response body.
      */
-    const json = await resp.json()
+    const json = resp
 
     const data = json.body.map((product) => ({
       id: product._id,
@@ -43,14 +45,11 @@ export async function fetchData() {
 export async function createData(data) {
   try {
     const elementToDBSchema = convertToDBSchema(data)
-    const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/productos`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(elementToDBSchema)
-    })
-    const json = await resp.json()
+    const { data: resp } = await bfaApi.post(
+      '/productos',
+      JSON.stringify(elementToDBSchema)
+    )
+    const json = resp
     const respFormated = convertToAppSchema(json.body)
     toast.success('Producto creado con éxito')
     return respFormated
@@ -68,17 +67,11 @@ export async function createData(data) {
 export async function updateData(data) {
   try {
     const elementToDBSchema = convertToDBSchema(data)
-    const resp = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/productos/${data.id}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(elementToDBSchema)
-      }
+    const { data: resp } = await bfaApi.put(
+      `/productos/${data.id}`,
+      JSON.stringify(elementToDBSchema)
     )
-    const json = await resp.json()
+    const json = resp
     const respFormated = convertToAppSchema(json.body)
     toast.success('Producto actualizado con éxito')
     return respFormated
@@ -95,13 +88,8 @@ export async function updateData(data) {
  */
 export async function deleteData(id) {
   try {
-    const resp = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/productos/${id}`,
-      {
-        method: 'DELETE'
-      }
-    )
-    const json = await resp.json()
+    const { data: resp } = await bfaApi.delete(`/productos/${id}`)
+    const json = resp
     toast.success('Producto eliminado con éxito')
     return json.error ? false : true
   } catch (error) {

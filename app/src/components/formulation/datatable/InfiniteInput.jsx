@@ -46,7 +46,6 @@ export function InfiniteInput({
                       name={`${fisrtInputName}[${i}]`}
                       onChange={(e) => {
                         const list = [...inputList]
-                        console.log(e.target.value)
                         list[i].inputs[j].value = e.target.value
                         setInputList(list)
                       }}
