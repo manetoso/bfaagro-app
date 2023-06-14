@@ -11,7 +11,10 @@ import {
   TiposDocumentos,
   Procesos,
   Usuarios,
-  Roles
+  Roles,
+  Proveedores,
+  Empresa,
+  OrdenesCompra
 } from '../routes/index.routes.js'
 
 class Server {
@@ -29,7 +32,10 @@ class Server {
       tiposDocumentos: '/api/tiposdocumentos',
       procesos: '/api/procesos',
       usuarios: '/api/usuarios',
-      roles: '/api/roles'
+      roles: '/api/roles',
+      proveedores: '/api/proveedores',
+      empresa: '/api/empresa',
+      ordenesCompra: '/api/ordenescompra',
     }
 
     // Func to Connect DB
@@ -62,6 +68,9 @@ class Server {
     this.app.use(this.paths.procesos, Procesos)
     this.app.use(this.paths.usuarios, Usuarios)
     this.app.use(this.paths.roles, Roles)
+    this.app.use(this.paths.proveedores, Proveedores)
+    this.app.use(this.paths.empresa, Empresa)
+    this.app.use(this.paths.ordenesCompra, OrdenesCompra)
   }
 
   listen() {

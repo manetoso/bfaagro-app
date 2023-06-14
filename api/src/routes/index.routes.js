@@ -7,6 +7,9 @@ import TiposDocumentos from './TiposDocumentos.routes.js'
 import Procesos from './Procesos.routes.js'
 import Usuarios from './Usuarios.routes.js'
 import Roles from './Roles.routes.js'
+import Proveedores from './Proveedores.routes.js'
+import Empresa from './Empresa.routes.js'
+import OrdenesCompra from './OrdenesCompra.routes.js'
 
 export {
   AlmacenesRouter,
@@ -17,5 +20,8 @@ export {
   TiposDocumentos,
   Procesos,
   Usuarios,
-  Roles
+  Roles,
+  Proveedores,
+  Empresa,
+  OrdenesCompra
 }
