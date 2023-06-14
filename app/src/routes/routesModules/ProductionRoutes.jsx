@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 
 import { Formulation, Processes, Production, Warehouses } from '@/pages'
 import { ProtectedRoute } from '@/components/layout'
-import { FinishedProducts, Packaging, Products, RawMaterial } from '@/components/warehouses'
+import { FinishedProducts, Packaging, Products, RawMaterial, Receipt } from '@/components/warehouses'
 
 export function ProductionRoutes({ permissions, roles }) {
   return (
@@ -69,6 +69,17 @@ export function ProductionRoutes({ permissions, roles }) {
               redirectPath='/app/produccion/inicio'
             >
               <FinishedProducts />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='recibo-mercancia'
+          element={
+            <ProtectedRoute
+              isAllow={permissions.includes('write') && roles.includes('admin')}
+              redirectPath='/app/produccion/inicio'
+            >
+              <Receipt />
             </ProtectedRoute>
           }
         />

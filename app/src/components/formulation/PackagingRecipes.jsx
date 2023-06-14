@@ -1,4 +1,5 @@
 import { RecipesDatatable } from './datatable'
+import { Loader } from '@/components/layout'
 
 import { useRecipesDatatable } from '@/hooks/useRecipesDatatable'
 import { FIELDS_TYPES } from '@/stores/useRecipesStore'
@@ -14,8 +15,10 @@ export function PackagingRecipes() {
     recipesData,
     toggleAddModal,
     toggleAlert,
-    toggleEditModal
+    toggleEditModal,
+    isLoading
   } = useRecipesDatatable({ field: FIELDS_TYPES.PACKAGING })
+  if (isLoading) return <Loader />
   return (
     <>
       <RecipesDatatable

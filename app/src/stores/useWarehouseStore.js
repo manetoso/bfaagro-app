@@ -14,7 +14,8 @@ export const FIELDS_TYPES = {
   RAW_MATERIAL: 'rawMaterialData',
   PRODUCTS: 'productsData',
   PACKAGING: 'packagingData',
-  FINISHED_PRODUCTS: 'finishedProductsData'
+  FINISHED_PRODUCTS: 'finishedProductsData',
+  ALL: 'allProducts'
 }
 
 export const useWarehouseStore = create((set, get) => ({
@@ -22,6 +23,7 @@ export const useWarehouseStore = create((set, get) => ({
   productsData: [],
   packagingData: [],
   finishedProductsData: [],
+  allProducts: [],
   warehouses: [],
   productTypes: [],
   unityTypes: [],

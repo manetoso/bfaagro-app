@@ -23,6 +23,7 @@ export const useWareHouseDatatable = ({ field }) => {
     productsData,
     packagingData,
     finishedProductsData,
+    allProducts,
     editModal,
     alert,
     selected,
@@ -37,6 +38,7 @@ export const useWareHouseDatatable = ({ field }) => {
   } = useWarehouseStore()
   const [warehouse, setWarehouse] = useState({})
   const [productType, setProductType] = useState({})
+  const [isLoading, setIsLoading] = useState(true)
 
   /**
    * @description PREPARING THE DATA TO BE RENDERED IN THE TABLE, FILTERING BY THE SELECTED FIELD
@@ -67,6 +69,10 @@ export const useWareHouseDatatable = ({ field }) => {
     [FIELDS_TYPES.FINISHED_PRODUCTS]: async (data) => {
       console.warn('finished products')
       return prepareDataByfield(data, PRODUCT_TYPES.FINISHED_PRODUCT)
+    },
+    [FIELDS_TYPES.ALL]: async (data) => {
+      console.warn('all products')
+      return data
     }
   }
 
@@ -133,6 +139,7 @@ export const useWareHouseDatatable = ({ field }) => {
     await fetchProductTypesFromApi()
     const apiData = await fetchData()
     const data = await FETCH_DATA_BY_FIELD[localField](apiData)
+    setIsLoading(false)
     setDataFilds(data, localField)
     return data
   }, [])
@@ -148,6 +155,7 @@ export const useWareHouseDatatable = ({ field }) => {
     productsData,
     packagingData,
     finishedProductsData,
+    allProducts,
     warehouse,
     productType,
     editModal,
@@ -158,6 +166,7 @@ export const useWareHouseDatatable = ({ field }) => {
     toggleAlert,
     addOrEditElement,
     removeElement,
-    columns
+    columns,
+    isLoading
   }
 }
