@@ -2,16 +2,13 @@ import { useEffect, useMemo } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
 
 import { DropdownMenu } from '@/components/datatable'
-// import { DropdownMenu } from '@/components/processes/datatable'
 import { useProcessesStore, FIELDS_TYPES } from '@/stores/useProcessesStore'
 import { fetchData } from '@/services/processesServices'
 
 const DEFAULT_FIELD = FIELDS_TYPES.PROCESSES
 
 const STATUS_LABEL = {
-  PENDIENTE: 'bg-stone-200 text-stone-500',
-  'EN PROCESO': 'bg-amber-100 text-amber-500',
-  'PENDIENTE DE VALIDAR': 'bg-sky-100 text-sky-500',
+  PENDIENTE: 'bg-amber-200 text-amber-500',
   FINALIZADO: 'bg-emerald-100 text-emerald-500'
 }
 
@@ -86,7 +83,7 @@ export const useProcessesDatatable = ({ field }) => {
         header: 'Fecha de creación',
         cell: (info) => info.getValue(),
         footer: (props) => props.column.id
-      }),
+      })
     ],
     []
   )

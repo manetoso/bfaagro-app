@@ -2,14 +2,14 @@ import toast from 'react-hot-toast'
 
 /**
  *
- * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, warehouse: { id: string, name: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string, unity: string }[] }, createdAt: string, createdAtFormatted: string }} - The processes.
+ * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, warehouse: { id: string, name: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string, unity: string }[] }, quantity: number, createdAt: string, createdAtFormatted: string }} - The processes.
  */
 export async function fetchData() {
   try {
     const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/procesos`)
     /**
      * The respponse body from the request.
-     * @typedef { { _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, createdAt: string, updatedAt: string } ProcessesBody
+     * @typedef { { _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, CANTIDAD: number, createdAt: string, updatedAt: string } ProcessesBody
      * @type {{body: ProcessesBody[]}} - The Recipes response body.
      */
     const json = await resp.json()
@@ -35,6 +35,7 @@ export async function fetchData() {
           unity: detail.UNIDAD_MEDIDA
         }))
       },
+      quantity: process.CANTIDAD,
       createdAt: process.createdAt,
       createdAtFormatted: new Date(process.createdAt).toLocaleDateString(
         'es-MX',
@@ -61,7 +62,8 @@ export async function createData(data) {
     const elementToDBSchema = convertToDBSchema(data)
     const elementToSend = {
       ID_FORMULA: elementToDBSchema.FORMULA.ID_FORMULA,
-      FORMULACION_DETALLE: elementToDBSchema.FORMULA.FORMULACION_DETALLE
+      FORMULACION_DETALLE: elementToDBSchema.FORMULA.FORMULACION_DETALLE,
+      CANTIDAD: elementToDBSchema.CANTIDAD
     }
     const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/procesos`, {
       method: 'POST',
@@ -78,6 +80,7 @@ export async function createData(data) {
     } else {
       toast.error(json.msg)
       const { errors, msg } = convertCreateErrorToAppSchema(json)
+      console.log({errors, msg})
       return { data: {}, error: { errors, msg } }
     }
   } catch (error) {
@@ -151,10 +154,10 @@ export async function fetchRawMaterial() {
      * @type {{body: ProductsBody[]}} - The Products Types response body.
      */
     const json = await resp.json()
-    const filtered1 = json.body.filter((x) =>
-      x.TIPO_PRODUCTO.some((y) => y.TIPO_PRODUCTO === 'MATERIA PRIMA')
-    )
-    const materials = filtered1.map((product) => ({
+    // const filtered1 = json.body.filter((x) =>
+    //   x.TIPO_PRODUCTO.some((y) => y.TIPO_PRODUCTO === 'MATERIA PRIMA')
+    // )
+    const materials = json.body.map((product) => ({
       id: product._id,
       name: product.NOMBRE_PRODUCTO,
       quantity: product.CANTIDAD,
@@ -168,8 +171,8 @@ export async function fetchRawMaterial() {
 
 /**
  *
- * @param {{ recipeId: string, status: { id: string, value: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: number, unity: string }[] } }} data
- * @returns {{ PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] } }} - The recipe to DB Schema.
+ * @param {{ recipeId: string, status: { id: string, value: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, unity: string }[] }, quantity: number }} data
+ * @returns {{ PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, CANTIDAD: number }} - The recipe to DB Schema.
  */
 export function convertToDBSchema(data) {
   try {
@@ -191,7 +194,8 @@ export function convertToDBSchema(data) {
           CANTIDAD: detail.quantity,
           UNIDAD_MEDIDA: detail.unity
         }))
-      }
+      },
+      CANTIDAD: data.quantity
     }
     return dbSchemaLike
   } catch (error) {
@@ -201,8 +205,8 @@ export function convertToDBSchema(data) {
 
 /**
  *
- * @param {{ _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, createdAt: string, updatedAt: string }} data
- * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string, unity: string }[] }, createdAt: string, createdAtFormatted: string }} - The recipe to App Schema.
+ * @param {{ _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, CANTIDAD: number, createdAt: string, updatedAt: string }} data
+ * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string, unity: string }[] }, qunatity: number, createdAt: string, createdAtFormatted: string }} - The recipe to App Schema.
  */
 export function convertToAppSchema(data) {
   try {
@@ -228,6 +232,7 @@ export function convertToAppSchema(data) {
           unity: detail.UNIDAD_MEDIDA
         }))
       },
+      quantity: data.CANTIDAD,
       createdAt: data.createdAt,
       createdAtFormatted: new Date(data.createdAt).toLocaleDateString('es-MX', {
         day: '2-digit',
@@ -243,11 +248,10 @@ export function convertToAppSchema(data) {
 
 /**
  *
- * @param {{actionDB: { _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, createdAt: string, updatedAt: string }, checksMinAmountProducts: { CANTIDAD: number, CANTIDAD_MINIMA: number, DIFERENCIA: number, PRODUCTO: string }[] }} data
- * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string, unity: string }[] }, createdAt: string, createdAtFormatted: string }} - The recipe to App Schema.
+ * @param {{actionDB: { _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, CANTIDAD: number, createdAt: string, updatedAt: string }, checksMinAmountProducts: { CANTIDAD: number, CANTIDAD_MINIMA: number, DIFERENCIA: number, PRODUCTO: string }[] }} data
+ * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string, unity: string }[] }, quantity: number, createdAt: string, createdAtFormatted: string }} - The recipe to App Schema.
  */
 export function convertToAppSchemaUpdate(data) {
-  console.log({ data })
   try {
     const appSchemaLike = {
       id: data.actionDB._id,
@@ -271,6 +275,7 @@ export function convertToAppSchemaUpdate(data) {
           unity: detail.UNIDAD_MEDIDA
         }))
       },
+      quantity: data.actionDB.CANTIDAD,
       createdAt: data.actionDB.createdAt,
       createdAtFormatted: new Date(data.actionDB.createdAt).toLocaleDateString(
         'es-MX',

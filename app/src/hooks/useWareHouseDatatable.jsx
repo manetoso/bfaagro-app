@@ -7,6 +7,7 @@ import { formatNumberToString } from '@/utils/utils'
 
 import { fetchData } from '@/services/warehouseServices'
 import { fetchProductTypes, fetchWarehouses } from '@/services/globalServices'
+import { PRODUCT_TYPES } from '@/utils/consts'
 
 const DEFAULT_FIELD = FIELDS_TYPES.RAW_MATERIAL
 
@@ -21,6 +22,7 @@ export const useWareHouseDatatable = ({ field }) => {
     rawMaterialData,
     productsData,
     packagingData,
+    finishedProductsData,
     editModal,
     alert,
     selected,
@@ -50,32 +52,21 @@ export const useWareHouseDatatable = ({ field }) => {
   }
 
   const FETCH_DATA_BY_FIELD = {
-    /**
-     *
-     * @param { { id: string; name: string; quantity: number; unity: string; warehouse: { id: string; name: string; }; productType: { id: number; name: string; }[]; idProductType: number; idWarehouse: string }[] } data
-     * @returns
-     */
     [FIELDS_TYPES.RAW_MATERIAL]: async (data) => {
       console.warn('rawMaterial')
-      return prepareDataByfield(data, 'MATERIA PRIMA')
+      return prepareDataByfield(data, PRODUCT_TYPES.RAW_MATERIAL_PRODUCT)
     },
-    /**
-     *
-     * @param { { id: string; name: string; quantity: number; unity: string; warehouse: { id: string; name: string; }; productType: { id: number; name: string; }[]; idProductType: number; idWarehouse: string }[] } data
-     * @returns
-     */
     [FIELDS_TYPES.PRODUCTS]: async (data) => {
       console.warn('products')
-      return prepareDataByfield(data, 'PRODUCTO TERMINADO')
+      return prepareDataByfield(data, PRODUCT_TYPES.SIMPLE_PRODUCT)
     },
-    /**
-     *
-     * @param { { id: string; name: string; quantity: number; unity: string; warehouse: { id: string; name: string; }; productType: { id: number; name: string; }[]; idProductType: number; idWarehouse: string }[] } data
-     * @returns
-     */
     [FIELDS_TYPES.PACKAGING]: async (data) => {
       console.warn('packaging')
-      return prepareDataByfield(data, 'EMBALAJES')
+      return prepareDataByfield(data, PRODUCT_TYPES.PACKAGING_PRODUCT)
+    },
+    [FIELDS_TYPES.FINISHED_PRODUCTS]: async (data) => {
+      console.warn('finished products')
+      return prepareDataByfield(data, PRODUCT_TYPES.FINISHED_PRODUCT)
     }
   }
 
@@ -156,6 +147,7 @@ export const useWareHouseDatatable = ({ field }) => {
     rawMaterialData,
     productsData,
     packagingData,
+    finishedProductsData,
     warehouse,
     productType,
     editModal,
