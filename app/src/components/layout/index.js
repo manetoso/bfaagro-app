@@ -1,3 +1,4 @@
 export { Layout } from './Layout'
-export { ProtectedRoute } from './ProtectedRoute'
 export { Loader } from './Loader'
+export { PageTransition } from './PageTransition'
+export { ProtectedRoute } from './ProtectedRoute'

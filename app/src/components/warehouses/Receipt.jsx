@@ -20,7 +20,6 @@ export function Receipt() {
 
   const handleConfirm = () => {
     togglCconfirmModalIsOpen()
-    console.log({ receiptData })
     toast.success('Productos registrados')
   }
 

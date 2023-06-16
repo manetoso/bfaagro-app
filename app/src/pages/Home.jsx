@@ -4,7 +4,7 @@ import { Card, CardsContainer } from '@/components/navigationCard'
 import Compras from '@/assets/compras2.webp'
 import Ventas from '@/assets/ventas.webp'
 import Production from '@/assets/production.webp'
-import Usuarios from '@/assets/usuarios.webp'
+import Ajustes from '@/assets/ajustes.webp'
 
 export const routesList = [
   {
@@ -29,11 +29,11 @@ export const routesList = [
     style: { backgroundColor: '#b4b1a9', color: '#363636' }
   },
   {
-    title: 'Usuarios',
-    description: 'Administra usuarios',
+    title: 'Ajustes',
+    description: 'Ajustes de la aplicación',
     to: '/app/usuarios/inicio',
-    imgURL: Usuarios,
-    style: { backgroundColor: '#423a3d', color: '#e2e2e2' }
+    imgURL: Ajustes,
+    style: { backgroundColor: '#252526', color: '#e2e2e2' }
   }
 ]
 
