@@ -81,7 +81,7 @@ export function ComboBox({
                   <Combobox.Option
                     key={element.id}
                     className={({ active, selected }) =>
-                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                      `relative cursor-default select-none py-2 pl-2 pr-4 ${
                         active ? 'bg-black text-white' : 'text-black'
                       } ${selected ? 'bg-black text-white' : 'text-black'}`
                     }
