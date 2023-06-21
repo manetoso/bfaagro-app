@@ -52,10 +52,10 @@ const LISTAS_PRECIOS = new Schema({
     type: Number,
     required: true
   }
-})
+}, { timestamps: true })
 
 LISTAS_PRECIOS.methods.toJSON = function () {
-  const { __v, ...listasPrecios } = this.toObject()
+  const { __v, createdAt, updatedAt, ...listasPrecios } = this.toObject()
   return listasPrecios
 }
 

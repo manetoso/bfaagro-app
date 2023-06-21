@@ -27,7 +27,7 @@ const USUARIOS = new Schema({
 }, { timestamps: true })
 
 USUARIOS.methods.toJSON = function () {
-  const { __v, CONTRASENA, ...usuarios } = this.toObject()
+  const { __v, createdAt, updatedAt, CONTRASENA, ...usuarios } = this.toObject()
   return usuarios
 }
 

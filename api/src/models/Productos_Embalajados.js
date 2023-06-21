@@ -45,10 +45,10 @@ const PRODUCTOS_EMBALAJADOS = new Schema({
     type: Number,
     required: true
   }
-})
+}, { timestamps: true })
 
 PRODUCTOS_EMBALAJADOS.methods.toJSON = function () {
-  const { __v, ...productosEmbalajados } = this.toObject()
+  const { __v, createdAt, updatedAt, ...productosEmbalajados } = this.toObject()
   return productosEmbalajados
 }
 
