@@ -10,7 +10,7 @@
 }
 
 input:checked ~ #aside {
-  border-right-color: #363636;
+  border-right-color: black;
   border-right-width: 4px;
   display: flex;
   flex-direction: column;

@@ -18,12 +18,12 @@ export function Card({
   }
   return (
     <li
-      className='group cursor-pointer rounded-md hover:shadow-lg transition-all duration-200 ease-out'
+      className='group cursor-pointer rounded-md border-2 border-[#363636] transition-all duration-200 ease-out hover:shadow-lg'
       style={style}
       onClick={handleClick}
     >
       <img
-        className='h-40 w-full transform overflow-hidden rounded-t-md bg-gray-100 object-cover object-center shadow-md transition-all duration-200 ease-out group-hover:rotate-1 group-hover:scale-105 group-hover:shadow-lg md:h-52 rounded-md'
+        className='h-40 w-full scale-[1.01] transform overflow-hidden rounded-md rounded-t-md border-2 border-[#363636] bg-gray-100 object-cover object-center shadow-md transition-all duration-200 ease-out group-hover:rotate-1 group-hover:scale-105 group-hover:shadow-lg md:h-52'
         style={{ aspectRatio: 16 / 9 }}
         src={imgURL}
         alt='card thumbnail'

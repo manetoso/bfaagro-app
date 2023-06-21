@@ -8,7 +8,7 @@ import { ChevronBack, ChevronRight } from '🚀'
  */
 export function BottomControls({ table }) {
   return (
-    <div className='flex w-full items-center justify-end gap-2 overflow-x-auto bg-white py-2 px-2 md:py-4 md:px-6'>
+    <div className='flex w-full items-center justify-end gap-2 overflow-x-auto py-2 px-2 md:py-4 md:px-6'>
       <button
         className={`btn p-1 ${
           !table.getCanPreviousPage() &&

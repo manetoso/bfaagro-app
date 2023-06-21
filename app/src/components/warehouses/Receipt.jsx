@@ -75,6 +75,7 @@ export function Receipt() {
         quantity: selectedProductsQuantity[index]
       })
     })
+    console.log({ result })
     setReceiptData(result)
   }
   return (
