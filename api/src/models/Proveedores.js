@@ -23,10 +23,10 @@ const PROVEEDORES = new Schema({
       required: true
     }
   }
-})
+}, { timestamps: true })
 
 PROVEEDORES.methods.toJSON = function () {
-  const { __v, ...proveedores } = this.toObject()
+  const { __v, createdAt, updatedAt, ...proveedores } = this.toObject()
   return proveedores
 }
 

@@ -58,10 +58,10 @@ const ORDENES_COMPRAS = new Schema({
         type: Number,
         required: true
     }
-})
+}, { timestamps: true })
 
 ORDENES_COMPRAS.methods.toJSON = function () {
-    const { __v, ...ordenesCompras } = this.toObject()
+    const { __v, createdAt, updatedAt, ...ordenesCompras } = this.toObject()
     return ordenesCompras
 }
 

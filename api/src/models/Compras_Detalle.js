@@ -34,10 +34,10 @@ const COMPRAS_DETALLE = new Schema({
     type: Number,
     required: true
   }
-})
+},{ timestamps: true })
 
 COMPRAS_DETALLE.methods.toJSON = function () {
-  const { __v, ...comprasDetalle } = this.toObject()
+  const { __v, createdAt, updatedAt, ...comprasDetalle } = this.toObject()
   return comprasDetalle
 }
 

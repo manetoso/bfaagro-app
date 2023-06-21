@@ -12,7 +12,7 @@ const EMPRESAS = new Schema({
 })
 
 EMPRESAS.methods.toJSON = function () {
-  const { __v, ...empresa } = this.toObject()
+  const { __v, createdAt, updatedAt, ...empresa } = this.toObject()
   return empresa
 }
 

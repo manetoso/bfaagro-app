@@ -31,10 +31,10 @@ const NOTIFICACIONES = new Schema({
     type: Number,
     required: true
   }
-})
+},{ timestamps: true })
 
 NOTIFICACIONES.methods.toJSON = function () {
-  const { __v, ...notificaciones } = this.toObject()
+  const { __v, createdAt, updatedAt, ...notificaciones } = this.toObject()
   return notificaciones
 }
 export default model('NOTIFICACIONES', NOTIFICACIONES)
