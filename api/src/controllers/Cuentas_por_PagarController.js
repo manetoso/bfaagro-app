@@ -1,6 +1,7 @@
 import Cuentas_por_Pagar from '../models/Cuentas_por_Pagar.js'
 import { request, response } from 'express'
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
+import { generateNewFolio } from '../helpers/FoliosGenerator.js'
 
 const createCuentaxPagar = async (req = request, res = response) => {
   try {
@@ -45,5 +46,30 @@ const deleteCuentaxPagar = async (req = request, res = response) => {
     return serverErrorMessage(res)
   }
 }
+const createCuentaxPagarByOrdenCompra = async (ordenCompra = {}) => {
+  try {
+    const { _id, PROVEEDOR, FECHA, FOLIO, TOTAL } = ordenCompra
 
-export { createCuentaxPagar, findCuentasxPagar, deleteCuentaxPagar, updateCuentaxPagar }
+    const FOLIO_CXP = await generateNewFolio('CXP')
+
+    const cuentasxPagar = {
+      'ID_ORDEN_COMPRA': _id,
+      'PROVEEDOR': {
+        'ID_PROVEEDOR': PROVEEDOR.ID_PROVEEDOR,
+        'NOMBRE_EMPRESA': PROVEEDOR.NOMBRE_EMPRESA,
+        'AGENTE': PROVEEDOR.AGENTE
+      },
+      'FECHA_EMISION': FECHA,
+      'FOLIO_ORDEN': FOLIO,
+      FOLIO_CXP,
+      'CANTIDAD': TOTAL,
+      'SALDO': TOTAL,
+    }
+    await Cuentas_por_Pagar.create(cuentasxPagar)
+    return true
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export { createCuentaxPagar, findCuentasxPagar, deleteCuentaxPagar, updateCuentaxPagar, createCuentaxPagarByOrdenCompra }

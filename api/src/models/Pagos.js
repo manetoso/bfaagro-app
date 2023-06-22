@@ -11,7 +11,7 @@ const PAGOS = new Schema({
   },
   FECHA_PAGO: {
     type: Date,
-    default: Date.now().toString,
+    default: Date.now(),
     required: true
   },
   CANTIDAD_PAGADA: {
