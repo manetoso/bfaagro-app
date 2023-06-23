@@ -6,6 +6,7 @@ import {
 import {
   fetchProductTypes,
   fetchUnityTypes,
+  fetchMovementTypes,
   fetchWarehouses
 } from '@/services/globalServices'
 import { create } from 'zustand'
@@ -27,6 +28,7 @@ export const useWarehouseStore = create((set, get) => ({
   warehouses: [],
   productTypes: [],
   unityTypes: [],
+  movementTypes: [],
   editModal: false,
   alert: false,
   selected: {},
@@ -123,10 +125,12 @@ export const useWarehouseStore = create((set, get) => ({
   fetchProductTypesFromApi: async () => {
     const newProductTypes = await fetchProductTypes()
     const newUnityTypes = await fetchUnityTypes()
+    const newMovementTypes = await fetchMovementTypes()
     set((state) => ({
       ...state,
       productTypes: newProductTypes,
-      unityTypes: newUnityTypes
+      unityTypes: newUnityTypes,
+      movementTypes: newMovementTypes
     }))
   }
 }))

@@ -2,35 +2,38 @@ import { useState } from 'react'
 import toast from 'react-hot-toast'
 
 import { useWareHouseDatatable } from '@/hooks/useWareHouseDatatable'
-import { FIELDS_TYPES } from '@/stores/useWarehouseStore'
+import { useWarehouseStore, FIELDS_TYPES } from '@/stores/useWarehouseStore'
+import { productReceipt } from '@/services/warehouseServices'
 
 import { CustomToast } from '@/components/toast'
 import { ConfirmationAlert } from '@/components/alert/ConfirmationAlert'
+import { ComboBox } from '@/components/form'
 import { Loader } from '@/components/layout'
 
 import { InfiniteInput } from '../formulation/datatable/InfiniteInput'
 
 export function Receipt() {
+  const { movementTypes } = useWarehouseStore()
   const { allProducts } = useWareHouseDatatable({ field: FIELDS_TYPES.ALL })
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false)
   const [receiptData, setReceiptData] = useState()
 
-  const togglCconfirmModalIsOpen = () =>
+  const togglCconfirmModalIsOpen = () => {
     setConfirmModalIsOpen(!confirmModalIsOpen)
-
+  }
+  
   const handleConfirm = () => {
     togglCconfirmModalIsOpen()
-    toast.success('Productos registrados')
+    productReceipt(receiptData)
   }
 
   const handleCancel = () => {
     togglCconfirmModalIsOpen()
-    toast.error('No se registraron los productos')
+    toast.success('Registro de productos cancelado')
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    togglCconfirmModalIsOpen()
 
     const form = e.target
     const formData = new FormData(form)
@@ -70,13 +73,23 @@ export function Receipt() {
     // CREATING THE RESULT ARRAY
     selectedProductsId.forEach((id, index) => {
       result.push({
-        id: id,
-        name: selectedProductsName[index],
-        quantity: selectedProductsQuantity[index]
+        productId: id,
+        productName: selectedProductsName[index],
+        productQuantity: selectedProductsQuantity[index]
       })
     })
-    console.log({ result })
-    setReceiptData(result)
+
+    const formatedData = {
+      movementType: {
+        movementTypeId: data['movementType[id]'],
+        value: data['movementType[value]']
+      },
+      products: result
+    }
+
+    // console.log({ formatedData })
+    togglCconfirmModalIsOpen()
+    setReceiptData(formatedData)
   }
   return (
     <>
@@ -98,7 +111,15 @@ export function Receipt() {
         </h3>
         <form className='min-h-[50vh]' onSubmit={handleSubmit}>
           {allProducts.length > 0 ? (
-            <>
+            <div className='flex flex-1 flex-col gap-2'>
+              <ComboBox
+                data={movementTypes}
+                dataDisplayAttribute='value'
+                label='Tipo de Movimiento'
+                id='movementType'
+                name='movementType'
+              />
+              <label className='font-bold text-gray-600'>Productos</label>
               <InfiniteInput
                 data={allProducts}
                 placeholder='Cantidad'
@@ -108,7 +129,7 @@ export function Receipt() {
               <button type='submit' className='btn mt-2'>
                 Registrar Productos
               </button>
-            </>
+            </div>
           ) : (
             <Loader />
           )}
