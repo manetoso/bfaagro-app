@@ -16,7 +16,7 @@ const createRol = async (req = request, res = response) => {
 
 const findRoles = async (req = request, res = response) => {
     try {
-        const actionDB = await ROLES.find()
+        const actionDB = await ROLES.find().sort({ createdAt: -1 })
         return serverOkMessage(res, actionDB)
     } catch (error) {
         return serverErrorMessage(res)

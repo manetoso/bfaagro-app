@@ -5,19 +5,21 @@ import { generateNewFolio } from '../helpers/FoliosGenerator.js'
 
 const createCuentaxPagar = async (req = request, res = response) => {
   try {
-    const { ID_PROVEEDOR, PROVEEDOR, FECHA_EMISION, FOLIO, CANTIDAD, FECHA_PAGO, CANTIDAD_PAGADA, SALDO, OBSERVACIONES } = req.body
-    const cuentasxPagar = { ID_PROVEEDOR, PROVEEDOR, FECHA_EMISION, FOLIO, CANTIDAD, FECHA_PAGO, CANTIDAD_PAGADA, SALDO, OBSERVACIONES }
+    const { ID_ORDEN_COMPRA, PROVEEDOR, FECHA_EMISION, FOLIO_ORDEN, CANTIDAD, FECHA_PAGO, CANTIDAD_PAGADA, SALDO= CANTIDAD, OBSERVACIONES } = req.body
+    const FOLIO_CXP = await generateNewFolio('CXP')
+    const cuentasxPagar = { ID_ORDEN_COMPRA, PROVEEDOR, FECHA_EMISION, FOLIO_ORDEN, FOLIO_CXP,  CANTIDAD, FECHA_PAGO, CANTIDAD_PAGADA, SALDO, OBSERVACIONES }
+    console.log(cuentasxPagar);
 
     const actionDB = await Cuentas_por_Pagar.create(cuentasxPagar)
     return serverOkMessage(res, actionDB, 201)
   } catch (error) {
-    return serverErrorMessage(res)
+    return serverErrorMessage(res, error)
   }
 }
 
 const findCuentasxPagar = async (req = request, res = response) => {
   try {
-    const actionDB = await Cuentas_por_Pagar.find()
+    const actionDB = await Cuentas_por_Pagar.find().sort({ createdAt: -1 })
     return serverOkMessage(res, actionDB)
   } catch (error) {
     return serverErrorMessage(res)

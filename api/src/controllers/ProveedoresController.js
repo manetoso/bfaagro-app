@@ -26,7 +26,7 @@ const createProveedor = async (req = request, res = response) => {
 
 const findProveedores = async (req = request, res = response) => {
     try {
-        const actionDB = await PROVEEDORES.find()
+        const actionDB = await PROVEEDORES.find().sort({ createdAt: -1 })
         return serverOkMessage(res, actionDB)
     } catch (error) {
         return serverErrorMessage(res)

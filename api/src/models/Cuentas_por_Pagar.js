@@ -53,10 +53,15 @@ const CUENTASxPAGAR = new Schema(
     },
     SALDO: {
       type: Number,
-      required: true
+      required: true,
     },
     OBSERVACIONES: {
       type: String,
+      default: ''
+    },
+    ESTADO: {
+      type: String,
+      default: 'Pendiente'
     },
   },
   { timestamps: true }

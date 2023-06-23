@@ -20,7 +20,7 @@ const createOrdenCompra = async (req = request, res = response) => {
 
 const findOrdenesCompra = async (req = request, res = response) => {
   try {
-    const actionDB = await ORDENES_COMPRAS.find()
+    const actionDB = await ORDENES_COMPRAS.find().sort({ createdAt: -1 })
     return serverOkMessage(res, actionDB)
   } catch (error) {
     return serverErrorMessage(res)

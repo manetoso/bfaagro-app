@@ -22,7 +22,7 @@ const createUsuario = async (req = request, res = response) => {
 
 const findUsuario = async (req = request, res = response) => {
     try {
-        const actionDB = await USUARIOS.find()
+        const actionDB = await USUARIOS.find().sort({ createdAt: -1 })
         return serverOkMessage(res, actionDB)
     } catch (error) {
         return serverErrorMessage(res)

@@ -16,7 +16,7 @@ const createMovimientoAlmacen = async (req = request, res = response) => {
 
 const findMovimientosAlmacen = async (req = request, res = response) => {
   try {
-    const actionDB = await MOVIMIENTOS_ALMACEN.find()
+    const actionDB = await MOVIMIENTOS_ALMACEN.find().sort({ createdAt: -1 })
     return serverOkMessage(res, actionDB)
   } catch (error) {
     return serverErrorMessage(res)
