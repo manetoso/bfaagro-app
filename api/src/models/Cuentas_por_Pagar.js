@@ -24,12 +24,18 @@ const CUENTASxPAGAR = new Schema(
     },
     FECHA_EMISION: {
       type: Date,
-      default: Date.now().toString,
+      default: Date.now(),
       required: true
     },
-    FOLIO: {
+    FOLIO_ORDEN: {
       type: String,
-      required: true
+      required: true,
+      unique: true
+    },
+    FOLIO_CXP: {
+      type: String,
+      required: true,
+      unique: true
     },
     CANTIDAD: {
       type: Number,
@@ -37,20 +43,25 @@ const CUENTASxPAGAR = new Schema(
     },
     FECHA_PAGO: {
       type: Date,
-      default: Date.now().toString,
+      default: Date.now(),
       required: true
     },
     CANTIDAD_PAGADA: {
       type: Number,
+      default: 0,
       required: true
     },
     SALDO: {
       type: Number,
-      required: true
+      required: true,
     },
     OBSERVACIONES: {
       type: String,
-      required: true
+      default: ''
+    },
+    ESTADO: {
+      type: String,
+      default: 'Pendiente'
     },
   },
   { timestamps: true }

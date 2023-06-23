@@ -19,7 +19,7 @@ const createEmbalajeProducto = async (req = request, res = response) => {
 }
 const findEmbalajesProducto = async (req = request, res = response) => {
   try {
-    const actionDB = await EMBALAJES_PRODUCTO.find()
+    const actionDB = await EMBALAJES_PRODUCTO.find().sort({ createdAt: -1 })
     return serverOkMessage(res, actionDB)
   } catch (error) {
     return serverErrorMessage(res)

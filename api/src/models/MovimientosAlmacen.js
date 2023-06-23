@@ -13,7 +13,7 @@ const MOVIMIENTOS_ALMACEN = new Schema({
     },
     FECHA: {
         type: Date,
-        default: Date.now().toString,
+        default: Date.now(),
         required: true
     },
     PRODUCTOS: [

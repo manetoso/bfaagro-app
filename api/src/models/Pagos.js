@@ -5,13 +5,17 @@ const PAGOS = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'CUENTASxPAGAR'
   },
-  FOLIO: {
+  FOLIO_CXP: {
+    type: String,
+    required: true
+  },
+  FOLIO_PAGO: {
     type: String,
     required: true
   },
   FECHA_PAGO: {
     type: Date,
-    default: Date.now().toString,
+    default: Date.now(),
     required: true
   },
   CANTIDAD_PAGADA: {
@@ -35,7 +39,6 @@ const PAGOS = new Schema({
   },
   OBSERVACIONES: {
     type: String,
-    required: true
   }
 
 }, { timestamps: true })

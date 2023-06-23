@@ -19,7 +19,7 @@ const COMPRAS = new Schema({
   },
   FECHA_VENCIMIENTO: {
     type: Date,
-    default: Date.now().toString,
+    default: Date.now(),
     required: true
   },
   STATUS: {

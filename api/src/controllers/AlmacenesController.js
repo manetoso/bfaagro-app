@@ -19,7 +19,7 @@ const createAlmacen = async (req = request, res = response) => {
 
 const findAlmacenes = async (req = request, res = response) => {
   try {
-    const actionDB = await ALMACENES.find()
+    const actionDB = await ALMACENES.find().sort({ createdAt: -1 })
     return serverOkMessage(res, actionDB)
   } catch (error) {
     return serverErrorMessage(res)

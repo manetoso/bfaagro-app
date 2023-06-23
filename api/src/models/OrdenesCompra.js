@@ -1,10 +1,19 @@
 import { Schema, model } from 'mongoose'
 
 const ORDENES_COMPRAS = new Schema({
+    FOLIO: {
+        type: String,
+        required: true,
+        unique: true
+    },
     PROVEEDOR: {
         ID_PROVEEDOR: {
             type: Schema.Types.ObjectId,
             ref: 'PROVEEDORES'
+        },
+        NOMBRE_EMPRESA: {
+            type: String,
+            required: true
         },
         AGENTE: {
             type: String,
@@ -13,7 +22,7 @@ const ORDENES_COMPRAS = new Schema({
     },
     FECHA: {
         type: Date,
-        default: Date.now().toString,
+        default: Date.now(),
         required: true
     },
     ID_EMPRESA: {
