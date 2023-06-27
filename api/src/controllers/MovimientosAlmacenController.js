@@ -1,4 +1,5 @@
 import MOVIMIENTOS_ALMACEN from '../models/MovimientosAlmacen.js'
+import PRODUCTOS from '../models/Productos.js'
 import { request, response } from 'express'
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
 
@@ -8,9 +9,10 @@ const createMovimientoAlmacen = async (req = request, res = response) => {
     const MovimientoAlmacen = { MOVIMIENTO, FECHA, PRODUCTOS }
 
     const actionDB = await MOVIMIENTOS_ALMACEN.create(MovimientoAlmacen)
+    await registerMovementAlmacen(MOVIMIENTO.MOVIMIENTO, PRODUCTOS)
     return serverOkMessage(res, actionDB, 201)
   } catch (error) {
-    return serverErrorMessage(res)
+    return serverErrorMessage(error)
   }
 }
 
@@ -43,6 +45,37 @@ const deleteMovimientoAlmacen = async (req = request, res = response) => {
     return serverOkMessage(res, actionDB)
   } catch (error) {
     return serverErrorMessage(res)
+  }
+}
+
+const registerMovementAlmacen = async (movement = '', products = []) => {
+  try {
+    const typeMovement = typeMovementAlmacen(movement)
+    for (const product of products) {
+      const dbProduct = await PRODUCTOS.findById(product.ID_PRODUCTO).lean()
+      dbProduct.CANTIDAD = dbProduct.CANTIDAD + ( product.CANTIDAD * typeMovement)
+      await PRODUCTOS.findByIdAndUpdate(product.ID_PRODUCTO, {  CANTIDAD: dbProduct.CANTIDAD })
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const typeMovementAlmacen = (movement = '') => {
+  try {
+    switch (movement) {
+      case 'ENTRADA':
+        return 1
+        break;
+      case 'SALIDA':
+        return -1
+        break;
+      default:
+        return 0
+        break;
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
 
