@@ -63,7 +63,7 @@ export function Table({ table, flexRender }) {
                   return (
                     <td
                       key={cell.id}
-                      className='border-b-2 bg-white py-2 px-2 first:sticky first:left-0 first:z-10 first:border-r-2  md:py-4 md:px-6'
+                      className='border-b-2 bg-white py-2 px-2 first:sticky first:left-0 first:z-10 first:border-r-2 md:py-4 md:px-6'
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

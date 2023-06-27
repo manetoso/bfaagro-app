@@ -46,6 +46,7 @@ export async function createData(data) {
     toast.success('Orden de compra creada con éxito')
     return dataFormated
   } catch (error) {
+    console.log({error})
     toast.error('Error creando nueva orden de compra')
     throw new Error('Error creating new purchase order')
   }
@@ -111,8 +112,8 @@ export async function fetchSupplierTypes() {
 
 /**
  *
- * @param {{ company: string, date: string, supplier: { supplierId: string, agent: string }, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number, totalUnit: number }[], iva: number, total: number }} data
- * @returns {{ ID_EMPRESA: string, FECHA: string, PROVEEDOR: { ID_PROVEEDOR: string, AGENTE: string }, PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number, TOTAL_UNITARIO: number }, IVA: number, TOTAL: number }} - The purchase order to DB Schema.
+ * @param {{ company: string, date: string, supplier: { supplierId: string, agent: string, supplierCompany: string }, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number, totalUnit: number }[], iva: number, total: number }} data
+ * @returns {{ ID_EMPRESA: string, FECHA: string, PROVEEDOR: { ID_PROVEEDOR: string, AGENTE: string, NOMBRE_EMPRESA: string }, PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number, TOTAL_UNITARIO: number }, IVA: number, TOTAL: number }} - The purchase order to DB Schema.
  */
 export function convertPurchaseOrderToDBSchema(data) {
   try {
@@ -121,7 +122,8 @@ export function convertPurchaseOrderToDBSchema(data) {
       FECHA: data.date,
       PROVEEDOR: {
         ID_PROVEEDOR: data.supplier.supplierId,
-        AGENTE: data.supplier.agent
+        AGENTE: data.supplier.agent,
+        NOMBRE_EMPRESA: data.supplier.supplierCompany
       },
       PRODUCTOS: data.products.map((product) => ({
         ID_PRODUCTO: product.productId,
@@ -142,8 +144,8 @@ export function convertPurchaseOrderToDBSchema(data) {
 
 /**
  *
- * @param {{ _id: string, ID_EMPRESA: string, FECHA: string, PROVEEDOR: { ID_PROVEEDOR: string, AGENTE: string }, PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number, TOTAL_UNITARIO: number }, IVA: number, TOTAL: number }} data
- * @returns {{ id: string, company: string, date: string, supplier: { supplierId: string, agent: string }, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number, totalUnit: number }[], iva: number, total: number }} - The purchase order to App Schema.
+ * @param {{ _id: string, ID_EMPRESA: string, FECHA: string, PROVEEDOR: { ID_PROVEEDOR: string, AGENTE: string, NOMBRE_EMPRESA: string }, PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number, TOTAL_UNITARIO: number }, IVA: number, TOTAL: number }} data
+ * @returns {{ id: string, company: string, date: string, supplier: { supplierId: string, agent: string, supplierCompany: string }, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number, totalUnit: number }[], iva: number, total: number }} - The purchase order to App Schema.
  */
 export function convertPurchaseOrderToAppSchema(data) {
   try {
@@ -158,7 +160,8 @@ export function convertPurchaseOrderToAppSchema(data) {
       }),
       supplier: {
         supplierId: data.PROVEEDOR.ID_PROVEEDOR,
-        agent: data.PROVEEDOR.AGENTE
+        agent: data.PROVEEDOR.AGENTE,
+        supplierCompany: data.PROVEEDOR.NOMBRE_EMPRESA
       },
       products: data.PRODUCTOS.map((product) => ({
         productId: product.ID_PRODUCTO,

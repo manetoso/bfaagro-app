@@ -85,13 +85,15 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
       date: data.date,
       supplier: {
         supplierId: data['supplier[id]'],
-        agent: data['supplier[agent]']
+        agent: data['supplier[agent]'],
+        supplierCompany: data['supplier[name]']
       },
       products: formatedProducts,
       iva: data.iva,
       total: data.total
     }
-    
+
+    // console.log({ formatedData });
     submitAction(formatedData, field)
   }
 
