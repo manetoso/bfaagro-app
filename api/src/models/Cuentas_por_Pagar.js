@@ -61,7 +61,7 @@ const CUENTASxPAGAR = new Schema(
     },
     ESTADO: {
       type: String,
-      default: 'Pendiente'
+      default: 'PENDIENTE'
     },
   },
   { timestamps: true }
