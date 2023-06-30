@@ -66,7 +66,7 @@ const PROCESOS = new Schema(
 )
 
 PROCESOS.methods.toJSON = function () {
-  const { __v, ...procesos } = this.toObject()
+  const { __v, createdAt, updatedAt, ...procesos } = this.toObject()
   return procesos
 }
 

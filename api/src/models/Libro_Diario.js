@@ -36,10 +36,10 @@ const LIBRO_DIARIO = new Schema({
       required: true
     }
   }
-})
+},{ timestamps: true })
 
 LIBRO_DIARIO.methods.toJSON = function () {
-  const { __v, ...libroDiario } = this.toObject()
+  const { __v, createdAt, updatedAt, ...libroDiario } = this.toObject()
   return libroDiario
 }
 

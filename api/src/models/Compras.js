@@ -19,7 +19,7 @@ const COMPRAS = new Schema({
   },
   FECHA_VENCIMIENTO: {
     type: Date,
-    default: Date.now().toString,
+    default: Date.now(),
     required: true
   },
   STATUS: {
@@ -46,10 +46,10 @@ const COMPRAS = new Schema({
     default: this.TOTAL_COMPRA,
     required: true
   }
-})
+},{ timestamps: true })
 
 COMPRAS.methods.toJSON = function () {
-  const { __v, ...compras } = this.toObject()
+  const { __v, createdAt, updatedAt, ...compras } = this.toObject()
   return compras
 }
 

@@ -29,9 +29,9 @@ const FACTURAS = new Schema({
       required: true
     }
   }
-})
+},{ timestamps: true })
 FACTURAS.methods.toJSON = function () {
-  const { __v, ...facturas } = this.toObject()
+  const { __v, createdAt, updatedAt, ...facturas } = this.toObject()
   return facturas
 }
 export default model('FACTURAS', FACTURAS)

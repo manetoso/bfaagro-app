@@ -28,7 +28,7 @@ export function Aside({ menuCheckboxId, inputRef }) {
       <IconButton alignSelf htmlFor={menuCheckboxId}>
         <Close />
       </IconButton>
-      <ul className='flex flex-col gap-2 overflow-scroll'>
+      <ul className='flex flex-col gap-2'>
         <WarehouseList handleClick={handleClick} />
         <FormulationList handleClick={handleClick} />
         <ProcessesList handleClick={handleClick} />

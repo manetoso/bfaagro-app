@@ -1,6 +1,6 @@
 /**
  *
- * @param {{defaultValue: string, disabled: boolean, id: string, isEmpty: boolean, label: string, name: string, onChange: () => void, placeholder: string, required: boolean, type: 'text' | 'number' | 'password'}} param0
+ * @param {{ defaultValue: string, disabled: boolean, id: string, isEmpty: boolean, label: string, name: string, onChange: () => void, placeholder: string, required: boolean, readOnly: boolean, type: 'text' | 'number' | 'password' | 'date' }} param0
  * @returns {JSX.Element} Input
  */
 export function Input({
@@ -13,6 +13,7 @@ export function Input({
   onChange,
   placeholder,
   required = true,
+  readOnly = false,
   type
 }) {
   return (
@@ -29,6 +30,7 @@ export function Input({
         onChange={onChange}
         placeholder={placeholder}
         required={required}
+        readOnly={readOnly}
         type={type}
         step={type === 'number' ? '0.01' : undefined}
         // type=''

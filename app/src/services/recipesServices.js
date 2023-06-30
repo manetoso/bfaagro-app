@@ -1,4 +1,7 @@
 import toast from 'react-hot-toast'
+
+import { bfaApi } from '@/api/bfaApi'
+
 import { FIELDS_TYPES } from '@/stores/useRecipesStore'
 import { PRODUCT_TYPES } from '@/utils/consts'
 
@@ -9,13 +12,13 @@ import { PRODUCT_TYPES } from '@/utils/consts'
  */
 export async function fetchData({ field }) {
   try {
-    const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/formulas`)
+    const { data: resp } = await bfaApi.get('/formulas')
     /**
      * The respponse body from the request.
      * @typedef { { _id: string, NOMBRE_FORMULA: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, TIPO_PRODUCTO: { ID_TIPO_PRODUCTO: string, TIPO_PRODUCTO: string }[] }, FORMULACION_DETALLE: { CANTIDAD: number, ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }[] } } RecipesBody
      * @type {{body: RecipesBody[]}} - The Recipes response body.
      */
-    const json = await resp.json()
+    const json = resp
     const data = json.body.map((recipe) => ({
       id: recipe._id,
       recipeName: recipe.NOMBRE_FORMULA,
@@ -52,7 +55,6 @@ export async function fetchData({ field }) {
       })
     }
   } catch (error) {
-    console.log({ error })
     throw new Error('Error searching recipes')
   }
 }
@@ -65,14 +67,11 @@ export async function fetchData({ field }) {
 export async function createData(data) {
   try {
     const elementToDBSchema = convertToDBSchema(data)
-    const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/formulas`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(elementToDBSchema)
-    })
-    const json = await resp.json()
+    const { data: resp } = await bfaApi.post(
+      '/formulas',
+      JSON.stringify(elementToDBSchema)
+    )
+    const json = resp
     const respFormated = convertToAppSchema(json.body)
     toast.success('Receta creada con éxito')
     return respFormated
@@ -90,15 +89,9 @@ export async function createData(data) {
 export async function updateData(data) {
   try {
     const elementToDBSchema = convertToDBSchema(data)
-    const resp = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/formulas/${data.id}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(elementToDBSchema)
-      }
+    const { data: resp } = await bfaApi.put(
+      `/formulas/${data.id}`,
+      JSON.stringify(elementToDBSchema)
     )
     const json = await resp.json()
     const respFormated = convertToAppSchema(json.body)
@@ -117,13 +110,8 @@ export async function updateData(data) {
  */
 export async function deleteData(id) {
   try {
-    const resp = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/formulas/${id}`,
-      {
-        method: 'DELETE'
-      }
-    )
-    const json = await resp.json()
+    const { data: resp } = await bfaApi.delete(`/formulas/${id}`)
+    const json = resp
     toast.success('Receta eliminada con éxito')
     return json.error ? false : true
   } catch (error) {
@@ -139,23 +127,20 @@ export async function deleteData(id) {
  */
 export async function fetchProductsForDetails({ field }) {
   try {
-    const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/productos`)
+    const { data: resp } = await bfaApi.get('/productos')
     /**
      * The respponse body from the request.
      * @typedef { { _id: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, ALMACEN: { ID_ALMACEN: string, NOMBRE_ALMACEN: string }, TIPO_PRODUCTO: { ID_TIPO_PRODUCTO: number, TIPO_PRODUCTO: string }[] } } ProductsBody
      * @type {{body: ProductsBody[]}} - The Products Types response body.
      */
-    const json = await resp.json()
-    console.log({field});
+    const json = resp
     const filtered1 = json.body.filter((x) =>
       x.TIPO_PRODUCTO.some((y) => {
         if (field === FIELDS_TYPES.RECIPES) {
           return y.TIPO_PRODUCTO === PRODUCT_TYPES.RAW_MATERIAL_PRODUCT
         }
         if (field === FIELDS_TYPES.PACKAGING) {
-          return (
-            y.TIPO_PRODUCTO !== PRODUCT_TYPES.RAW_MATERIAL_PRODUCT
-          )
+          return y.TIPO_PRODUCTO !== PRODUCT_TYPES.RAW_MATERIAL_PRODUCT
         }
       })
     )
@@ -185,15 +170,13 @@ export async function fetchProductsForDetails({ field }) {
 
 export async function fetchUnityTypes() {
   try {
-    const resp = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/tiposdocumentos/unidad`
-    )
+    const { data: resp } = await bfaApi.get('/tiposdocumentos/unidad')
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, TIPO_DOCUMENTO: string, VALOR: string }[]} ProductTypesBody
      * @type {{body: ProductTypesBody}} - The Products Types response body.
      */
-    const json = await resp.json()
+    const json = resp
 
     const data = json.body.map((productType) => ({
       id: productType._id,

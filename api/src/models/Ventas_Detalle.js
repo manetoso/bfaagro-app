@@ -34,10 +34,10 @@ const VENTAS_DETALLE = new Schema({
     type: Number,
     required: true
   }
-})
+},{ timestamps: true })
 
 VENTAS_DETALLE.methods.toJSON = function () {
-  const { __v, ...ventaDetalle } = this.toObject()
+  const { __v, createdAt, updatedAt, ...ventaDetalle } = this.toObject()
   return ventaDetalle
 }
 

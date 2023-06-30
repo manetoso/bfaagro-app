@@ -1,3 +1,12 @@
+import { bfaApi } from '@/api/bfaApi'
+
+export async function login({ username, password }) {
+  try {
+  } catch (error) {
+    console.log({ error })
+  }
+}
+
 /**
  *
  * @param {string} type
@@ -5,15 +14,13 @@
  */
 export async function fetchTypes(type) {
   try {
-    const resp = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/tiposdocumentos/${type}`
-    )
+    const { data: resp } = await bfaApi.get(`/tiposdocumentos/${type}`)
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, TIPO_DOCUMENTO: string, VALOR: string }[]} TypesBody
      * @type {{body: TypesBody}} - The Types response body.
      */
-    const json = await resp.json()
+    const json = resp
 
     const data = json.body.map((productType) => ({
       id: productType._id,
@@ -21,7 +28,7 @@ export async function fetchTypes(type) {
     }))
     return data
   } catch (error) {
-    throw new Error('Error searching unity types')
+    throw new Error('Error searching types')
   }
 }
 
@@ -84,17 +91,35 @@ export async function fetchProcessStatusTypes() {
 
 /**
  *
+ * @returns {{ id: string, value: string }[]} Process Status types data
+ */
+export async function fetchMovementTypes() {
+  try {
+    const resp = await fetchTypes('movimiento')
+
+    const data = resp.map((productType) => ({
+      id: productType.id,
+      value: productType.value
+    }))
+    return data
+  } catch (error) {
+    throw new Error('Error searching movement types')
+  }
+}
+
+/**
+ *
  * @returns {{ id: string, name: string, warehouseType: { id: number, name: string } }[]} warehouse data
  */
 export async function fetchWarehouses() {
   try {
-    const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/almacenes`)
+    const { data: resp } = await bfaApi.get('/almacenes')
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, NOMBRE_ALMACEN: string, TIPO_ALMACEN: { ID_TIPO_ALMACEN: number, TIPO_ALMACEN: string } }[]} WarehousesBody
      * @type {{body: WarehousesBody}} - The Warehouses response body.
      */
-    const json = await resp.json()
+    const json = resp
 
     const data = json.body.map((warehouse) => ({
       id: warehouse._id,

@@ -42,6 +42,26 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+.gradient-background {
+  /* background: linear-gradient(300deg,#468f7a,#118266,#4c2b13); */
+  /* background: linear-gradient(300deg,#118266,#112b13); */
+  background: linear-gradient(300deg,#118266,#0c4537);
+  background-size: 180% 180%;
+  animation: gradient-animation 18s ease infinite;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 @layer components {
   .btn {
     @apply inline-flex cursor-pointer justify-center rounded-md bg-black px-7 py-2 text-sm font-medium text-white transition-all duration-200 ease-in-out hover:bg-black/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-1;

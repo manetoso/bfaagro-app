@@ -52,7 +52,7 @@ const EMBALAJES_PRODUCTO = new Schema(
 )
 
 EMBALAJES_PRODUCTO.methods.toJSON = function () {
-  const { __v, ...embalajesProducto } = this.toObject()
+  const { __v, createdAt, updatedAt, ...embalajesProducto } = this.toObject()
   return embalajesProducto
 }
 
