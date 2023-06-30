@@ -6,12 +6,12 @@ import { createCuentaxPagarByOrdenCompra } from './Cuentas_por_PagarController.j
 
 const createOrdenCompra = async (req = request, res = response) => {
   try {
-    const { PROVEEDOR, FECHA, ID_EMPRESA, PRODUCTOS, IVA, TOTAL } = req.body
+    const { PROVEEDOR, FECHA, ID_EMPRESA, PRODUCTOS, IVA, TOTAL, OBSERVACIONES, PERIODO } = req.body
 
     const FOLIO = await generateNewFolio('ORDEN')
     const ordenCompra = { FOLIO, PROVEEDOR, FECHA, ID_EMPRESA, PRODUCTOS, IVA, TOTAL }
     const actionDB = await ORDENES_COMPRAS.create(ordenCompra)
-    await createCuentaxPagarByOrdenCompra(actionDB)
+    await createCuentaxPagarByOrdenCompra(actionDB, OBSERVACIONES, PERIODO)
     return serverOkMessage(res, actionDB, 201)
   } catch (error) {
     return serverErrorMessage(res, error)

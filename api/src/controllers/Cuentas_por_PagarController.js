@@ -48,12 +48,12 @@ const deleteCuentaxPagar = async (req = request, res = response) => {
     return serverErrorMessage(res)
   }
 }
-const createCuentaxPagarByOrdenCompra = async (ordenCompra = {}) => {
+const createCuentaxPagarByOrdenCompra = async (ordenCompra = {}, OBSERVACIONES, PERIODO) => {
   try {
     const { _id, PROVEEDOR, FECHA, FOLIO, TOTAL } = ordenCompra
 
     const FOLIO_CXP = await generateNewFolio('CXP')
-
+    const FECHA_PAGO = calculatePayDateByPeriodo(PERIODO)
     const cuentasxPagar = {
       'ID_ORDEN_COMPRA': _id,
       'PROVEEDOR': {
@@ -65,12 +65,29 @@ const createCuentaxPagarByOrdenCompra = async (ordenCompra = {}) => {
       'FOLIO_ORDEN': FOLIO,
       FOLIO_CXP,
       'CANTIDAD': TOTAL,
+      'FECHA_PAGO': FECHA_PAGO,
       'SALDO': TOTAL,
+      'OBSERVACIONES': OBSERVACIONES
     }
     await Cuentas_por_Pagar.create(cuentasxPagar)
     return true
   } catch (error) {
     console.log(error)
+  }
+}
+
+const calculatePayDateByPeriodo = (PERIODO = Number) => {
+  try {
+    let todayDate = new Date(Date.now())
+    todayDate.setHours(todayDate.getHours() - 6);
+    if(PERIODO != 0 && PERIODO != undefined) {
+      const newDate = new Date( todayDate.setDate( todayDate.getDate() +  PERIODO )  )
+      return newDate
+    }else {
+      return todayDate
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
 
