@@ -1,5 +1,12 @@
 import { bfaApi } from '@/api/bfaApi'
 
+export async function login({ username, password }) {
+  try {
+  } catch (error) {
+    console.log({ error })
+  }
+}
+
 /**
  *
  * @param {string} type

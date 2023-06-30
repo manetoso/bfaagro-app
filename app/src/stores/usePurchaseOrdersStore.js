@@ -48,7 +48,6 @@ export const usePurchaseOrdersStore = create((set, get) => ({
     const { [field]: data, selected } = get()
     element.id = selected.id
     const index = data.findIndex((e) => e.id === element.id)
-    console.log({ index, element, field })
     if (index === -1) {
       const newElement = await createData(element, field)
       set((state) => ({

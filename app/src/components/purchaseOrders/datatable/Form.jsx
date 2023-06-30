@@ -2,8 +2,9 @@ import { useState } from 'react'
 
 import { usePurchaseOrdersStore } from '@/stores/usePurchaseOrdersStore'
 
-import { Input, ComboBox } from '@/components/form'
+import { Input, ComboBox, TextArea } from '@/components/form'
 import { InfiniteInput } from './InfiniteInput'
+import { PURCHASE_ORDERS_PERIODS } from '@/utils/consts'
 
 /**
  *
@@ -90,9 +91,12 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
       },
       products: formatedProducts,
       iva: data.iva,
-      total: data.total
+      total: data.total,
+      period: data['period[value]'],
+      observations: data.observations
     }
 
+    // console.log({ data });
     // console.log({ formatedData });
     submitAction(formatedData, field)
   }
@@ -139,6 +143,25 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
           placeholder='300'
           type='number'
         />
+        {Object.keys(selectedRow).length === 0 && (
+          <>
+            <ComboBox
+              data={PURCHASE_ORDERS_PERIODS}
+              dataDisplayAttribute='label'
+              id='period'
+              isEmpty={isEmpty}
+              label='Periodo'
+              name='period'
+            />
+            <TextArea
+              id='observations'
+              isEmpty={isEmpty}
+              label='Observaciones'
+              name='observations'
+              placeholder='...'
+            />
+          </>
+        )}
         <hr className='my-6 h-1 w-full bg-gray-600' />
         <InfiniteInput
           data={productsData}

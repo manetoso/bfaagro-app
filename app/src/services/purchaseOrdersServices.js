@@ -26,12 +26,12 @@ export async function fetchData() {
 
 /**
  *
- * @param {{ company: string, date: string, supplier: { supplierId: string, agent: string }, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number, totalUnit: number }[], iva: number, total: number }} data
+ * @param {{ company: string, date: string, supplier: { supplierId: string, agent: string }, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number, totalUnit: number }[], iva: number, total: number, observations: string, period: number }} data
  * @returns {{ id: string, company: string, date: string, supplier: { supplierId: string, agent: string }, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number, totalUnit: number }[], iva: number, total: number }} - The purchase order created.
  */
 export async function createData(data) {
   try {
-    const elementToDBSchema = convertPurchaseOrderToDBSchema(data)
+    const elementToDBSchema = converCreatetPurchaseOrderToDBSchema(data)
     const { data: resp } = await bfaApi.post(
       '/ordenescompra',
       JSON.stringify(elementToDBSchema)
@@ -135,6 +135,40 @@ export function convertPurchaseOrderToDBSchema(data) {
       })),
       IVA: data.iva,
       TOTAL: data.total
+    }
+    return dbSchemaLike
+  } catch (error) {
+    throw new Error('Error converting purchase order to DB Schema')
+  }
+}
+
+/**
+ *
+ * @param {{ company: string, date: string, supplier: { supplierId: string, agent: string, supplierCompany: string }, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number, totalUnit: number }[], iva: number, total: number, observations: string, period: number }} data
+ * @returns {{ ID_EMPRESA: string, FECHA: string, PROVEEDOR: { ID_PROVEEDOR: string, AGENTE: string, NOMBRE_EMPRESA: string }, PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number, TOTAL_UNITARIO: number }, IVA: number, TOTAL: number, OBSERVACIONES: string, PERIODO: number }} - The purchase order to DB Schema.
+ */
+export function converCreatetPurchaseOrderToDBSchema(data) {
+  try {
+    const dbSchemaLike = {
+      ID_EMPRESA: data.company,
+      FECHA: data.date,
+      PROVEEDOR: {
+        ID_PROVEEDOR: data.supplier.supplierId,
+        AGENTE: data.supplier.agent,
+        NOMBRE_EMPRESA: data.supplier.supplierCompany
+      },
+      PRODUCTOS: data.products.map((product) => ({
+        ID_PRODUCTO: product.productId,
+        NOMBRE_PRODUCTO: product.name,
+        CANTIDAD: product.quantity,
+        UNIDAD_MEDIDA: product.unity,
+        PRECIO_UNITARIO: product.unitPrice,
+        TOTAL_UNITARIO: product.totalUnit
+      })),
+      IVA: data.iva,
+      TOTAL: data.total,
+      OBSERVACIONES: data.observations,
+      PERIODO: data.period
     }
     return dbSchemaLike
   } catch (error) {

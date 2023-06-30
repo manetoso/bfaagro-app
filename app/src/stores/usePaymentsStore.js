@@ -78,10 +78,13 @@ export const usePaymentsStore = create((set, get) => ({
   },
   fetchExtraData: async () => {
     const accountsPayable = await fetchAccountsPayable()
+    const filteredAccountsPayable = accountsPayable.filter(
+      (ap) => ap.status.toLowerCase() === 'pendiente'
+    )
     const suppliers = await fetchSupplierData()
     set((state) => ({
       ...state,
-      accountsPayableData: accountsPayable,
+      accountsPayableData: filteredAccountsPayable,
       suppliersData: suppliers
     }))
   }

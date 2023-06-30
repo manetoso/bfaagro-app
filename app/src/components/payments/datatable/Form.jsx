@@ -63,7 +63,7 @@ function AccountsPayableCombobox({
           <p className='font-bold'>Estado:</p>
           <p
             className={`py-2 font-black ${
-              selectedAccount?.status === 'Pendiente'
+              selectedAccount?.status?.toLowerCase() === 'pendiente'
                 ? 'text-amber-500'
                 : 'text-emerald-500'
             }`}
