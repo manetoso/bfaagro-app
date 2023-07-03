@@ -28,10 +28,10 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
       }
     }
 
-    const newIsEmpty = Object.values(data).some((x) => x === null || x === '')
-    setIsEmpty(newIsEmpty)
+    // const newIsEmpty = Object.values(data).some((x) => x === null || x === '')
+    // setIsEmpty(newIsEmpty)
 
-    if (newIsEmpty) return
+    // if (newIsEmpty) return
 
     const comboId = []
     const comboName = []

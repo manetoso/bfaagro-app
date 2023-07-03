@@ -3,7 +3,10 @@ import { useState } from 'react'
 import { usePaymentsStore } from '@/stores/usePaymentsStore'
 
 import { Input, ComboBox } from '@/components/form'
-import { handleInputMinMaxValue } from '@/utils/utils'
+import {
+  handleInputMinMaxValue,
+  formatNumberToMoneyString
+} from '@/utils/utils'
 
 function AccountsPayableCombobox({
   accountsPayableData,
@@ -49,15 +52,21 @@ function AccountsPayableCombobox({
         </span>
         <span className='flex flex-col text-gray-600'>
           <p className='font-bold'>Cantidad:</p>
-          <p className='py-2 font-black'>{selectedAccount?.quantity}</p>
+          <p className='py-2 font-black'>
+            {formatNumberToMoneyString(selectedAccount?.quantity)}
+          </p>
         </span>
         <span className='flex flex-col text-gray-600'>
           <p className='font-bold'>Cantidad pagada:</p>
-          <p className='py-2 font-black'>{selectedAccount?.quantityPaid}</p>
+          <p className='py-2 font-black'>
+            {formatNumberToMoneyString(selectedAccount?.quantityPaid)}
+          </p>
         </span>
         <span className='flex flex-col text-gray-600'>
           <p className='font-bold'>Saldo:</p>
-          <p className='py-2 font-black'>{selectedAccount?.balance}</p>
+          <p className='py-2 font-black'>
+            {formatNumberToMoneyString(selectedAccount?.balance)}
+          </p>
         </span>
         <span className='flex flex-col text-gray-600'>
           <p className='font-bold'>Estado:</p>
@@ -157,7 +166,9 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
           name='quantityPaid'
           placeholder='300'
           type='number'
-          onChange={(e) => handleInputMinMaxValue(e, 0, selectedAccount?.balance)}
+          onChange={(e) =>
+            handleInputMinMaxValue(e, 0, selectedAccount?.balance)
+          }
         />
         <hr className='my-2 h-1 w-full bg-gray-600' />
         <AccountsPayableCombobox
