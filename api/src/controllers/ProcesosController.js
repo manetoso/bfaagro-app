@@ -50,7 +50,7 @@ const createProceso = async (req = request, res = response) => {
 
 const findProcesos = async (req = request, res = response) => {
   try {
-    const actionDB = await PROCESOS.find().sort({ createdAt: -1 })
+    const actionDB = await PROCESOS.find().sort({ createdAt: -1 }).sort({ createdAt: -1 })
     return serverOkMessage(res, actionDB)
   } catch (error) {
     return serverErrorMessage(res)

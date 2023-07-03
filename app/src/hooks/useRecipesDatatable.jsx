@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
 
 import { DropdownMenu } from '@/components/datatable'
@@ -28,6 +28,7 @@ export const useRecipesDatatable = ({ field }) => {
     removeElement,
     fetchProductsForDetailsFromApi
   } = useRecipesStore()
+  const [isLoading, setIsLoading] = useState(true)
 
   const FETCH_DATA_BY_FIELD = {
     [FIELDS_TYPES.RECIPES]: () => {
@@ -74,6 +75,7 @@ export const useRecipesDatatable = ({ field }) => {
     await fetchProductsForDetailsFromApi({ field })
     const apiData = await FETCH_DATA_BY_FIELD[localField]()
     setDataFilds(apiData, localField)
+    setIsLoading(false)
     return apiData
   }, [])
 
@@ -93,6 +95,7 @@ export const useRecipesDatatable = ({ field }) => {
     toggleAlert,
     addOrEditElement,
     removeElement,
-    columns
+    columns,
+    isLoading
   }
 }

@@ -11,7 +11,13 @@ import {
   TiposDocumentos,
   Procesos,
   Usuarios,
-  Roles
+  Roles,
+  Proveedores,
+  Empresa,
+  OrdenesCompra,
+  MovimientosAlmacen,
+  Cuentas_por_Pagar,
+  Pagos
 } from '../routes/index.routes.js'
 
 class Server {
@@ -29,7 +35,13 @@ class Server {
       tiposDocumentos: '/api/tiposdocumentos',
       procesos: '/api/procesos',
       usuarios: '/api/usuarios',
-      roles: '/api/roles'
+      roles: '/api/roles',
+      proveedores: '/api/proveedores',
+      empresa: '/api/empresa',
+      ordenesCompra: '/api/ordenescompra',
+      movimientosAlmacen: '/api/movimientosalmacen',
+      cuentas_por_pagar: '/api/cxp',
+      pagos: '/api/pagos',
     }
 
     // Func to Connect DB
@@ -62,6 +74,12 @@ class Server {
     this.app.use(this.paths.procesos, Procesos)
     this.app.use(this.paths.usuarios, Usuarios)
     this.app.use(this.paths.roles, Roles)
+    this.app.use(this.paths.proveedores, Proveedores)
+    this.app.use(this.paths.empresa, Empresa)
+    this.app.use(this.paths.ordenesCompra, OrdenesCompra)
+    this.app.use(this.paths.movimientosAlmacen, MovimientosAlmacen)
+    this.app.use(this.paths.cuentas_por_pagar, Cuentas_por_Pagar)
+    this.app.use(this.paths.pagos, Pagos)
   }
 
   listen() {

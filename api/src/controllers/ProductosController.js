@@ -23,7 +23,7 @@ const createProducto = async (req = request, res = response) => {
 
 const findProductos = async (req = request, res = response) => {
   try {
-    const actionDB = await PRODUCTOS.find().sort({ createdAt: -1 })
+    const actionDB = await PRODUCTOS.find().sort({ createdAt: -1 }).sort({ createdAt: -1 })
     return serverOkMessage(res, actionDB)
   } catch (error) {
     return serverErrorMessage(res)

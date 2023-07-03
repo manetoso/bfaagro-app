@@ -1,18 +1,20 @@
 import toast from 'react-hot-toast'
 
+import { bfaApi } from '@/api/bfaApi'
+
 /**
  *
  * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, warehouse: { id: string, name: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string, unity: string }[] }, quantity: number, createdAt: string, createdAtFormatted: string }} - The processes.
  */
 export async function fetchData() {
   try {
-    const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/procesos`)
+    const { data: resp } = await bfaApi.get('/procesos')
     /**
      * The respponse body from the request.
      * @typedef { { _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, CANTIDAD: number, createdAt: string, updatedAt: string } ProcessesBody
      * @type {{body: ProcessesBody[]}} - The Recipes response body.
      */
-    const json = await resp.json()
+    const json = resp
     const data = json.body.map((process) => ({
       id: process._id,
       recipeId: process.FORMULA.ID_FORMULA,
@@ -65,14 +67,11 @@ export async function createData(data) {
       FORMULACION_DETALLE: elementToDBSchema.FORMULA.FORMULACION_DETALLE,
       CANTIDAD: elementToDBSchema.CANTIDAD
     }
-    const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/procesos`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(elementToSend)
-    })
-    const json = await resp.json()
+    const { data: resp } = await bfaApi.post(
+      '/procesos',
+      JSON.stringify(elementToSend)
+    )
+    const json = resp
     if (!json.error) {
       const respFormated = convertToAppSchema(json.body)
       toast.success('Proceso creado con éxito')
@@ -80,7 +79,6 @@ export async function createData(data) {
     } else {
       toast.error(json.msg)
       const { errors, msg } = convertCreateErrorToAppSchema(json)
-      console.log({errors, msg})
       return { data: {}, error: { errors, msg } }
     }
   } catch (error) {
@@ -96,16 +94,8 @@ export async function createData(data) {
  */
 export async function updateData({ id }) {
   try {
-    const resp = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/procesos/editar_estado/${id}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-    )
-    const json = await resp.json()
+    const { data: resp } = await bfaApi.put(`/procesos/editar_estado/${id}`)
+    const json = resp
     const respFormated = convertToAppSchemaUpdate(json.body)
     toast.success('Proceso actualizado con éxito')
     return respFormated
@@ -122,13 +112,8 @@ export async function updateData({ id }) {
  */
 export async function deleteData(id) {
   try {
-    const resp = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/procesos/${id}`,
-      {
-        method: 'DELETE'
-      }
-    )
-    const json = await resp.json()
+    const { data: resp } = await bfaApi.delete(`/procesos/${id}`)
+    const json = resp
     if (json.error) {
       toast.error(json.error)
     } else {
@@ -147,16 +132,13 @@ export async function deleteData(id) {
  */
 export async function fetchRawMaterial() {
   try {
-    const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL}/productos`)
+    const { data: resp } = await bfaApi.get('/productos')
     /**
      * The respponse body from the request.
      * @typedef { { _id: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, ALMACEN: { ID_ALMACEN: string, NOMBRE_ALMACEN: string }, TIPO_PRODUCTO: { ID_TIPO_PRODUCTO: number, TIPO_PRODUCTO: string }[] } } ProductsBody
      * @type {{body: ProductsBody[]}} - The Products Types response body.
      */
-    const json = await resp.json()
-    // const filtered1 = json.body.filter((x) =>
-    //   x.TIPO_PRODUCTO.some((y) => y.TIPO_PRODUCTO === 'MATERIA PRIMA')
-    // )
+    const json = resp
     const materials = json.body.map((product) => ({
       id: product._id,
       name: product.NOMBRE_PRODUCTO,

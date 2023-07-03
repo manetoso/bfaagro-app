@@ -6,6 +6,7 @@ import {
 import {
   fetchProductTypes,
   fetchUnityTypes,
+  fetchMovementTypes,
   fetchWarehouses
 } from '@/services/globalServices'
 import { create } from 'zustand'
@@ -14,7 +15,8 @@ export const FIELDS_TYPES = {
   RAW_MATERIAL: 'rawMaterialData',
   PRODUCTS: 'productsData',
   PACKAGING: 'packagingData',
-  FINISHED_PRODUCTS: 'finishedProductsData'
+  FINISHED_PRODUCTS: 'finishedProductsData',
+  ALL: 'allProducts'
 }
 
 export const useWarehouseStore = create((set, get) => ({
@@ -22,9 +24,11 @@ export const useWarehouseStore = create((set, get) => ({
   productsData: [],
   packagingData: [],
   finishedProductsData: [],
+  allProducts: [],
   warehouses: [],
   productTypes: [],
   unityTypes: [],
+  movementTypes: [],
   editModal: false,
   alert: false,
   selected: {},
@@ -121,10 +125,12 @@ export const useWarehouseStore = create((set, get) => ({
   fetchProductTypesFromApi: async () => {
     const newProductTypes = await fetchProductTypes()
     const newUnityTypes = await fetchUnityTypes()
+    const newMovementTypes = await fetchMovementTypes()
     set((state) => ({
       ...state,
       productTypes: newProductTypes,
-      unityTypes: newUnityTypes
+      unityTypes: newUnityTypes,
+      movementTypes: newMovementTypes
     }))
   }
 }))

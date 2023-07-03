@@ -31,9 +31,11 @@ export function TopControls({ table, addHandler }) {
       >
         <Filter />
       </label>
-      <button className='btn p-1' onClick={addHandler}>
-        <Plus />
-      </button>
+      {addHandler && (
+        <button className='btn p-1' onClick={addHandler}>
+          <Plus />
+        </button>
+      )}
     </div>
   )
 }

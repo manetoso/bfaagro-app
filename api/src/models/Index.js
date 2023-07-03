@@ -5,8 +5,15 @@ import FORMULAS from './Formulas.js'
 import TIPOS_DOCUMENTOS from './TiposDocumentos.js'
 import USUARIOS from './Usuarios.js'
 import ROLES from './Roles.js'
+import PROVEEDORES from './Proveedores.js'
+import EMPRESAS from './Empresas.js'
+import ORDENES_COMPRAS from './OrdenesCompra.js'
+import MOVIMIENTOS_ALMACEN from './MovimientosAlmacen.js'
+import CUENTASxPAGAR from './Cuentas_por_Pagar.js'
+import PAGOS from './Pagos.js'
 
 export {
     ALMACENES, PRODUCTOS, PROCESOS, FORMULAS, TIPOS_DOCUMENTOS, USUARIOS,
-    ROLES
+    ROLES, PROVEEDORES, EMPRESAS, ORDENES_COMPRAS, MOVIMIENTOS_ALMACEN, CUENTASxPAGAR,
+    PAGOS
 }

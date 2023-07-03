@@ -24,3 +24,21 @@ export const WAREHOUSE_TYPES = {
   PACKAGING_PRODUCT_WAREHOUSE: 'EMBALAJES',
   FINISHED_PRODUCT_WAREHOUSE: 'PRODUCTO TERMINADO'
 }
+
+export const PURCHASE_ORDERS_PERIODS = [
+  {
+    id: 1,
+    label: 'CONTADO',
+    value: 0
+  },
+  {
+    id: 2,
+    label: '15 DÍAS',
+    value: 15
+  },
+  {
+    id: 3,
+    label: '30 DÍAS',
+    value: 30
+  }
+]

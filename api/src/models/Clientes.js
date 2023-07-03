@@ -39,11 +39,11 @@ const CLIENTES = new Schema({
     type: String,
     required: true
   }
-})
+}, { timestamps: true })
 
 CLIENTES.methods.toJSON = function () {
   const { __v, ...clientes } = this.toObject()
   return clientes
 }
 
-export default model(CLIENTES, 'CLIENTES')
+export default model('CLIENTES', CLIENTES)

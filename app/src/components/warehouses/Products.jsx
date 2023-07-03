@@ -1,4 +1,5 @@
 import { WareHouseDatatable } from './datatable'
+import { Loader } from '@/components/layout'
 
 import { useWareHouseDatatable } from '@/hooks/useWareHouseDatatable'
 import { FIELDS_TYPES } from '@/stores/useWarehouseStore'
@@ -16,8 +17,10 @@ export function Products() {
     productType,
     toggleAddModal,
     toggleAlert,
-    toggleEditModal
+    toggleEditModal,
+    isLoading
   } = useWareHouseDatatable({ field: FIELDS_TYPES.PRODUCTS })
+  if (isLoading) return <Loader />
   return (
     <>
       <WareHouseDatatable

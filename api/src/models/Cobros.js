@@ -27,10 +27,10 @@ const COBROS = new Schema({
       required: true
     }
   }
-})
+}, { timestamps: true })
 
 COBROS.methods.toJSON = function () {
-  const { __v, ...cobro } = this.toObject()
+  const { __v, createdAt, updatedAt, ...cobro } = this.toObject()
   return cobro
 }
 
