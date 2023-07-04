@@ -63,6 +63,10 @@ const CUENTASxPAGAR = new Schema(
       type: String,
       default: 'PENDIENTE'
     },
+    MONEDA: {
+      type: String,
+      default: 'MXN'
+    },
   },
   { timestamps: true }
 )

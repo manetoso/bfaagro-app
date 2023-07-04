@@ -53,14 +53,29 @@ const ORDENES_COMPRAS = new Schema({
                 type: Number,
                 required: true
             },
+            SUBTOTAL: {
+                type: Number,
+                required: true
+            },
+            IVA: {
+                type: Number,
+                default: 0,
+                required: true,
+            },
             TOTAL_UNITARIO: {
                 type: Number,
                 required: true
             },
         }
     ],
-    IVA: {
+    MONEDA: {
+        type: String,
+        default: 'MXN',
+        required: true
+    },
+    IVA_TOTAL: {
         type: Number,
+        default: 0,
         required: true
     },
     TOTAL: {
