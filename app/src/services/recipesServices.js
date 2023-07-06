@@ -93,12 +93,14 @@ export async function updateData(data) {
       `/formulas/${data.id}`,
       JSON.stringify(elementToDBSchema)
     )
-    const json = await resp.json()
+    const json = resp
     const respFormated = convertToAppSchema(json.body)
     toast.success('Receta actualizada con éxito')
     return respFormated
   } catch (error) {
     toast.error('Error actualizando receta')
+    // TODO: IF EVERITHING WORKS, DELETE THIS LINE
+    console.log({error})
     throw new Error('Error updating recipe')
   }
 }
