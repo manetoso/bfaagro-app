@@ -38,6 +38,8 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     const comboUnity = []
     const infiniteQantity = []
     const infiniteUnitPrice = []
+    const infiniteIva = []
+    const infiniteSubtotal = []
     const infiniteTotalUnit = []
     const formatedProducts = []
     for (const [key, value] of formData.entries()) {
@@ -66,6 +68,16 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
       if (key.includes('infiniteInput') && key.includes('unitPrice')) {
         infiniteUnitPrice.push(value)
       }
+      if (
+        key.includes('infiniteInput') &&
+        key.includes('iva') &&
+        key.includes('name')
+      ) {
+        value === 'Si' ? infiniteIva.push(0.16) : infiniteIva.push(0)
+      }
+      if (key.includes('infiniteInput') && key.includes('subtotal')) {
+        infiniteSubtotal.push(value)
+      }
       if (key.includes('infiniteInput') && key.includes('totalUnit')) {
         infiniteTotalUnit.push(value)
       }
@@ -77,6 +89,8 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
         unity: comboUnity[index],
         quantity: Number(infiniteQantity[index]),
         unitPrice: Number(infiniteUnitPrice[index]),
+        iva: infiniteIva[index],
+        subtotal: Number(infiniteSubtotal[index]),
         totalUnit: Number(infiniteTotalUnit[index])
       })
     })
@@ -90,16 +104,23 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
         supplierCompany: data['supplier[name]']
       },
       products: formatedProducts,
-      iva: data.iva,
+      totalIva: data.totalIva,
+      currency:
+        data.currency === undefined
+          ? 'MXN'
+          : data.currency === 'on'
+          ? 'USD'
+          : 'MXN',
       total: data.total,
       period: data['period[value]'],
       observations: data.observations
     }
 
-    // console.log({ data });
-    // console.log({ formatedData });
+    // console.log({ data })
+    // console.log({ formatedData })
     submitAction(formatedData, field)
   }
+  
 
   return (
     <>
@@ -132,17 +153,6 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
           label='Proveedor'
           name='supplier'
         />
-        <Input
-          defaultValue={
-            Object.keys(selectedRow).length === 0 ? '' : selectedRow.iva
-          }
-          id='iva'
-          isEmpty={isEmpty}
-          label='IVA'
-          name='iva'
-          placeholder='300'
-          type='number'
-        />
         {Object.keys(selectedRow).length === 0 && (
           <>
             <ComboBox
@@ -162,6 +172,20 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
             />
           </>
         )}
+        <Input
+          defaultValue={
+            Object.keys(selectedRow).length === 0
+              ? false
+              : selectedRow?.currency === 'USD'
+              ? true
+              : false
+          }
+          id='currency'
+          label='Moneda en USD?'
+          name='currency'
+          required={false}
+          type='checkbox'
+        />
         <hr className='my-6 h-1 w-full bg-gray-600' />
         <InfiniteInput
           data={productsData}

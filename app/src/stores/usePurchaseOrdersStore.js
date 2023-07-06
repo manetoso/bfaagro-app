@@ -41,6 +41,14 @@ export const usePurchaseOrdersStore = create((set, get) => ({
       editModal: !state.editModal
     }))
   },
+  printPurchaseOrder: (newSelected) => {
+    alert('print')
+    console.log({ newSelected })
+    set((state) => ({
+      ...state,
+      selected: newSelected
+    }))
+  },
   setDataFilds: (newData, field) => {
     set((state) => ({ ...state, [field]: newData }))
   },

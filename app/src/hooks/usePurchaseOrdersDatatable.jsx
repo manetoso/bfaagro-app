@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
 
-import { DropdownMenu } from '@/components/datatable'
-import { usePurchaseOrdersStore, FIELDS_TYPES } from '@/stores/usePurchaseOrdersStore'
+import { DropdownMenu } from '@/components/purchaseOrders/datatable/DropdownMenu'
+import {
+  usePurchaseOrdersStore,
+  FIELDS_TYPES
+} from '@/stores/usePurchaseOrdersStore'
 import { fetchData } from '@/services/purchaseOrdersServices'
 import { formatNumberToMoneyString } from '@/utils/utils'
 
@@ -23,6 +26,7 @@ export const usePurchaseOrdersDatatable = ({ field }) => {
     toggleAddModal,
     toggleAlert,
     toggleEditModal,
+    printPurchaseOrder,
     setDataFilds,
     addOrEditElement,
     removeElement,
@@ -41,8 +45,8 @@ export const usePurchaseOrdersDatatable = ({ field }) => {
   const columnHelper = createColumnHelper()
   const columns = useMemo(
     () => [
-      columnHelper.accessor('supplier.agent', {
-        header: 'Agente',
+      columnHelper.accessor('folio', {
+        header: 'Folio de orden',
         cell: (info) => (
           <span className='flex items-center justify-between gap-2 font-bold'>
             {info.getValue()}{' '}
@@ -51,9 +55,17 @@ export const usePurchaseOrdersDatatable = ({ field }) => {
               openModal={() => {
                 toggleEditModal(info.cell.row.original)
               }}
+              printHanlder={() => {
+                printPurchaseOrder(info.cell.row.original)
+              }}
             />
           </span>
         ),
+        footer: (props) => props.column.id
+      }),
+      columnHelper.accessor('supplier.agent', {
+        header: 'Agente',
+        cell: (info) => info.getValue(),
         footer: (props) => props.column.id
       }),
       columnHelper.accessor('dateFormatted', {
@@ -61,7 +73,12 @@ export const usePurchaseOrdersDatatable = ({ field }) => {
         cell: (info) => info.getValue(),
         footer: (props) => props.column.id
       }),
-      columnHelper.accessor('iva', {
+      columnHelper.accessor('currency', {
+        header: 'Moneda',
+        cell: (info) => info.getValue(),
+        footer: (props) => props.column.id
+      }),
+      columnHelper.accessor('totalIva', {
         header: 'IVA',
         cell: (info) => formatNumberToMoneyString(info.getValue()),
         footer: (props) => props.column.id

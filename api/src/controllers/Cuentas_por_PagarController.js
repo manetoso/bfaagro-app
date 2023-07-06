@@ -5,9 +5,9 @@ import { generateNewFolio } from '../helpers/FoliosGenerator.js'
 
 const createCuentaxPagar = async (req = request, res = response) => {
   try {
-    const { ID_ORDEN_COMPRA, PROVEEDOR, FECHA_EMISION, FOLIO_ORDEN, CANTIDAD, FECHA_PAGO, CANTIDAD_PAGADA, SALDO= CANTIDAD, OBSERVACIONES } = req.body
+    const { ID_ORDEN_COMPRA, PROVEEDOR, FECHA_EMISION, FOLIO_ORDEN, CANTIDAD, FECHA_PAGO, CANTIDAD_PAGADA, SALDO = CANTIDAD, OBSERVACIONES } = req.body
     const FOLIO_CXP = await generateNewFolio('CXP')
-    const cuentasxPagar = { ID_ORDEN_COMPRA, PROVEEDOR, FECHA_EMISION, FOLIO_ORDEN, FOLIO_CXP,  CANTIDAD, FECHA_PAGO, CANTIDAD_PAGADA, SALDO, OBSERVACIONES }
+    const cuentasxPagar = { ID_ORDEN_COMPRA, PROVEEDOR, FECHA_EMISION, FOLIO_ORDEN, FOLIO_CXP, CANTIDAD, FECHA_PAGO, CANTIDAD_PAGADA, SALDO, OBSERVACIONES }
     console.log(cuentasxPagar);
 
     const actionDB = await Cuentas_por_Pagar.create(cuentasxPagar)
@@ -50,7 +50,7 @@ const deleteCuentaxPagar = async (req = request, res = response) => {
 }
 const createCuentaxPagarByOrdenCompra = async (ordenCompra = {}, OBSERVACIONES, PERIODO) => {
   try {
-    const { _id, PROVEEDOR, FECHA, FOLIO, TOTAL } = ordenCompra
+    const { _id, PROVEEDOR, FECHA, FOLIO, TOTAL, MONEDA } = ordenCompra
 
     const FOLIO_CXP = await generateNewFolio('CXP')
     const FECHA_PAGO = calculatePayDateByPeriodo(PERIODO)
@@ -67,7 +67,8 @@ const createCuentaxPagarByOrdenCompra = async (ordenCompra = {}, OBSERVACIONES, 
       'CANTIDAD': TOTAL,
       'FECHA_PAGO': FECHA_PAGO,
       'SALDO': TOTAL,
-      'OBSERVACIONES': OBSERVACIONES
+      'OBSERVACIONES': OBSERVACIONES,
+      'MONEDA': MONEDA,
     }
     await Cuentas_por_Pagar.create(cuentasxPagar)
     return true
@@ -80,10 +81,10 @@ const calculatePayDateByPeriodo = (PERIODO = Number) => {
   try {
     let todayDate = new Date(Date.now())
     todayDate.setHours(todayDate.getHours() - 6);
-    if(PERIODO != 0 && PERIODO != undefined) {
-      const newDate = new Date( todayDate.setDate( todayDate.getDate() +  PERIODO )  )
+    if (PERIODO != 0 && PERIODO != undefined) {
+      const newDate = new Date(todayDate.setDate(todayDate.getDate() + PERIODO))
       return newDate
-    }else {
+    } else {
       return todayDate
     }
   } catch (error) {

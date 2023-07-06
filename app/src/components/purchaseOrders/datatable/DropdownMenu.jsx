@@ -3,7 +3,7 @@ import { Menu, Transition } from '@headlessui/react'
 
 import { DotsHorizontal } from '🚀'
 
-export function DropdownMenu({ openModal, openAlert }) {
+export function DropdownMenu({ openModal, openAlert, printHanlder }) {
   return (
     <>
       <Menu as='div' className='relative inline-block text-left'>
@@ -32,6 +32,20 @@ export function DropdownMenu({ openModal, openAlert }) {
                     onClick={openModal}
                   >
                     Editar
+                  </button>
+                )}
+              </Menu.Item>
+            </div>
+            <div className='px-1 py-1'>
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    className={`${
+                      active ? 'bg-black text-white' : 'text-gray-900'
+                    } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                    onClick={printHanlder}
+                  >
+                    Imprimir
                   </button>
                 )}
               </Menu.Item>
