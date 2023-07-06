@@ -46,7 +46,7 @@ export async function createData(data) {
     toast.success('Orden de compra creada con éxito')
     return dataFormated
   } catch (error) {
-    console.log({error})
+    console.log({ error })
     toast.error('Error creando nueva orden de compra')
     throw new Error('Error creating new purchase order')
   }
@@ -112,8 +112,8 @@ export async function fetchSupplierTypes() {
 
 /**
  *
- * @param {{ company: string, date: string, supplier: { supplierId: string, agent: string, supplierCompany: string }, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number, totalUnit: number }[], iva: number, total: number }} data
- * @returns {{ ID_EMPRESA: string, FECHA: string, PROVEEDOR: { ID_PROVEEDOR: string, AGENTE: string, NOMBRE_EMPRESA: string }, PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number, TOTAL_UNITARIO: number }, IVA: number, TOTAL: number }} - The purchase order to DB Schema.
+ * @param {{ company: string, date: string, supplier: { supplierId: string, agent: string, supplierCompany: string }, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number, subtotal: number, iva: number, totalUnit: number }[], totalIva: number, currency: string, total: number }} data
+ * @returns {{ ID_EMPRESA: string, FECHA: string, PROVEEDOR: { ID_PROVEEDOR: string, AGENTE: string, NOMBRE_EMPRESA: string }, PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number, TOTAL_UNITARIO: number }, IVA_TOTAL: number, MONEDA: string, TOTAL: number }} - The purchase order to DB Schema.
  */
 export function convertPurchaseOrderToDBSchema(data) {
   try {
@@ -131,9 +131,12 @@ export function convertPurchaseOrderToDBSchema(data) {
         CANTIDAD: product.quantity,
         UNIDAD_MEDIDA: product.unity,
         PRECIO_UNITARIO: product.unitPrice,
+        SUBTOTAL: product.subtotal,
+        IVA: product.iva,
         TOTAL_UNITARIO: product.totalUnit
       })),
-      IVA: data.iva,
+      IVA_TOTAL: data.totalIva,
+      MONEDA: data.currency,
       TOTAL: data.total
     }
     return dbSchemaLike
@@ -144,8 +147,8 @@ export function convertPurchaseOrderToDBSchema(data) {
 
 /**
  *
- * @param {{ company: string, date: string, supplier: { supplierId: string, agent: string, supplierCompany: string }, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number, totalUnit: number }[], iva: number, total: number, observations: string, period: number }} data
- * @returns {{ ID_EMPRESA: string, FECHA: string, PROVEEDOR: { ID_PROVEEDOR: string, AGENTE: string, NOMBRE_EMPRESA: string }, PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number, TOTAL_UNITARIO: number }, IVA: number, TOTAL: number, OBSERVACIONES: string, PERIODO: number }} - The purchase order to DB Schema.
+ * @param {{ company: string, date: string, supplier: { supplierId: string, agent: string, supplierCompany: string }, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number, subtotal: number, iva: number, totalUnit: number }[], totalIva: number, currency: string, total: number, observations: string, period: number }} data
+ * @returns {{ ID_EMPRESA: string, FECHA: string, PROVEEDOR: { ID_PROVEEDOR: string, AGENTE: string, NOMBRE_EMPRESA: string }, PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number, SUBTOTAL: number, IVA: number, TOTAL_UNITARIO: number }, IVA_TOTAL: number, MONEDA: string, TOTAL: number, OBSERVACIONES: string, PERIODO: number }} - The purchase order to DB Schema.
  */
 export function converCreatetPurchaseOrderToDBSchema(data) {
   try {
@@ -163,9 +166,12 @@ export function converCreatetPurchaseOrderToDBSchema(data) {
         CANTIDAD: product.quantity,
         UNIDAD_MEDIDA: product.unity,
         PRECIO_UNITARIO: product.unitPrice,
+        SUBTOTAL: product.subtotal,
+        IVA: product.iva,
         TOTAL_UNITARIO: product.totalUnit
       })),
-      IVA: data.iva,
+      IVA_TOTAL: data.totalIva,
+      MONEDA: data.currency,
       TOTAL: data.total,
       OBSERVACIONES: data.observations,
       PERIODO: data.period
@@ -178,13 +184,14 @@ export function converCreatetPurchaseOrderToDBSchema(data) {
 
 /**
  *
- * @param {{ _id: string, ID_EMPRESA: string, FECHA: string, PROVEEDOR: { ID_PROVEEDOR: string, AGENTE: string, NOMBRE_EMPRESA: string }, PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number, TOTAL_UNITARIO: number }, IVA: number, TOTAL: number }} data
- * @returns {{ id: string, company: string, date: string, supplier: { supplierId: string, agent: string, supplierCompany: string }, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number, totalUnit: number }[], iva: number, total: number }} - The purchase order to App Schema.
+ * @param {{ _id: string, FOLIO: string, ID_EMPRESA: string, FECHA: string, PROVEEDOR: { ID_PROVEEDOR: string, AGENTE: string, NOMBRE_EMPRESA: string }, PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number, SUBTOTAL: number, IVA: number, TOTAL_UNITARIO: number }, IVA_TOTAL: number, MONEDA: string TOTAL: number }} data
+ * @returns {{ id: string, company: string, date: string, supplier: { supplierId: string, agent: string, supplierCompany: string }, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number, subtotal: number, iva: number, totalUnit: number }[], totalIva: number, currency: string, total: number }} - The purchase order to App Schema.
  */
 export function convertPurchaseOrderToAppSchema(data) {
   try {
     const dbSchemaLike = {
       id: data._id,
+      folio: data.FOLIO,
       company: data.ID_EMPRESA,
       date: data.FECHA,
       dateFormatted: new Date(data.FECHA).toLocaleDateString('es-MX', {
@@ -203,9 +210,12 @@ export function convertPurchaseOrderToAppSchema(data) {
         quantity: product.CANTIDAD,
         unity: product.UNIDAD_MEDIDA,
         unitPrice: product.PRECIO_UNITARIO,
+        subtotal: product.SUBTOTAL,
+        iva: product.IVA,
         totalUnit: product.TOTAL_UNITARIO
       })),
-      iva: data.IVA,
+      totalIva: data.IVA_TOTAL,
+      currency: data.MONEDA,
       total: data.TOTAL
     }
     return dbSchemaLike
