@@ -162,14 +162,14 @@ const styles = StyleSheet.create({
   tableFooter: {
     display: 'flex',
     flexDirection: 'row',
-    gap: 20,
+    gap: 10,
     justifyContent: 'space-between'
   },
   tableFooterColBig: {
     width: '100%'
   },
   tableFooterCol: {
-    width: '50%'
+    width: '70%'
   },
   tableFooterTotalsRow: {
     alignItems: 'flex-start',
@@ -188,12 +188,12 @@ const styles = StyleSheet.create({
   },
   signature: {
     alignItems: 'center',
-    color: '#008D36',
+    color: '#004083',
     display: 'flex',
     flexDirection: 'column'
   },
   signatureLine: {
-    backgroundColor: '#008D36',
+    backgroundColor: '#004083',
     height: 2,
     width: 160
   },
@@ -266,9 +266,11 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
           <View style={styles.infoRow}>
             <Text style={styles.strong}>Proveedor:</Text>
             <View>
-              <Text style={styles.strong}>{selected?.supplier?.agent}</Text>
-              <Text style={{ ...styles.muted, ...styles.small }}>
+              <Text style={styles.strong}>
                 {selected?.supplier?.supplierCompany}
+              </Text>
+              <Text style={{ ...styles.muted, ...styles.small }}>
+                {selected?.supplier?.agent}
               </Text>
               <Text style={{ ...styles.muted, ...styles.small }}>
                 {formatPhoneNumber(suppliersData?.phoneNumber)}
@@ -355,6 +357,8 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
             <View
               style={{
                 ...styles.tableFooterTotalsRow,
+                color: '#004083',
+                flexWrap: 'wrap',
                 fontSize: 16
               }}
             >
