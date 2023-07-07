@@ -1,5 +1,6 @@
-import { PurchaseOrdersDatatable } from './datatable'
+import { PurchaseOrdersDatatable, PDFBuilder } from './datatable'
 import { CustomToast } from '@/components/toast'
+import { PDFView } from '@/components/alert'
 import { Loader } from '@/components/layout'
 
 import { usePurchaseOrdersDatatable } from '@/hooks/usePurchaseOrdersDatatable'
@@ -11,10 +12,12 @@ export function PurchaseOrders() {
     addOrEditElement,
     alert,
     editModal,
+    pdfView,
     removeElement,
     selected,
     columns,
     toggleAddModal,
+    printPurchaseOrder,
     toggleAlert,
     toggleEditModal,
     isLoading
@@ -37,6 +40,13 @@ export function PurchaseOrders() {
         editModal={editModal}
         field={FIELDS_TYPES.PURCHASE_ORDERS}
       />
+      <PDFView
+        closeModal={() => printPurchaseOrder({})}
+        isOpen={pdfView}
+        title='Orden de Compra PDF'
+      >
+        <PDFBuilder />
+      </PDFView>
     </>
   )
 }

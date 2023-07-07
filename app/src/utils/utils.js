@@ -39,6 +39,9 @@ export const handleInputMinMaxValue = (event, minValue, maxValue) => {
  * @returns {string} formatted phone number
  */
 export const formatPhoneNumber = (phoneNumberString) => {
+  if (!phoneNumberString) {
+    return ''
+  }
   if (phoneNumberString.length <= 10)
     return phoneNumberString
       .replace(/[^\d]+/g, '')
@@ -51,4 +54,16 @@ export const formatPhoneNumber = (phoneNumberString) => {
     return phoneNumberString
       .replace(/[^\d]+/g, '')
       .replace(/(\d{2})(\d{3})(\d{3})(\d{4})/, '+$1 ($2) $3-$4')
+}
+
+/**
+ * @param {string} date
+ * @returns {string} formatted date
+ * @description format date to MM/DD/YYYY
+ */
+export const formatDate = (date) => {
+  const newDate = new Date(date)
+  return `${
+    newDate.getMonth() + 1
+  } / ${newDate.getDate()} / ${newDate.getFullYear()}`
 }
