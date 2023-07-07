@@ -21,6 +21,7 @@ export const usePurchaseOrdersDatatable = ({ field }) => {
   const {
     purchaseOrdersData,
     editModal,
+    pdfView,
     alert,
     selected,
     toggleAddModal,
@@ -109,10 +110,12 @@ export const usePurchaseOrdersDatatable = ({ field }) => {
   return {
     purchaseOrdersData,
     editModal,
+    pdfView,
     alert,
     selected,
     toggleAddModal,
     toggleEditModal,
+    printPurchaseOrder,
     toggleAlert,
     addOrEditElement,
     removeElement,

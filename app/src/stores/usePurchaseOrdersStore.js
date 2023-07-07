@@ -21,6 +21,7 @@ export const usePurchaseOrdersStore = create((set, get) => ({
   productsData: [],
   companyData: {},
   editModal: false,
+  pdfView: false,
   alert: false,
   selected: {},
 
@@ -42,11 +43,10 @@ export const usePurchaseOrdersStore = create((set, get) => ({
     }))
   },
   printPurchaseOrder: (newSelected) => {
-    alert('print')
-    console.log({ newSelected })
     set((state) => ({
       ...state,
-      selected: newSelected
+      selected: newSelected,
+      pdfView: !state.pdfView
     }))
   },
   setDataFilds: (newData, field) => {
