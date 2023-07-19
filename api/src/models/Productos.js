@@ -5,7 +5,6 @@ const PRODUCTOS = new Schema(
     NOMBRE_PRODUCTO: {
       type: String,
       required: true,
-      unique: true
     },
     CANTIDAD: {
       type: Number,

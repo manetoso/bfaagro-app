@@ -1,20 +1,15 @@
 import { Schema, model } from 'mongoose'
 
 const VENTAS = new Schema({
-  ID_VENTA: {
-    type: String,
-    unique: true,
-    index: true,
-    required: true
-  },
   CLIENTES: {
     CLIENTE_ORIGEN: {
       ID_CLIENTE: {
-        type: String,
-        ref: 'CLIENTES'
+        type: Schema.Types.ObjectId,
+        ref: 'CLIENTES',
       },
       NOMBRE_CLIENTE: {
-        type: String
+        type: String,
+        default: "BFA AGRO S.A de C.V"
       }
     },
     CLIENTE_DESTINO: {
@@ -36,8 +31,8 @@ const VENTAS = new Schema({
   },
   STATUS: {
     ID_TIPO_STATUS: {
-      type: String,
-      required: true
+      type: Schema.Types.ObjectId,
+      ref: 'TIPOS_DOCUMENTOS',
     },
     STATUS: {
       type: String,
@@ -55,14 +50,13 @@ const VENTAS = new Schema({
   },
   SALDO: {
     type: Number,
-    default: this.TOTAL_VENTA,
     required: true
   }
 }, { timestamps: true })
 
 VENTAS.methods.toJSON = function () {
-  const { __v, createdAt, updatedAt, ...libroDiario } = this.toObject()
-  return libroDiario
+  const { __v, createdAt, updatedAt, ...ventas } = this.toObject()
+  return ventas
 }
 
-export default model(VENTAS, 'VENTAS')
+export default model('VENTAS', VENTAS)
