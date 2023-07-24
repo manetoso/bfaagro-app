@@ -13,6 +13,8 @@ import OrdenesCompra from './OrdenesCompra.routes.js'
 import MovimientosAlmacen from './MoviminetosAlmacen.routes.js'
 import Cuentas_por_Pagar from './Cuentas_por_Pagar.routes.js'
 import Pagos from './Pagos.routes.js'
+import Clientes from './Clientes.routes.js'
+import Ventas from './Ventas.routes.js'
 
 export {
   AlmacenesRouter,
@@ -30,4 +32,6 @@ export {
   MovimientosAlmacen,
   Cuentas_por_Pagar,
   Pagos,
+  Clientes,
+  Ventas
 }

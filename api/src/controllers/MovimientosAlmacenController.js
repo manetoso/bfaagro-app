@@ -2,6 +2,7 @@ import MOVIMIENTOS_ALMACEN from '../models/MovimientosAlmacen.js'
 import PRODUCTOS from '../models/Productos.js'
 import { request, response } from 'express'
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
+import { createProductoInAlmacen } from './../controllers/ProductosController.js'
 
 const createMovimientoAlmacen = async (req = request, res = response) => {
   try {
@@ -53,8 +54,29 @@ const registerMovementAlmacen = async (movement = '', products = []) => {
     const typeMovement = typeMovementAlmacen(movement)
     for (const product of products) {
       const dbProduct = await PRODUCTOS.findById(product.ID_PRODUCTO).lean()
-      dbProduct.CANTIDAD = dbProduct.CANTIDAD + ( product.CANTIDAD * typeMovement)
-      await PRODUCTOS.findByIdAndUpdate(product.ID_PRODUCTO, {  CANTIDAD: dbProduct.CANTIDAD })
+      dbProduct.CANTIDAD = dbProduct.CANTIDAD + (product.CANTIDAD * typeMovement)
+      await PRODUCTOS.findByIdAndUpdate(product.ID_PRODUCTO, { CANTIDAD: dbProduct.CANTIDAD })
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const registerMovementByAlmacen = async (movement = '', products = [], almacen = {}) => {
+  try {
+    const typeMovement = typeMovementAlmacen(movement)
+    for (const product of products) {
+      //Buscamos si existe el producto
+      const dbProduct = await PRODUCTOS.findOne({ 'ALMACEN.ID_ALMACEN': almacen._id, 'NOMBRE_PRODUCTO': product.NOMBRE_PRODUCTO, 'UNIDAD_MEDIDA': product.UNIDAD_MEDIDA }).lean()
+      if (dbProduct) {
+        //Si existe solo sumamos las existencias
+        dbProduct.CANTIDAD = dbProduct.CANTIDAD + (product.CANTIDAD * typeMovement)
+        await PRODUCTOS.findByIdAndUpdate(dbProduct._id, { CANTIDAD: dbProduct.CANTIDAD })
+      } else {
+        // Si no existe lo tengo que crear en su nuevo almacen
+        const newProduct = await PRODUCTOS.findById({_id: product.ID_PRODUCTO})
+        await createProductoInAlmacen(newProduct, almacen, product.CANTIDAD)
+      }
     }
   } catch (error) {
     console.log(error);
@@ -79,4 +101,4 @@ const typeMovementAlmacen = (movement = '') => {
   }
 }
 
-export { createMovimientoAlmacen, findMovimientosAlmacen, deleteMovimientoAlmacen, updateMovimientoAlmacen }
+export { createMovimientoAlmacen, findMovimientosAlmacen, deleteMovimientoAlmacen, updateMovimientoAlmacen, registerMovementAlmacen, registerMovementByAlmacen }
