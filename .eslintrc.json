@@ -9,6 +9,6 @@
         "html": false
       }
     ],
-    "multiline-ternary": "off",
+    "multiline-ternary": "off"
   }
 }
