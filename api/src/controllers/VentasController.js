@@ -1,30 +1,31 @@
 import { request, response } from 'express'
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
-import { VENTAS, VENTAS_DETALLE, ALMACENES, CLIENTES } from '../models/Index.js'
+import { VENTAS, VENTAS_DETALLE, ALMACENES, PRODUCTOS } from '../models/Index.js'
 import { getTypeCliente } from '../controllers/ClientesController.js'
 import { getAlmacenByIdCliente } from '../controllers/AlmacenesController.js'
 import { registerMovementByAlmacen, registerMovementAlmacen } from '../controllers/MovimientosAlmacenController.js'
+import { generateNewFolio } from '../helpers/FoliosGenerator.js'
+import { createCuentaxCobrarByVenta } from './Cuentas_por_CobrarController.js'
 
 const createVenta = async (req = request, res = response) => {
     try {
-        const { CLIENTES, FECHA_VENCIMIENTO, STATUS, TOTAL_VENTA, TOTAL_PAGADO, SALDO, VENTA_DETALLE } = req.body
+        const { CLIENTES, FECHA_VENCIMIENTO, ESTADO, TOTAL_VENTA, TOTAL_PAGADO, SALDO, VENTA_DETALLE, PERIODO } = req.body
+        const FOLIO = await generateNewFolio("VENTAS")
         const venta = {
-            CLIENTES, FECHA_VENCIMIENTO, STATUS, TOTAL_VENTA, TOTAL_PAGADO, SALDO
+            FOLIO, CLIENTES
         }
-        if (CLIENTES.CLIENTE_ORIGEN.ID_CLIENTE == null || CLIENTES.CLIENTE_ORIGEN == undefined ) {
-            // Posiblemente es una venta de BFA Agro a un cliente comisionista
+        if (CLIENTES.CLIENTE_ORIGEN.NOMBRE_CLIENTE == "BFA AGRO S.A de C.V") {
+            // POSIBLEMENTE ES UNA VENTA DE  BFA AGRO A UN CLIENTE COMISIONISTA
             const idCliente = CLIENTES.CLIENTE_DESTINO.ID_CLIENTE
-            const typeCliente = await getTypeCliente(idCliente)
-            if (typeCliente == 'COMISIONISTA') {
-                // Se suma la cantidad de productos al almacen del cliente
-                const almacenCliente = await getAlmacenByIdCliente(idCliente)
-                await registerMovementByAlmacen('ENTRADA', VENTA_DETALLE.PRODUCTOS, almacenCliente)
-            }
+            await registerMovementIfIsComisionista(idCliente, VENTA_DETALLE.PRODUCTOS, 'ENTRADA')
         }
         const actionDB = await VENTAS.create(venta)
-        //Creamos el detalle de la venta
+        //CREAMOS EL DETALLE DE LA VENTA
         await createVentaDetalle(actionDB._id, VENTA_DETALLE)
-        await registerMovementAlmacen('SALIDA',VENTA_DETALLE.PRODUCTOS)
+        // REGISTRAMOS EL MOVIMIENTO DE SALIDA
+        await registerMovementAlmacen('SALIDA', VENTA_DETALLE.PRODUCTOS)
+        // CREAR LA CXC
+        await createCuentaxCobrarByVenta(actionDB._id, CLIENTES, FOLIO, FECHA_VENCIMIENTO, ESTADO, TOTAL_VENTA, TOTAL_PAGADO, SALDO)
         return serverOkMessage(res, actionDB, 201)
     } catch (error) {
         console.log(error);
@@ -44,8 +45,35 @@ const findVentas = async (req = request, res = response) => {
 const updateVenta = async (req = request, res = response) => {
     try {
         const id = req.params.idVenta
-        const data = req.body
-        const actionDB = await VENTAS.findByIdAndUpdate(id, data, {
+        const { CLIENTES, FECHA_VENCIMIENTO, ESTADO, TOTAL_VENTA, TOTAL_PAGADO, SALDO, VENTA_DETALLE } = req.body
+        const venta = {
+            CLIENTES, FECHA_VENCIMIENTO, ESTADO, TOTAL_VENTA, TOTAL_PAGADO, SALDO
+        }
+        const clienteDestinoNuevo = CLIENTES.CLIENTE_DESTINO
+        const clienteOrigenNuevo = CLIENTES.CLIENTE_ORIGEN
+
+        const ventaSaved = await VENTAS.findById(id)
+        const ventaDetalleSaved = await VENTAS_DETALLE.findOne({ 'ID_VENTA': id })
+        const clienteDestinoViejo = ventaSaved.CLIENTES.CLIENTE_DESTINO
+        const clienteOrigenViejo = ventaSaved.CLIENTES.CLIENTE_ORIGEN
+
+        // REVISAREMOS SI SON CLIENTES DIFERENTES
+        if (clienteDestinoNuevo.NOMBRE_CLIENTE != clienteDestinoViejo.NOMBRE_CLIENTE) {
+            // SUMAMOS AL NUEVO DESTINO
+            await registerMovementIfIsComisionista(clienteDestinoNuevo.ID_CLIENTE, VENTA_DETALLE.PRODUCTOS, 'ENTRADA')
+            // RESTAMOS AL VIEJO DESTINO
+            await registerMovementIfIsComisionista(clienteDestinoViejo.ID_CLIENTE, VENTA_DETALLE.PRODUCTOS, 'SALIDA')
+        }
+        // AHORA VEMOS SI EL CLIENTE DE ORIGEN CAMBIO PARA SUMARLE LO QUE SE HABIA RESTADO Y RESTARLE AL NUEVO
+        if (clienteOrigenNuevo.NOMBRE_CLIENTE != clienteOrigenViejo.NOMBRE_CLIENTE) {
+            // RESTAMOS LAS CANTIDADES SI ES COMISIONISTA
+            await registerMovementIfIsComisionista(clienteOrigenNuevo.ID_CLIENTE, VENTA_DETALLE.PRODUCTOS, 'SALIDA')
+            // Y SUMAMOS AL VIEJO SI ES COMISIONISTA
+            await registerMovementIfIsComisionista(clienteOrigenViejo.ID_CLIENTE, ventaDetalleSaved.PRODUCTOS, 'ENTRADA')
+        }
+        await updateVentaDetalle(VENTA_DETALLE)
+
+        const actionDB = await VENTAS.findByIdAndUpdate(id, venta, {
             new: true
         })
         return serverOkMessage(res, actionDB)
@@ -58,6 +86,17 @@ const deleteVenta = async (req = request, res = response) => {
     try {
         const id = req.params.idVenta
         const actionDB = await VENTAS.findByIdAndDelete(id)
+        const VENTA_DETALLE = await VENTAS_DETALLE.findOne({ 'ID_VENTA': id })
+        await VENTAS_DETALLE.findByIdAndDelete(VENTA_DETALLE._id)
+        return serverOkMessage(res, actionDB)
+    } catch (error) {
+        return serverErrorMessage(res)
+    }
+}
+
+const findVentas_Detalles = async (req = request, res = response) => {
+    try {
+        const actionDB = await VENTAS_DETALLE.find().sort({ createdAt: -1 })
         return serverOkMessage(res, actionDB)
     } catch (error) {
         return serverErrorMessage(res)
@@ -67,7 +106,7 @@ const deleteVenta = async (req = request, res = response) => {
 const createVentaDetalle = async (idVenta, ventaDetalle = {}) => {
     try {
         const { PRODUCTOS, PRECIO_TOTAL } = ventaDetalle
-        const actionDB = {  "ID_VENTA": idVenta, PRODUCTOS, PRECIO_TOTAL }
+        const actionDB = { "ID_VENTA": idVenta, PRODUCTOS, PRECIO_TOTAL }
         await VENTAS_DETALLE.create(actionDB)
     } catch (error) {
         console.log(error);
@@ -75,4 +114,28 @@ const createVentaDetalle = async (idVenta, ventaDetalle = {}) => {
     }
 }
 
-export { createVenta, findVentas, deleteVenta, updateVenta, createVentaDetalle }
+const updateVentaDetalle = async (VENTA_DETALLE = {}) => {
+    try {
+        const id = VENTA_DETALLE._id
+        const data = VENTA_DETALLE
+        const actionDB = await VENTAS_DETALLE.findByIdAndUpdate(id, data)
+    } catch (error) {
+        console.log();
+    }
+}
+
+const registerMovementIfIsComisionista = async (idCliente = 0, PRODUCTOS = [], inputOutput = '') => {
+    try {
+        const typeCliente = await getTypeCliente(idCliente)
+        if (typeCliente == 'COMISIONISTA') {
+            // Se suma la cantidad de productos al almacen del cliente
+            const almacenCliente = await getAlmacenByIdCliente(idCliente)
+            await registerMovementByAlmacen(inputOutput, PRODUCTOS, almacenCliente)
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+export { createVenta, findVentas, deleteVenta, updateVenta, findVentas_Detalles, createVentaDetalle }
