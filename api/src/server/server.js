@@ -19,7 +19,8 @@ import {
   Cuentas_por_Pagar,
   Pagos,
   Clientes,
-  Ventas
+  Ventas,
+  Cuentas_por_Cobrar
 } from '../routes/index.routes.js'
 
 class Server {
@@ -46,6 +47,7 @@ class Server {
       pagos: '/api/pagos',
       clientes: '/api/clientes',
       ventas: '/api/ventas',
+      cuentas_por_cobrar: '/api/cxc'
     }
 
     // Func to Connect DB
@@ -86,6 +88,7 @@ class Server {
     this.app.use(this.paths.pagos, Pagos)
     this.app.use(this.paths.clientes, Clientes)
     this.app.use(this.paths.ventas, Ventas)
+    this.app.use(this.paths.cuentas_por_cobrar, Cuentas_por_Cobrar)
   }
 
   listen() {

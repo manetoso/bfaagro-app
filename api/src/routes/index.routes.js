@@ -15,6 +15,7 @@ import Cuentas_por_Pagar from './Cuentas_por_Pagar.routes.js'
 import Pagos from './Pagos.routes.js'
 import Clientes from './Clientes.routes.js'
 import Ventas from './Ventas.routes.js'
+import Cuentas_por_Cobrar from './Cuentas_por_Cobrar.routes.js'
 
 export {
   AlmacenesRouter,
@@ -33,5 +34,6 @@ export {
   Cuentas_por_Pagar,
   Pagos,
   Clientes,
-  Ventas
+  Ventas,
+  Cuentas_por_Cobrar
 }

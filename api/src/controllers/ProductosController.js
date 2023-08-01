@@ -111,8 +111,6 @@ const createProductoInAlmacen = async (product = {}, almacen, cantidad) => {
         "NOMBRE_ALMACEN": almacen.NOMBRE_ALMACEN
       }
     }
-    console.log('ola');
-    console.log(producto);
     await PRODUCTOS.create(producto)
   } catch (error) {
     console.log(error);
