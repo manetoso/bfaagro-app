@@ -1,8 +1,7 @@
 import { create } from 'zustand'
 
 import { createData, updateData, deleteData } from '@/services/clientsServices'
-import { fetchData as fetchSupplierData } from '@/services/suppliersServices'
-import { fetchData as fetchAccountsPayable } from '@/services/accountsPayableServices'
+import { fetchClientsTypes } from '@/services/globalServices'
 
 export const FIELDS_TYPES = {
   CLIENTS: 'clientsData'
@@ -10,10 +9,7 @@ export const FIELDS_TYPES = {
 
 export const useClientsStore = create((set, get) => ({
   clientsData: [],
-  accountsPayableData: [],
-  suppliersData: [],
-  productsData: [],
-  companyData: {},
+  clientsTypesData: [],
   editModal: false,
   alert: false,
   selected: {},
@@ -77,15 +73,10 @@ export const useClientsStore = create((set, get) => ({
     }
   },
   fetchExtraData: async () => {
-    const accountsPayable = await fetchAccountsPayable()
-    const filteredAccountsPayable = accountsPayable.filter(
-      (ap) => ap.status.toLowerCase() === 'pendiente'
-    )
-    const suppliers = await fetchSupplierData()
+    const clientsTypes = await fetchClientsTypes()
     set((state) => ({
       ...state,
-      accountsPayableData: filteredAccountsPayable,
-      suppliersData: suppliers
+      clientsTypesData: clientsTypes
     }))
   }
 }))

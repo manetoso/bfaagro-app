@@ -1,93 +1,8 @@
 import { useState } from 'react'
 
-import { usePaymentsStore } from '@/stores/usePaymentsStore'
+import { useClientsStore } from '@/stores/useClientsStore'
 
 import { Input, ComboBox } from '@/components/form'
-import {
-  handleInputMinMaxValue,
-  formatNumberToMoneyString
-} from '@/utils/utils'
-
-function AccountsPayableCombobox({
-  accountsPayableData,
-  handleAccountChange,
-  selectedAccount,
-  selectedRow
-}) {
-  return (
-    <div className='grid w-full gap-6'>
-      <ComboBox
-        data={accountsPayableData}
-        defaultSelected={
-          Object.keys(selectedRow).length === 0
-            ? ''
-            : selectedRow.accountPayableFolio
-        }
-        dataDisplayAttribute='folio'
-        id='accountPayable'
-        label='Folio CxP'
-        name='accountPayable'
-        getSelected={handleAccountChange}
-      />
-      <div className='grid w-full grid-cols-2 gap-2 md:grid-cols-4'>
-        <span className='flex flex-col text-gray-600'>
-          <p className='font-bold'>Folio de la Orden:</p>
-          <p className='py-2 font-black'>{selectedAccount?.orderFolio}</p>
-        </span>
-        <span className='flex flex-col text-gray-600'>
-          <p className='font-bold'>Fecha de emision:</p>
-          <p className='py-2 font-black'>
-            {selectedAccount?.emitionDateFormatted}
-          </p>
-        </span>
-        <span className='flex flex-col text-gray-600'>
-          <p className='font-bold'>Fecha de pago:</p>
-          <p className='py-2 font-black'>
-            {selectedAccount?.paymentDateFormatted}
-          </p>
-        </span>
-        <span className='flex flex-col text-gray-600'>
-          <p className='font-bold'>Observaciones:</p>
-          <p className='py-2 font-black'>{selectedAccount?.observations}</p>
-        </span>
-        <span className='flex flex-col text-gray-600'>
-          <p className='font-bold'>Cantidad:</p>
-          <p className='py-2 font-black'>
-            {formatNumberToMoneyString(selectedAccount?.quantity)}
-          </p>
-        </span>
-        <span className='flex flex-col text-gray-600'>
-          <p className='font-bold'>Cantidad pagada:</p>
-          <p className='py-2 font-black'>
-            {formatNumberToMoneyString(selectedAccount?.quantityPaid)}
-          </p>
-        </span>
-        <span className='flex flex-col text-gray-600'>
-          <p className='font-bold'>Saldo:</p>
-          <p className='py-2 font-black'>
-            {formatNumberToMoneyString(selectedAccount?.balance)}
-          </p>
-        </span>
-        <span className='flex flex-col text-gray-600'>
-          <p className='font-bold'>Estado:</p>
-          <p
-            className={`py-2 font-black ${
-              selectedAccount?.status?.toLowerCase() === 'pendiente'
-                ? 'text-amber-500'
-                : 'text-emerald-500'
-            }`}
-          >
-            {selectedAccount?.status}
-          </p>
-        </span>
-        <span className='flex flex-col text-gray-600'>
-          <p className='font-bold'>Proveedor:</p>
-          <p className='py-2 font-black'>{`${selectedAccount?.supplier?.supplierCompany} (${selectedAccount?.supplier?.agent})`}</p>
-        </span>
-      </div>
-    </div>
-  )
-}
 
 /**
  *
@@ -95,13 +10,8 @@ function AccountsPayableCombobox({
  * @returns Modal to edit a row
  */
 export function Form({ selectedRow, submitAction, modalId, field }) {
-  const { accountsPayableData } = usePaymentsStore()
-  const [selectedAccount, setSelectedAccount] = useState({})
+  const { clientsTypesData } = useClientsStore()
   const [isEmpty, setIsEmpty] = useState(false)
-
-  const handleAccountChange = (selected) => {
-    setSelectedAccount(selected)
-  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -122,62 +32,113 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     if (newIsEmpty) return
 
     const formatedData = {
-      accountPayableId: data['accountPayable[id]'],
-      accountPayableFolio: data['accountPayable[folio]'],
-      // paymentDate: data.paymentDate,
-      quantityPaid: data.quantityPaid,
-      supplier: {
-        supplierId: data['accountPayable[supplier][supplierId]'],
-        supplierCompany: data['accountPayable[supplier][supplierCompany]'],
-        agent: data['accountPayable[supplier][agent]']
+      ...data,
+      clientType: {
+        clientTypeId: data['type[id]'],
+        clientType: data['type[value]']
       }
     }
+    delete formatedData['type[id]']
+    delete formatedData['type[value]']
 
+    // console.log({ formatedData })
     submitAction(formatedData, field)
   }
 
   return (
     <>
       <form
-        className='mx-auto mt-4 flex flex-col items-center gap-2'
+        className='mx-auto mt-4 flex w-full flex-col gap-2'
         onSubmit={handleSubmit}
       >
-        <Input
-          defaultValue={
-            Object.keys(selectedRow).length === 0
-              ? new Date().toISOString().split('T')[0]
-              : new Date(selectedRow?.paymentDate).toISOString().split('T')[0]
-          }
-          id='paymentDate'
-          isEmpty={isEmpty}
-          label='Fecha de pago'
-          name='paymentDate'
-          type='date'
-        />
-        <Input
-          defaultValue={
-            Object.keys(selectedRow).length === 0
-              ? ''
-              : selectedRow.quantityPaid
-          }
-          id='quantityPaid'
-          isEmpty={isEmpty}
-          label='Cantidad Pagada'
-          name='quantityPaid'
-          placeholder='300'
-          type='number'
-          onChange={(e) =>
-            handleInputMinMaxValue(e, 0, selectedAccount?.balance)
-          }
-        />
-        <hr className='my-2 h-1 w-full bg-gray-600' />
-        <AccountsPayableCombobox
-          accountsPayableData={accountsPayableData}
-          handleAccountChange={handleAccountChange}
-          selectedAccount={selectedAccount}
-          selectedRow={selectedRow}
-        />
-        <hr className='my-2 h-1 w-full bg-gray-600' />
+        <div className='grid grid-cols-2 gap-2 md:grid-cols-3'>
+          <Input
+            defaultValue={
+              Object.keys(selectedRow).length === 0 ? '' : selectedRow.name
+            }
+            id='name'
+            isEmpty={isEmpty}
+            required={false}
+            label='Nombre del cliente'
+            name='name'
+            placeholder='Fernando'
+            type='text'
+          />
+          <Input
+            defaultValue={
+              Object.keys(selectedRow).length === 0 ? '' : selectedRow.lastName
+            }
+            id='lastName'
+            isEmpty={isEmpty}
+            required={false}
+            label='Apellidos'
+            name='lastName'
+            placeholder='Tapia'
+            type='text'
+          />
+          <Input
+            defaultValue={
+              Object.keys(selectedRow).length === 0
+                ? ''
+                : selectedRow.phoneNumber
+            }
+            required={false}
+            id='phoneNumber'
+            isEmpty={isEmpty}
+            label='Teléfono'
+            name='phoneNumber'
+            placeholder='(55) 1234 5678'
+            type='text'
+          />
+          <Input
+            defaultValue={
+              Object.keys(selectedRow).length === 0 ? '' : selectedRow.email
+            }
+            id='email'
+            isEmpty={isEmpty}
+            required={false}
+            label='Correo electrónico'
+            name='email'
+            placeholder='fernando@gmail.com'
+            type='email'
+          />
+          <Input
+            defaultValue={
+              Object.keys(selectedRow).length === 0 ? '' : selectedRow.address
+            }
+            id='address'
+            isEmpty={isEmpty}
+            required={false}
+            label='Dirección'
+            name='address'
+            placeholder='fernando@gmail.com'
+            type='text'
+          />
+          <Input
+            defaultValue={
+              Object.keys(selectedRow).length === 0 ? '' : selectedRow.company
+            }
+            id='company'
+            isEmpty={isEmpty}
+            required={false}
+            label='Nombre de empresa'
+            name='company'
+            placeholder='Empresa SA de CV'
+            type='text'
+          />
+          <ComboBox
+            data={clientsTypesData}
+            dataDisplayAttribute='value'
+            defaultSelected={
+              Object.keys(selectedRow).length === 0
+                ? ''
+                : selectedRow.clientType.clientType
+            }
+            id='type'
+            label='Tipo de cliente'
+            name='type'
+          />
+        </div>
         <button type='submit' className='btn self-end'>
           Guardar
         </button>

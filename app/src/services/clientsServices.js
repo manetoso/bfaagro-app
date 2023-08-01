@@ -4,65 +4,63 @@ import { bfaApi } from '@/api/bfaApi'
 
 /**
  *
- * @returns {{ id: string, accountPayableId: string, accountPayableFolio: string, paymentFolio: string, paymentDate: string, paymentDateFormatted: string, quantityPaid: number, supplier: { supplierId: string, supplierCompany: string, agent: string } }[]} - The payments.
+ * @returns {{ id: string, name: string, lastName: string, phoneNumber: string, email: string, address: string, company: string, clientType: { clientTypeId: string, clientType: string } }[]} - The clients.
  */
 export async function fetchData() {
   try {
-    const { data: resp } = await bfaApi.get('/pagos')
+    const { data: resp } = await bfaApi.get('/clientes')
     /**
      * The respponse body from the request.
-     * @typedef {{ _id: string, ID_CUENTAxPAGAR: string, FOLIO_CXP: string, FOLIO_PAGO: string, FECHA_PAGO: string, CANTIDAD_PAGADA: number, PROVEEDOR: { ID_PROVEEDOR: string, NOMBRE_EMPRESA: string, AGENTE: string } }} PaymentBody
-     * @type {{body: PaymentBody[]}} - The Payment response body.
+     * @typedef {{ _id: string, APELLIDOS: string, CORREO: string, DOMICILIO: string, EMPRESA: string, NOMBRE_CLIENTE: string, NUMERO_TELEFONO: string, TIPO_CLIENTE: { ID_TIPO_CLIENTE: string, TIPO_CLIENTE: string } } }} clientsDataBody
+     * @type {{body: clientsDataBody[]}} - The Payment response body.
      */
     const json = resp
-    const data = json.body.map((payment) => convertPaymentToAppSchema(payment))
+    const data = json.body.map((client) => convertClientToAppSchema(client))
     return data
   } catch (error) {
-    throw new Error('Error searching payments')
+    throw new Error('Error searching clients')
   }
 }
 
 /**
  *
- * @param {{ accountPayableId: string, accountPayableFolio: string, paymentFolio: string, paymentDate: string, paymentDateFormatted: string, quantityPaid: number, supplier: { supplierId: string, supplierCompany: string, agent: string } }} data
- * @returns {{ id: string, accountPayableId: string, accountPayableFolio: string, paymentFolio: string, paymentDate: string, paymentDateFormatted: string, quantityPaid: number, supplier: { supplierId: string, supplierCompany: string, agent: string } }} - The payment created.
+ * @param {{ name: string, lastName: string, phoneNumber: string, email: string, address: string, company: string, clientType: { clientTypeId: string, clientType: string } }} data
+ * @returns {{ id: string, name: string, lastName: string, phoneNumber: string, email: string, address: string, company: string, clientType: { clientTypeId: string, clientType: string } }} - The client created.
  */
 export async function createData(data) {
   try {
-    const elementToDBSchema = convertPaymentToDBSchema(data)
-    const { data: resp } = await bfaApi.post(
-      '/pagos',
-      JSON.stringify(elementToDBSchema)
-    )
+    const elementToDBSchema = convertClientToDBSchema(data)
+    const { data: resp } = await bfaApi.post('/clientes', elementToDBSchema)
 
     const json = resp
-    const dataFormated = convertPaymentToAppSchema(json.body)
-    toast.success('Pago creado con éxito')
+    const dataFormated = convertClientToAppSchema(json.body)
+    toast.success('Cliente creado con éxito')
     return dataFormated
   } catch (error) {
-    toast.error('Error creando nuevo pago')
-    throw new Error('Error creating new payment')
+    toast.error('Error creando nuevo cliente')
+    throw new Error('Error creating new client')
   }
 }
 
 /**
  *
- * @param {{ id: string, accountPayableId: string, accountPayableFolio: string, paymentFolio: string, paymentDate: string, paymentDateFormatted: string, quantityPaid: number, supplier: { supplierId: string, supplierCompany: string, agent: string } }} data
- * @returns {{ id: string, accountPayableId: string, accountPayableFolio: string, paymentFolio: string, paymentDate: string, paymentDateFormatted: string, quantityPaid: number, supplier: { supplierId: string, supplierCompany: string, agent: string } }} - The payment updated.
+ * @param {{ name: string, lastName: string, phoneNumber: string, email: string, address: string, company: string, clientType: { clientTypeId: string, clientType: string } }} data
+ * @returns {{ id: string, name: string, lastName: string, phoneNumber: string, email: string, address: string, company: string, clientType: { clientTypeId: string, clientType: string } }} - The client updated.
  */
 export async function updateData(data) {
   try {
+    const elementToDBSchema = convertClientToDBSchema(data)
     const { data: resp } = await bfaApi.put(
-      `/pagos/${data.id}`,
-      convertPaymentToDBSchema(data)
+      `/clientes/${data.id}`,
+      elementToDBSchema
     )
     const json = resp
-    const respFormated = convertPaymentToAppSchema(json.body)
-    toast.success('Pago actualizado con éxito')
+    const respFormated = convertClientToAppSchema(json.body)
+    toast.success('Cliente actualizado con éxito')
     return respFormated
   } catch (error) {
-    toast.error('Error actualizando pago')
-    throw new Error('Error updating payment')
+    toast.error('Error actualizando cliente')
+    throw new Error('Error updating client')
   }
 }
 
@@ -73,71 +71,63 @@ export async function updateData(data) {
  */
 export async function deleteData(id) {
   try {
-    const { data: resp } = await bfaApi.delete(`/pagos/${id}`)
+    const { data: resp } = await bfaApi.delete(`/clientes/${id}`)
     const json = resp
-    toast.success('Pago eliminado con éxito')
+    toast.success('Cliente eliminado con éxito')
     return json.error || true
   } catch (error) {
-    toast.error('Error eliminando pago')
-    throw new Error('Error deleting payment')
+    toast.error('Error eliminando cliente')
+    throw new Error('Error deleting client')
   }
 }
 
 /**
  *
- * @param {{ accountPayableId: string, accountPayableFolio: string, paymentFolio: string, paymentDate: string, paymentDateFormatted: string, quantityPaid: number, supplier: { supplierId: string, supplierCompany: string, agent: string } }} data
- * @returns {{ ID_CUENTAxPAGAR: string, FOLIO_CXP: string, FOLIO_PAGO: string, FECHA_PAGO: string, CANTIDAD_PAGADA: number, PROVEEDOR: { ID_PROVEEDOR: string, NOMBRE_EMPRESA: string, AGENTE: string } }} - The payment to DB Schema.
+ * @param {{ id: string, name: string, lastName: string, phoneNumber: string, email: string, address: string, company: string, clientType: { clientTypeId: string, clientType: string } }} data
+ * @returns {{ APELLIDOS: string, CORREO: string, DOMICILIO: string, EMPRESA: string, NOMBRE_CLIENTE: string, NUMERO_TELEFONO: string, TIPO_CLIENTE: { ID_TIPO_CLIENTE: string, TIPO_CLIENTE: string } }} - The client to DB Schema.
  */
-export function convertPaymentToDBSchema(data) {
+export function convertClientToDBSchema(data) {
   try {
     const dbSchemaLike = {
-      ID_CUENTAxPAGAR: data.accountPayableId,
-      FOLIO_CXP: data.accountPayableFolio,
-      // FOLIO_PAGO: data.paymentFolio,
-      // FECHA_PAGO: data.paymentDate,
-      CANTIDAD_PAGADA: data.quantityPaid,
-      PROVEEDOR: {
-        ID_PROVEEDOR: data.supplier.supplierId,
-        NOMBRE_EMPRESA: data.supplier.supplierCompany,
-        AGENTE: data.supplier.agent
+      APELLIDOS: data.lastName,
+      CORREO: data.email,
+      DOMICILIO: data.address,
+      EMPRESA: data.company,
+      NOMBRE_CLIENTE: data.name,
+      NUMERO_TELEFONO: data.phoneNumber,
+      TIPO_CLIENTE: {
+        ID_TIPO_CLIENTE: data.clientType.clientTypeId,
+        TIPO_CLIENTE: data.clientType.clientType
       }
     }
     return dbSchemaLike
   } catch (error) {
-    throw new Error('Error converting payment to DB Schema')
+    throw new Error('Error converting client to DB Schema')
   }
 }
 
 /**
  *
- * @param {{ _id: string, ID_CUENTAxPAGAR: string, FOLIO_CXP: string, FOLIO_PAGO: string, FECHA_PAGO: string, CANTIDAD_PAGADA: number, PROVEEDOR: { ID_PROVEEDOR: string, NOMBRE_EMPRESA: string, AGENTE: string } }} data
- * @returns {{ id: string, accountPayableId: string, accountPayableFolio: string, paymentFolio: string, paymentDate: string, paymentDateFormatted: string, quantityPaid: number, supplier: { supplierId: string, supplierCompany: string, agent: string } }} - The payment to App Schema.
+ * @param {{ _id: string, APELLIDOS: string, CORREO: string, DOMICILIO: string, EMPRESA: string, NOMBRE_CLIENTE: string, NUMERO_TELEFONO: string, TIPO_CLIENTE: { ID_TIPO_CLIENTE: string, TIPO_CLIENTE: string } }} data
+ * @returns {{ id: string, name: string, lastName: string, phoneNumber: string, email: string, address: string, company: string, clientType: { clientTypeId: string, clientType: string } }} - The client to App Schema.
  */
-export function convertPaymentToAppSchema(data) {
+export function convertClientToAppSchema(data) {
   try {
     const dbSchemaLike = {
       id: data._id,
-      accountPayableId: data.ID_CUENTAxPAGAR,
-      accountPayableFolio: data.FOLIO_CXP,
-      paymentFolio: data.FOLIO_PAGO,
-      paymentDate: data.FECHA_PAGO,
-      paymentDateFormatted: new Date(data.FECHA_PAGO).toLocaleDateString(
-        'es-MX',
-        {
-          day: '2-digit',
-          month: 'long',
-          year: 'numeric'
-        }
-      ),
-      quantityPaid: data.CANTIDAD_PAGADA,
-      supplier: {
-        supplierId: data.PROVEEDOR.ID_PROVEEDOR,
-        supplierCompany: data.PROVEEDOR.NOMBRE_EMPRESA,
-        agent: data.PROVEEDOR.AGENTE
+      name: data.NOMBRE_CLIENTE,
+      lastName: data.APELLIDOS,
+      phoneNumber: data.NUMERO_TELEFONO,
+      email: data.CORREO,
+      address: data.DOMICILIO,
+      company: data.EMPRESA,
+      clientType: {
+        clientTypeId: data.TIPO_CLIENTE.ID_TIPO_CLIENTE,
+        clientType: data.TIPO_CLIENTE.TIPO_CLIENTE
       }
     }
     return dbSchemaLike
   } catch (error) {
-    throw new Error('Error converting payment to App Schema')
+    throw new Error('Error converting client to App Schema')
   }
 }

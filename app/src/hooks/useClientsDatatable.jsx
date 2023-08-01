@@ -3,8 +3,8 @@ import { createColumnHelper } from '@tanstack/react-table'
 
 import { DropdownMenu } from '@/components/datatable'
 import { useClientsStore, FIELDS_TYPES } from '@/stores/useClientsStore'
-import { fetchData } from '@/services/paymentsServices'
-import { formatNumberToMoneyString } from '@/utils/utils'
+import { fetchData } from '@/services/clientsServices'
+import { formatPhoneNumber } from '@/utils/utils'
 
 const DEFAULT_FIELD = FIELDS_TYPES.CLIENTS
 
@@ -41,8 +41,8 @@ export const useClientsDatatable = ({ field }) => {
   const columnHelper = createColumnHelper()
   const columns = useMemo(
     () => [
-      columnHelper.accessor('paymentFolio', {
-        header: 'Folio',
+      columnHelper.accessor('company', {
+        header: 'Empresa',
         cell: (info) => (
           <span className='flex items-center justify-between gap-2 font-bold'>
             {info.getValue()}{' '}
@@ -56,27 +56,33 @@ export const useClientsDatatable = ({ field }) => {
         ),
         footer: (props) => props.column.id
       }),
-      columnHelper.accessor('accountPayableFolio', {
-        header: 'Folio CxP',
-        cell: (info) => info.getValue(),
-        footer: (props) => props.column.id
-      }),
-      columnHelper.accessor('paymentDateFormatted', {
-        header: 'Fecha de pago',
-        cell: (info) => info.getValue(),
-        footer: (props) => props.column.id
-      }),
-      columnHelper.accessor('quantityPaid', {
-        header: 'Cantidad pagada',
-        cell: (info) => formatNumberToMoneyString(info.getValue()),
-        footer: (props) => props.column.id
-      }),
-      columnHelper.accessor('supplier.supplierCompany', {
-        header: 'Proveedor',
+      columnHelper.accessor('name', {
+        header: 'Cliente',
         cell: (info) => (
           <span>
-            {info.getValue()}{' '}
-            <strong>{`(${info.row.original.supplier.agent})`}</strong>
+            {info.getValue()} {info.row.original.lastName}
+          </span>
+        ),
+        footer: (props) => props.column.id
+      }),
+      columnHelper.accessor('address', {
+        header: 'Dirección',
+        cell: (info) => info.getValue(),
+        footer: (props) => props.column.id
+      }),
+      columnHelper.accessor('clientType.clientType', {
+        header: 'Tipo de cliente',
+        cell: (info) => info.getValue(),
+        footer: (props) => props.column.id
+      }),
+      columnHelper.accessor('phoneNumber', {
+        header: 'Contacto',
+        cell: (info) => (
+          <span>
+            <a className='underline' href={`tel:${info.getValue()}`}>
+              {formatPhoneNumber(info.getValue())}
+            </a>
+            <p>{info.row.original.email}</p>
           </span>
         ),
         footer: (props) => props.column.id

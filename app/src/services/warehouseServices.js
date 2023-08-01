@@ -91,7 +91,7 @@ export async function deleteData(id) {
     const { data: resp } = await bfaApi.delete(`/productos/${id}`)
     const json = resp
     toast.success('Producto eliminado con éxito')
-    return json.error ? false : true
+    return !json.error
   } catch (error) {
     toast.error('Error eliminando producto')
     throw new Error('Error deleting product')
@@ -116,7 +116,6 @@ export async function productReceipt(data) {
         CANTIDAD: product.productQuantity
       }))
     }
-    console.log({ data, elementToDBSchema });
     const { data: resp } = await bfaApi.post(
       '/movimientosAlmacen',
       JSON.stringify(elementToDBSchema)

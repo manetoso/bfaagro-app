@@ -27,19 +27,7 @@ export function SalesRoutes({ permissions, roles }) {
             <Clients />
           </ProtectedRoute>
         }
-      >
-        <Route
-          path='tabla'
-          element={
-            <ProtectedRoute
-              isAllow={permissions.includes('write') && roles.includes('admin')}
-              redirectPath='/app/ventas/inicio'
-            >
-              <h1>Clients</h1>
-            </ProtectedRoute>
-          }
-        />
-      </Route>
+      />
       <Route
         path='ordenes'
         element={

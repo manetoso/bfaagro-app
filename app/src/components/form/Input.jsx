@@ -1,6 +1,6 @@
 /**
  *
- * @param {{ defaultValue: string, disabled: boolean, id: string, isEmpty: boolean, label: string, name: string, onChange: () => void, placeholder: string, required: boolean, readOnly: boolean, type: 'text' | 'number' | 'password' | 'date' | 'checkbox' }} param0
+ * @param {{ defaultValue: string, disabled: boolean, id: string, isEmpty: boolean, label: string, name: string, onChange: () => void, placeholder: string, required: boolean, readOnly: boolean, type: 'text' | 'number' | 'password' | 'date' | 'checkbox' | 'email' }} param0
  * @returns {JSX.Element} Input
  */
 export function Input({
@@ -22,7 +22,7 @@ export function Input({
         {label}
       </label>
       {type === 'checkbox' ? (
-        <div className="flex gap-2 items-end">
+        <div className='flex items-end gap-2'>
           <input
             className='mt-2 h-6 w-6'
             defaultChecked={defaultValue}

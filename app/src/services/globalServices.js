@@ -38,7 +38,7 @@ export async function fetchTypes(type) {
  */
 export async function fetchUnityTypes() {
   try {
-		const resp = await fetchTypes('unidad')
+    const resp = await fetchTypes('unidad')
 
     const data = resp.map((productType) => ({
       id: productType.id,
@@ -96,6 +96,24 @@ export async function fetchProcessStatusTypes() {
 export async function fetchMovementTypes() {
   try {
     const resp = await fetchTypes('movimiento')
+
+    const data = resp.map((productType) => ({
+      id: productType.id,
+      value: productType.value
+    }))
+    return data
+  } catch (error) {
+    throw new Error('Error searching movement types')
+  }
+}
+
+/**
+ *
+ * @returns {{ id: string, value: string }[]} Process Status types data
+ */
+export async function fetchClientsTypes() {
+  try {
+    const resp = await fetchTypes('cliente')
 
     const data = resp.map((productType) => ({
       id: productType.id,
