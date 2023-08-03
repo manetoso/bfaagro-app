@@ -1,4 +1,5 @@
 import { useId, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { Aside, IconButton } from './'
 import { ChevronBack, Menu } from '🚀'
@@ -8,6 +9,7 @@ import './navigation.css'
 export function Navigation() {
   const menuCheckboxId = useId()
   const inputRef = useRef()
+  const navigate = useNavigate()
   return (
     <>
       <nav className='fixed top-0 z-50 w-screen border-b-2 border-black bg-white'>
@@ -15,6 +17,13 @@ export function Navigation() {
           <IconButton htmlFor={menuCheckboxId}>
             <Menu />
           </IconButton>
+          {!window.location.pathname.includes('app/inicio') && (
+            <>
+              <IconButton onClick={() => navigate('/app/inicio')}>
+                <ChevronBack /> Inicio
+              </IconButton>
+            </>
+          )}
           {!window.location.pathname.includes('app/inicio') && (
             <>
               <IconButton onClick={() => history.back()}>

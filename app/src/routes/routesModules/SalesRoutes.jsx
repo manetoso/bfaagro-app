@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 
 import { Sales } from '@/pages'
 import { Clients } from '@/components/clients'
+import { SaleOrders } from '@/components/saleOrders'
 import { ProtectedRoute } from '@/components/layout'
 
 export function SalesRoutes({ permissions, roles }) {
@@ -35,18 +36,29 @@ export function SalesRoutes({ permissions, roles }) {
             isAllow={permissions.includes('write') && roles.includes('admin')}
             redirectPath='/app/ventas/inicio'
           >
-            <h1>Ordenes</h1>
+            <SaleOrders />
           </ProtectedRoute>
         }
       >
         <Route
-          path='tabla'
+          path='bfa'
           element={
             <ProtectedRoute
               isAllow={permissions.includes('write') && roles.includes('admin')}
               redirectPath='/app/ventas/inicio'
             >
-              <h1>Ordenes</h1>
+              <SaleOrders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='comisionistas'
+          element={
+            <ProtectedRoute
+              isAllow={permissions.includes('write') && roles.includes('admin')}
+              redirectPath='/app/ventas/inicio'
+            >
+              <SaleOrders />
             </ProtectedRoute>
           }
         />

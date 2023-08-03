@@ -5,7 +5,12 @@ import { useAuthStore } from '@/stores'
 import { Close } from '🚀'
 import { AsideButton } from './'
 import { IconButton } from '../'
-import { FormulationList, WarehouseList, ProcessesList } from './lists'
+import {
+  FormulationList,
+  WarehouseList,
+  ProcessesList,
+  SaleOrdersList
+} from './lists'
 
 /**
  *
@@ -32,6 +37,7 @@ export function Aside({ menuCheckboxId, inputRef }) {
         <WarehouseList handleClick={handleClick} />
         <FormulationList handleClick={handleClick} />
         <ProcessesList handleClick={handleClick} />
+        <SaleOrdersList handleClick={handleClick} />
         <li className='mt-6'>
           <AsideButton isActive label='Salir' onClick={handleLogout} />
         </li>

@@ -1,6 +1,6 @@
 /**
  *
- * @param {{ defaultValue: string, disabled: boolean, id: string, isEmpty: boolean, label: string, name: string, onChange: () => void, placeholder: string, required: boolean, readOnly: boolean, type: 'text' | 'number' | 'password' | 'date' | 'checkbox' | 'email' }} param0
+ * @param {{ defaultValue: string, disabled: boolean, id: string, isEmpty: boolean, label: string, name: string, onChange: () => void, placeholder: string, required: boolean, readOnly: boolean, value: string | number, type: 'text' | 'number' | 'password' | 'date' | 'checkbox' | 'email' }} param0
  * @returns {JSX.Element} Input
  */
 export function Input({
@@ -14,6 +14,7 @@ export function Input({
   placeholder,
   required = true,
   readOnly = false,
+  value,
   type
 }) {
   return (
@@ -33,6 +34,7 @@ export function Input({
             placeholder={placeholder}
             readOnly={readOnly}
             required={required}
+            value={value}
             type={type}
           />
           <span className='ml-2 text-gray-600'>{label}</span>
@@ -48,6 +50,7 @@ export function Input({
           placeholder={placeholder}
           required={required}
           readOnly={readOnly}
+          value={value}
           type={type}
           step={type === 'number' ? '0.01' : undefined}
           // type=''

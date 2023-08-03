@@ -18,7 +18,7 @@ export const routesList = [
   {
     title: 'Ordenes de Venta',
     description: 'Crea, revisa y administra las ordenes de venta.',
-    to: '/app/ventas/ordenes',
+    to: '/app/ventas/ordenes/bfa',
     imgURL: OrdenCompra,
     style: { backgroundColor: '#777771', color: '#e2e2e2' }
   },
