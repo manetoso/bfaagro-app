@@ -4,6 +4,7 @@ import { Sales } from '@/pages'
 import { Clients } from '@/components/clients'
 import { SaleOrders } from '@/components/saleOrders'
 import { ProtectedRoute } from '@/components/layout'
+import { AccountsReceivable } from '@/components/accountsReceivable'
 
 export function SalesRoutes({ permissions, roles }) {
   return (
@@ -70,22 +71,10 @@ export function SalesRoutes({ permissions, roles }) {
             isAllow={permissions.includes('write') && roles.includes('admin')}
             redirectPath='/app/ventas/inicio'
           >
-            <h1>Cuentas</h1>
+            <AccountsReceivable />
           </ProtectedRoute>
         }
-      >
-        <Route
-          path='tabla'
-          element={
-            <ProtectedRoute
-              isAllow={permissions.includes('write') && roles.includes('admin')}
-              redirectPath='/app/ventas/inicio'
-            >
-              <h1>Cuentas</h1>
-            </ProtectedRoute>
-          }
-        />
-      </Route>
+      />
       <Route
         path='pagos'
         element={
