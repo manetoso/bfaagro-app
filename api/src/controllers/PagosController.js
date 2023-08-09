@@ -17,7 +17,7 @@ const createPago = async (req = request, res = response) => {
             updateCxP.ESTADO = 'PAGADO'
         }
         if(updateCxP.SALDO < 0){
-            return serverErrorMessage(res, { msg: "El monto a pagar es mayor al monto de deuda" }, 400)
+            return serverErrorMessage(res, { msg: "El monto a pagar es mayor al monto de deuda" }, 403)
         }
         await Cuentas_por_Pagar.findByIdAndUpdate(updateCxP._id, { CANTIDAD_PAGADA: updateCxP.CANTIDAD_PAGADA, SALDO: updateCxP.SALDO, ESTADO: updateCxP.ESTADO })
         return serverOkMessage(res, actionDB, 201)
@@ -44,7 +44,7 @@ const updatePago = async (req = request, res = response) => {
         if (data.CANTIDAD_PAGADA != pago.CANTIDAD_PAGADA && data.CANTIDAD_PAGADA != undefined) {
             const status = await recalculateCxP(pago, data)
             if (!status) {
-                return serverErrorMessage(res, { msg: "El monto a pagar es mayor al monto de deuda" }, 400)
+                return serverErrorMessage(res, { msg: "El monto a pagar es mayor al monto de deuda" }, 403)
             }
         }
         const actionDB = await PAGOS.findByIdAndUpdate(id, data, {
