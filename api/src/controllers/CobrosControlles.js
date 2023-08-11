@@ -6,10 +6,10 @@ import { generateNewFolio } from '../helpers/FoliosGenerator.js'
 
 const createCobros = async (req = request, res = response) => {
   try {
-    const { FOLIO_CXC, ID_VENTA, FECHA_COBRO, CANTIDAD_COBRADA, CLIENTE } = req.body
+    const { ID_CUENTAxCOBRAR, FOLIO_CXC, ID_VENTA, FECHA_COBRO, CANTIDAD_COBRADA, CLIENTE } = req.body
     const FOLIO_COBRO = await generateNewFolio('COBRO')
     const cobro = {
-      FOLIO_CXC, FOLIO_COBRO, ID_VENTA, FECHA_COBRO, CANTIDAD_COBRADA, CLIENTE
+      ID_CUENTAxCOBRAR, FOLIO_CXC, FOLIO_COBRO, ID_VENTA, FECHA_COBRO, CANTIDAD_COBRADA, CLIENTE
     }
     const actionDB = await COBROS.create(cobro)
     const updateCxC = await Cuentas_por_Cobrar.findOne({ FOLIO_CXC }).lean()
