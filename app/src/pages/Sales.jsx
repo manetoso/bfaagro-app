@@ -33,7 +33,7 @@ export const routesList = [
   {
     title: 'Cobros',
     description: 'Revisa y administra los pagos de las cuentas por cobrar.',
-    to: '/app/ventas/pagos',
+    to: '/app/ventas/cobros',
     imgURL: Pagos,
     style: { backgroundColor: '#a9855e', color: '#e2e2e2' }
   }

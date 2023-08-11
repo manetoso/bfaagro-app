@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { usePaymentsStore } from '@/stores/usePaymentsStore'
+import { useChargesStore } from '@/stores/useChargesStore'
 
 import { Input, ComboBox } from '@/components/form'
 import {
@@ -19,14 +19,12 @@ function AccountsPayableCombobox({
       <ComboBox
         data={accountsPayableData}
         defaultSelected={
-          Object.keys(selectedRow).length === 0
-            ? ''
-            : selectedRow.accountPayableFolio
+          Object.keys(selectedRow).length === 0 ? '' : selectedRow.folio
         }
         dataDisplayAttribute='folio'
-        id='accountPayable'
+        id='accountReceivable'
         label='Folio CxP'
-        name='accountPayable'
+        name='accountReceivable'
         getSelected={handleAccountChange}
       />
       <div className='grid w-full grid-cols-2 gap-2 md:grid-cols-4'>
@@ -41,9 +39,9 @@ function AccountsPayableCombobox({
           </p>
         </span>
         <span className='flex flex-col text-gray-600'>
-          <p className='font-bold'>Fecha de pago:</p>
+          <p className='font-bold'>Fecha de vencimiento:</p>
           <p className='py-2 font-black'>
-            {selectedAccount?.paymentDateFormatted}
+            {selectedAccount?.expirationDateFormatted}
           </p>
         </span>
         <span className='flex flex-col text-gray-600'>
@@ -53,13 +51,13 @@ function AccountsPayableCombobox({
         <span className='flex flex-col text-gray-600'>
           <p className='font-bold'>Cantidad:</p>
           <p className='py-2 font-black'>
-            {formatNumberToMoneyString(selectedAccount?.quantity)}
+            {formatNumberToMoneyString(selectedAccount?.totalSale)}
           </p>
         </span>
         <span className='flex flex-col text-gray-600'>
           <p className='font-bold'>Cantidad pagada:</p>
           <p className='py-2 font-black'>
-            {formatNumberToMoneyString(selectedAccount?.quantityPaid)}
+            {formatNumberToMoneyString(selectedAccount?.totalPaid)}
           </p>
         </span>
         <span className='flex flex-col text-gray-600'>
@@ -81,8 +79,16 @@ function AccountsPayableCombobox({
           </p>
         </span>
         <span className='flex flex-col text-gray-600'>
-          <p className='font-bold'>Proveedor:</p>
-          <p className='py-2 font-black'>{`${selectedAccount?.supplier?.supplierCompany} (${selectedAccount?.supplier?.agent})`}</p>
+          <p className='font-bold'>Cliente Origen:</p>
+          <p className='py-2 font-black'>
+            {selectedAccount?.clients?.originClient.clientName}
+          </p>
+        </span>
+        <span className='flex flex-col text-gray-600'>
+          <p className='font-bold'>Cliente Destino:</p>
+          <p className='py-2 font-black'>
+            {selectedAccount?.clients?.destinationClient.clientName}
+          </p>
         </span>
       </div>
     </div>
@@ -95,8 +101,7 @@ function AccountsPayableCombobox({
  * @returns Modal to edit a row
  */
 export function Form({ selectedRow, submitAction, modalId, field }) {
-  console.log({ selectedRow })
-  const { accountsPayableData } = usePaymentsStore()
+  const { accountsReceivableData } = useChargesStore()
   const [selectedAccount, setSelectedAccount] = useState({})
   const [isEmpty, setIsEmpty] = useState(false)
 
@@ -123,14 +128,15 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     if (newIsEmpty) return
 
     const formatedData = {
-      accountPayableId: data['accountPayable[id]'],
-      accountPayableFolio: data['accountPayable[folio]'],
-      // paymentDate: data.paymentDate,
-      quantityPaid: data.quantityPaid,
-      supplier: {
-        supplierId: data['accountPayable[supplier][supplierId]'],
-        supplierCompany: data['accountPayable[supplier][supplierCompany]'],
-        agent: data['accountPayable[supplier][agent]']
+      accountReceivableId: data['accountReceivable[id]'],
+      accountReceivableFolio: data['accountReceivable[folio]'],
+      saleOrderId: data['accountReceivable[saleOrderId]'],
+      quantityCharged: data.quantityCharged,
+      client: {
+        clientId:
+          data['accountReceivable[clients][destinationClient][clientId]'],
+        clientName:
+          data['accountReceivable[clients][destinationClient][clientName]']
       }
     }
 
@@ -147,33 +153,32 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
           defaultValue={
             Object.keys(selectedRow).length === 0
               ? new Date().toISOString().split('T')[0]
-              : new Date(selectedRow?.paymentDate).toISOString().split('T')[0]
+              : new Date(selectedRow?.chargeDate).toISOString().split('T')[0]
           }
-          id='paymentDate'
+          id='chargeDate'
           isEmpty={isEmpty}
-          label='Fecha de pago'
-          name='paymentDate'
+          label='Fecha de cobro'
+          name='chargeDate'
           type='date'
         />
         <Input
           defaultValue={
             Object.keys(selectedRow).length === 0
               ? ''
-              : selectedRow.quantityPaid
+              : selectedRow.quantityCharged
           }
-          id='quantityPaid'
+          id='quantityCharged'
           isEmpty={isEmpty}
-          label='Cantidad Pagada'
-          name='quantityPaid'
+          label='Cantidad cobrada'
+          name='quantityCharged'
           placeholder='300'
           type='number'
           onChange={(e) =>
-            handleInputMinMaxValue(e, 0, selectedAccount?.balance)
-          }
+            handleInputMinMaxValue(e, 0, selectedAccount?.balance)}
         />
         <hr className='my-2 h-1 w-full bg-gray-600' />
         <AccountsPayableCombobox
-          accountsPayableData={accountsPayableData}
+          accountsPayableData={accountsReceivableData}
           handleAccountChange={handleAccountChange}
           selectedAccount={selectedAccount}
           selectedRow={selectedRow}
