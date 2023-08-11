@@ -12,9 +12,10 @@ const createCobros = async (req = request, res = response) => {
       ID_CUENTAxCOBRAR, FOLIO_CXC, FOLIO_COBRO, ID_VENTA, FECHA_COBRO, CANTIDAD_COBRADA, CLIENTE
     }
     const actionDB = await COBROS.create(cobro)
-    const updateCxC = await Cuentas_por_Cobrar.findOne({ FOLIO_CXC }).lean()
-    updateCxC.TOTAL_PAGADO += TOTAL_PAGADO
-    updateCxC.SALDO -= TOTAL_PAGADO
+
+    const updateCxC = await Cuentas_por_Cobrar.findById(ID_CUENTAxCOBRAR).lean()
+    updateCxC.TOTAL_PAGADO += CANTIDAD_COBRADA
+    updateCxC.SALDO -= CANTIDAD_COBRADA
     if (updateCxC.SALDO == 0) {
         updateCxC.ESTADO = 'PAGADO'
     }
@@ -42,7 +43,7 @@ const updateCobro = async (req = request, res = response) => {
     const id = req.params.idCobro
     const data = req.body
     const cobro = await COBROS.findById(id)
-    if (data.TOTAL_PAGADO != cobro.TOTAL_PAGADO && data.TOTAL_PAGADO != undefined) {
+    if (data.CANTIDAD_COBRADA != cobro.CANTIDAD_COBRADA && data.CANTIDAD_COBRADA != undefined) {
         const status = await recalculateCxC(cobro, data)
         if (!status) {
             return serverErrorMessage(res, { msg: "El monto a cobrar es mayor al monto de deuda" }, 403)
@@ -53,6 +54,7 @@ const updateCobro = async (req = request, res = response) => {
     })
     return serverOkMessage(res, actionDB)
 } catch (error) {
+  console.log(error);
     return serverErrorMessage(res)
 }
 }
@@ -71,16 +73,16 @@ const deleteCobro = async (req = request, res = response) => {
 
 const recalculateCxC = async (oldCobro = COBROS, newCobro = COBROS) => {
   try {
-      let cxc = await Cuentas_por_Pagar.findOne({ FOLIO_CXC: oldCobro.FOLIO_CXC }).lean()
-      cxc.TOTAL_PAGADO = (cxc.TOTAL_PAGADO - oldCobro.TOTAL_PAGADO) + newCobro.TOTAL_PAGADO
-      cxc.SALDO = cxc.CANTIDAD - cxc.TOTAL_PAGADO
+      let cxc = await Cuentas_por_Cobrar.findOne({ FOLIO_CXC: oldCobro.FOLIO_CXC }).lean()
+      cxc.TOTAL_PAGADO = (cxc.TOTAL_PAGADO - oldCobro.CANTIDAD_COBRADA) + newCobro.CANTIDAD_COBRADA
+      cxc.SALDO = cxc.TOTAL_VENTA - cxc.TOTAL_PAGADO
       if (cxc.SALDO == 0) {
           cxc.ESTADO = 'PAGADO'
       }
       if (cxc.SALDO < 0) {
           return false
       }
-      await Cuentas_por_Pagar.findByIdAndUpdate(cxc._id, { TOTAL_PAGADO: cxc.TOTAL_PAGADO, SALDO: cxc.SALDO, ESTADO: cxp.ESTADO })
+      await Cuentas_por_Cobrar.findByIdAndUpdate(cxc._id, { TOTAL_PAGADO: cxc.TOTAL_PAGADO, SALDO: cxc.SALDO, ESTADO: cxc.ESTADO })
       return true
   } catch (error) {
       console.log(error);
