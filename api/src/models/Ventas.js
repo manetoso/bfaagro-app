@@ -31,7 +31,7 @@ const VENTAS = new Schema({
 }, { timestamps: true })
 
 VENTAS.methods.toJSON = function () {
-  const { __v, createdAt, updatedAt, ...ventas } = this.toObject()
+  const { __v, updatedAt, ...ventas } = this.toObject()
   return ventas
 }
 

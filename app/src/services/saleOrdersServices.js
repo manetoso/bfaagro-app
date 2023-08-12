@@ -33,7 +33,7 @@ export async function fetchData() {
     const { data: resp } = await bfaApi.get('/ventas')
     /**
      * The respponse body from the request.
-     * @typedef {{ _id: string, FOLIO: string, CLIENTES: { CLIENTE_ORIGEN: { ID_CLIENTE: string, NOMBRE_CLIENTE: string }, CLIENTE_DESTINO: { ID_CLIENTE: string, NOMBRE_CLIENTE: string } } }} SaleOrdersBody
+     * @typedef {{ _id: string, FOLIO: string, CLIENTES: { CLIENTE_ORIGEN: { ID_CLIENTE: string, NOMBRE_CLIENTE: string }, CLIENTE_DESTINO: { ID_CLIENTE: string, NOMBRE_CLIENTE: string }, createdAt: string } }} SaleOrdersBody
      * @type {{body: SaleOrdersBody[]}} - The SaleOrders response body.
      */
     const ventas = resp
@@ -214,7 +214,7 @@ export function converSaleOrderDetailToDBSchema(data) {
 
 /**
  *
- * @param {{ _id: string, FOLIO: string, CLIENTES: { CLIENTE_ORIGEN: { ID_CLIENTE: string, NOMBRE_CLIENTE: string }, CLIENTE_DESTINO: { ID_CLIENTE: string, NOMBRE_CLIENTE: string } } }} data
+ * @param {{ _id: string, FOLIO: string, CLIENTES: { CLIENTE_ORIGEN: { ID_CLIENTE: string, NOMBRE_CLIENTE: string }, CLIENTE_DESTINO: { ID_CLIENTE: string, NOMBRE_CLIENTE: string } }, createdAt: string }} data
  * @returns {{ id: string, folio: string, originClient: { clientId: string, clientName: string }, destinationClient: { clientId: string, clientName: string } }} - The sale order to App Schema.
  */
 export function convertSaleOrderToAppSchema(data) {
@@ -229,7 +229,8 @@ export function convertSaleOrderToAppSchema(data) {
       destinationClient: {
         clientId: data.CLIENTES.CLIENTE_DESTINO.ID_CLIENTE,
         clientName: data.CLIENTES.CLIENTE_DESTINO.NOMBRE_CLIENTE
-      }
+      },
+      createdAt: data.createdAt
     }
     return dbSchemaLike
   } catch (error) {

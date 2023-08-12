@@ -10,7 +10,7 @@ import {
   Font
 } from '@react-pdf/renderer'
 
-import { usePurchaseOrdersStore } from '@/stores/usePurchaseOrdersStore'
+import { useSaleOrdersStore } from '@/stores/useSaleOrdersStore'
 import Logo from '@/assets/bfa-main-logo.png'
 import LogoBG from '@/assets/bfa-bg.png'
 import {
@@ -208,14 +208,15 @@ const styles = StyleSheet.create({
 })
 
 export function PDFBuilder() {
-  const { selected, companyData, suppliersData } = usePurchaseOrdersStore()
+  const { selected, companyData, clientsData } = useSaleOrdersStore()
   if (
     (selected.id === undefined || companyData.id === undefined,
-    suppliersData.length === 0)
-  )
+    clientsData.length === 0)
+  ) {
     return null
-  const supplier = suppliersData.find(
-    (s) => s.id === selected?.supplier?.supplierId
+  }
+  const supplier = clientsData.find(
+    (s) => s.id === selected?.destinationClient?.clientId
   )
   return (
     <div className='mt-4'>
@@ -228,13 +229,12 @@ export function PDFBuilder() {
             suppliersData={supplier}
           />
         }
-        fileName={`Orden-de-compra-${selected?.folio
+        fileName={`Orden-de-venta-${selected?.folio
           ?.replace(' ', '-')
-          .toLowerCase()}-${selected?.currency}.pdf`}
+          .toLowerCase()}.pdf`}
       >
         {({ blob, url, loading, error }) =>
-          loading ? 'Cargando documento...' : 'Descargar ahora!'
-        }
+          loading ? 'Cargando documento...' : 'Descargar ahora!'}
       </PDFDownloadLink>
       <PDFViewer className='h-[78vh] w-full'>
         <MyPDFDocument
@@ -258,18 +258,24 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
         <View style={styles.headerWrapper}>
           <Image style={styles.mainLogo} src={Logo} />
           <View style={styles.header}>
-            <Text>ORDEN DE COMPRA</Text>
+            <Text>ORDEN DE VENTA</Text>
           </View>
         </View>
         <View style={styles.mainInfoWrapper}>
           <View style={styles.infoRow}>
-            <Text style={styles.strong}>Proveedor:</Text>
+            <Text style={styles.strong}>Cliente:</Text>
             <View>
               <Text style={styles.strong}>
-                {selected?.supplier?.supplierCompany}
+                {selected?.destinationClient?.clientName}{' '}
               </Text>
               <Text style={{ ...styles.muted, ...styles.small }}>
-                {selected?.supplier?.agent}
+                {suppliersData?.clientType?.clientType}
+              </Text>
+              <Text style={{ ...styles.muted, ...styles.small }}>
+                {suppliersData?.address}
+              </Text>
+              <Text style={{ ...styles.muted, ...styles.small }}>
+                {suppliersData?.email}
               </Text>
               <Text style={{ ...styles.muted, ...styles.small }}>
                 {formatPhoneNumber(suppliersData?.phoneNumber)}
@@ -288,7 +294,7 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
             <View style={{ ...styles.infoRow, justifyContent: 'flex-start' }}>
               <Text style={styles.strong}>Fecha:</Text>
               <View>
-                <Text>{formatDate(selected?.date)}</Text>
+                <Text>{formatDate(selected?.createdAt)}</Text>
               </View>
             </View>
           </View>
@@ -299,10 +305,9 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
             <Text style={styles.tableHeaderCellBig}>Descripción</Text>
             <Text style={styles.tableHeaderCell}>Cantidad</Text>
             <Text style={styles.tableHeaderCell}>P.U.</Text>
-            <Text style={styles.tableHeaderCell}>Subtotal</Text>
             <Text style={styles.tableHeaderCell}>Total</Text>
           </View>
-          {selected?.products?.map((product, index) => (
+          {selected?.saleDetails?.products?.map((product, index) => (
             <View key={product?.productId} style={styles.tableRow}>
               <Text style={styles.tableRowCell}>{index + 1}</Text>
               <Text style={styles.tableRowCellBig}>{product?.name}</Text>
@@ -311,10 +316,7 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
                 {formatNumberToMoneyString(product?.unitPrice)}
               </Text>
               <Text style={styles.tableRowCell}>
-                {formatNumberToMoneyString(product?.subtotal)}
-              </Text>
-              <Text style={styles.tableRowCell}>
-                {formatNumberToMoneyString(product?.totalUnit)}
+                {formatNumberToMoneyString(product?.unitPrice * product?.quantity)}
               </Text>
             </View>
           ))}
@@ -330,31 +332,6 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
           <View style={styles.tableFooterCol}>
             <View
               style={{
-                ...styles.tableFooterTotalsRow
-              }}
-            >
-              <Text>Subtotal:</Text>
-              <Text style={{ textAlign: 'right' }}>
-                {formatNumberToMoneyString(
-                  selected?.products?.reduce((acc, curr) => {
-                    return acc + curr.subtotal
-                  }, 0)
-                )}
-              </Text>
-            </View>
-            <View
-              style={{
-                ...styles.tableFooterTotalsRow,
-                marginBottom: 12
-              }}
-            >
-              <Text>IVA:</Text>
-              <Text style={{ textAlign: 'right' }}>
-                {formatNumberToMoneyString(selected?.totalIva)}
-              </Text>
-            </View>
-            <View
-              style={{
                 ...styles.tableFooterTotalsRow,
                 color: '#004083',
                 flexWrap: 'wrap',
@@ -363,9 +340,7 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
             >
               <Text>Total:</Text>
               <Text style={{ textAlign: 'right' }}>
-                {`${formatNumberToMoneyString(selected?.total)} ${
-                  selected?.currency
-                }`}
+                {`${formatNumberToMoneyString(selected?.saleDetails?.total)} MXN`}
               </Text>
             </View>
           </View>
@@ -379,8 +354,7 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
         <Text
           style={styles.pageNumber}
           render={({ pageNumber, totalPages }) =>
-            `${pageNumber} / ${totalPages}`
-          }
+            `${pageNumber} / ${totalPages}`}
           fixed
         />
         <View style={styles.bottomDecorationWrapper} fixed>

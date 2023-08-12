@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
 
-import { DropdownMenu } from '@/components/datatable'
+import { DropdownMenu } from '@/components/saleOrders/datatable/DropdownMenu'
 import { useSaleOrdersStore, FIELDS_TYPES } from '@/stores/useSaleOrdersStore'
 import { fetchData } from '@/services/saleOrdersServices'
 import { formatNumberToMoneyString } from '@/utils/utils'
@@ -52,6 +52,9 @@ export const useSaleOrdersDatatable = ({ field }) => {
               openAlert={() => toggleAlert(info.cell.row.original)}
               openModal={() => {
                 toggleEditModal(info.cell.row.original)
+              }}
+              printHanlder={() => {
+                printPurchaseOrder(info.cell.row.original)
               }}
             />
           </span>
