@@ -1,6 +1,6 @@
 import { request, response } from 'express'
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
-import { VENTAS, VENTAS_DETALLE, ALMACENES, PRODUCTOS } from '../models/Index.js'
+import { VENTAS, VENTAS_DETALLE, CUENTASxCOBRAR } from '../models/Index.js'
 import { getTypeCliente } from '../controllers/ClientesController.js'
 import { getAlmacenByIdCliente } from '../controllers/AlmacenesController.js'
 import { registerMovementByAlmacen, registerMovementAlmacen } from '../controllers/MovimientosAlmacenController.js'
@@ -71,6 +71,10 @@ const updateVenta = async (req = request, res = response) => {
             // Y SUMAMOS AL VIEJO SI ES COMISIONISTA
             await registerMovementIfIsComisionista(clienteOrigenViejo.ID_CLIENTE, ventaDetalleSaved.PRODUCTOS, 'ENTRADA')
         }
+        // Actualizamos los clientes en la cxc
+        const cxcSaved = await CUENTASxCOBRAR.findOne({ 'FOLIO_VENTA': ventaSaved.FOLIO })
+        await CUENTASxCOBRAR.findByIdAndUpdate(cxcSaved._id, { CLIENTES })
+        
         await updateVentaDetalle(VENTA_DETALLE)
 
         const actionDB = await VENTAS.findByIdAndUpdate(id, venta, {

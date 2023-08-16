@@ -34,6 +34,9 @@ const CLIENTES = new Schema({
   },
   EMPRESA: {
     type: String,
+  },
+  RFC: {
+    type: String,
   }
 }, { timestamps: true })
 

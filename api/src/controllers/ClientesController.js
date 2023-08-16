@@ -5,9 +5,9 @@ import { createAlmacenCliente } from './AlmacenesController.js'
 
 const createCliente = async (req = request, res = response) => {
   try {
-    const { TIPO_CLIENTE, NOMBRE_CLIENTE, APELLIDOS, NUMERO_TELEFONO, CORREO, DOMICILIO, EMPRESA } = req.body
+    const { TIPO_CLIENTE, NOMBRE_CLIENTE, APELLIDOS, NUMERO_TELEFONO, CORREO, DOMICILIO, EMPRESA, RFC } = req.body
     const cliente = {
-      TIPO_CLIENTE, NOMBRE_CLIENTE, APELLIDOS, NUMERO_TELEFONO, CORREO, DOMICILIO, EMPRESA
+      TIPO_CLIENTE, NOMBRE_CLIENTE, APELLIDOS, NUMERO_TELEFONO, CORREO, DOMICILIO, EMPRESA, RFC
     }
 
     const actionDB = await CLIENTES.create(cliente)
