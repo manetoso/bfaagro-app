@@ -6,7 +6,7 @@ import { generateNewFolio } from '../helpers/FoliosGenerator.js'
 
 const createCobros = async (req = request, res = response) => {
   try {
-    const { ID_CUENTAxCOBRAR, FOLIO_CXC, ID_VENTA, FECHA_COBRO, CANTIDAD_COBRADA, CLIENTE } = req.body
+    const { ID_CUENTAxCOBRAR, FOLIO_CXC, ID_VENTA, FECHA_COBRO, CANTIDAD_COBRADA, CLIENTE, OBSERVACIONES } = req.body
     const FOLIO_COBRO = await generateNewFolio('COBRO')
     const cobro = {
       ID_CUENTAxCOBRAR, FOLIO_CXC, FOLIO_COBRO, ID_VENTA, FECHA_COBRO, CANTIDAD_COBRADA, CLIENTE
@@ -22,7 +22,8 @@ const createCobros = async (req = request, res = response) => {
     if(updateCxC.SALDO < 0){
         return serverErrorMessage(res, { msg: "El monto a cobrar es mayor al monto de deuda" }, 403)
     }
-    await Cuentas_por_Cobrar.findByIdAndUpdate(updateCxC._id, { TOTAL_PAGADO: updateCxC.TOTAL_PAGADO, SALDO: updateCxC.SALDO, ESTADO: updateCxC.ESTADO })
+    await Cuentas_por_Cobrar.findByIdAndUpdate(updateCxC._id, { TOTAL_PAGADO: updateCxC.TOTAL_PAGADO, SALDO: updateCxC.SALDO, ESTADO: updateCxC.ESTADO, OBSERVACIONES: OBSERVACIONES })
+  
     return serverOkMessage(res, actionDB, 201)
   } catch (error) {
     return serverErrorMessage(res)
