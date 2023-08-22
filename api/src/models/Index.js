@@ -11,9 +11,13 @@ import ORDENES_COMPRAS from './OrdenesCompra.js'
 import MOVIMIENTOS_ALMACEN from './MovimientosAlmacen.js'
 import CUENTASxPAGAR from './Cuentas_por_Pagar.js'
 import PAGOS from './Pagos.js'
+import CLIENTES from './Clientes.js'
+import VENTAS from './Ventas.js'
+import VENTAS_DETALLE from './Ventas_Detalle.js'
+import CUENTASxCOBRAR from './Cuentas_por_Cobrar.js'
 
 export {
     ALMACENES, PRODUCTOS, PROCESOS, FORMULAS, TIPOS_DOCUMENTOS, USUARIOS,
     ROLES, PROVEEDORES, EMPRESAS, ORDENES_COMPRAS, MOVIMIENTOS_ALMACEN, CUENTASxPAGAR,
-    PAGOS
+    PAGOS, CLIENTES, VENTAS, VENTAS_DETALLE, CUENTASxCOBRAR
 }

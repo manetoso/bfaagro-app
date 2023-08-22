@@ -17,7 +17,11 @@ import {
   OrdenesCompra,
   MovimientosAlmacen,
   Cuentas_por_Pagar,
-  Pagos
+  Pagos,
+  Clientes,
+  Ventas,
+  Cuentas_por_Cobrar,
+  Cobros
 } from '../routes/index.routes.js'
 
 class Server {
@@ -42,6 +46,10 @@ class Server {
       movimientosAlmacen: '/api/movimientosalmacen',
       cuentas_por_pagar: '/api/cxp',
       pagos: '/api/pagos',
+      clientes: '/api/clientes',
+      ventas: '/api/ventas',
+      cuentas_por_cobrar: '/api/cxc',
+      cobros: '/api/cobros',
     }
 
     // Func to Connect DB
@@ -80,6 +88,10 @@ class Server {
     this.app.use(this.paths.movimientosAlmacen, MovimientosAlmacen)
     this.app.use(this.paths.cuentas_por_pagar, Cuentas_por_Pagar)
     this.app.use(this.paths.pagos, Pagos)
+    this.app.use(this.paths.clientes, Clientes)
+    this.app.use(this.paths.ventas, Ventas)
+    this.app.use(this.paths.cuentas_por_cobrar, Cuentas_por_Cobrar)
+    this.app.use(this.paths.cobros, Cobros)
   }
 
   listen() {

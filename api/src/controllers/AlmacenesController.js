@@ -1,6 +1,6 @@
-import ALMACENES from '../models/Almacenes.js'
 import { request, response } from 'express'
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
+import { ALMACENES, CLIENTES, TIPOS_DOCUMENTOS } from '../models/Index.js'
 
 const createAlmacen = async (req = request, res = response) => {
   try {
@@ -49,4 +49,37 @@ const deleteAlmacen = async (req = request, res = response) => {
   }
 }
 
-export { createAlmacen, findAlmacenes, deleteAlmacen, updateAlmacen }
+const createAlmacenCliente = async (cliente = CLIENTES) => {
+  try {
+    const almacenType = await TIPOS_DOCUMENTOS.findOne({
+      "TIPO_DOCUMENTO": "TIPO_ALMACEN",
+      "VALOR": "CLIENTES"
+    })
+    const newAlmacen = {
+      "NOMBRE_ALMACEN": cliente._id,
+      "TIPO_ALMACEN": {
+        "ID_TIPO_ALMACEN": almacenType._id,
+        "TIPO_ALMACEN": almacenType.VALOR
+      }
+    }
+    const almacenCliente = await ALMACENES.create(newAlmacen)
+    return almacenCliente
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const getAlmacenByIdCliente = async (idCliente = '') => {
+  try {
+    const almacen = await ALMACENES.findOne({ NOMBRE_ALMACEN: idCliente })
+    if(almacen){
+      return almacen
+    }else{
+      return new Error
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export { createAlmacen, findAlmacenes, deleteAlmacen, updateAlmacen, createAlmacenCliente, getAlmacenByIdCliente }

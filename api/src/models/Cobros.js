@@ -1,29 +1,38 @@
 import { Schema, model } from 'mongoose'
 
 const COBROS = new Schema({
-  ID_COBRO: {
+  ID_CUENTAxCOBRAR: {
+    type: Schema.Types.ObjectId,
+    ref: 'CUENTASxCOBRAR'
+  },
+  FOLIO_CXC: {
     type: String,
-    unique: true,
-    index: true,
+    required: true
+  },
+  FOLIO_COBRO: {
+    type: String,
     required: true
   },
   ID_VENTA: {
     type: Schema.Types.ObjectId,
     ref: 'VENTAS'
   },
-  COBRO: {
-    FORMA_COBRO: {
-      ID_FORMA_COBRO: {
-        type: String,
-        required: true
-      },
-      FORMA_COBRO: {
-        type: String,
-        required: true
-      }
+  FECHA_COBRO: {
+    type: Date,
+    default: Date.now(),
+  },
+  CANTIDAD_COBRADA: {
+    type: Number,
+    required: true
+  },
+  CLIENTE: {
+    ID_CLIENTE: {
+      type: Schema.Types.ObjectId,
+      ref: 'CLIENTES',
+      required: true
     },
-    MONTO_COBRO: {
-      type: Number,
+    NOMBRE_CLIENTE: {
+      type: String,
       required: true
     }
   }
@@ -34,4 +43,4 @@ COBROS.methods.toJSON = function () {
   return cobro
 }
 
-export default model(COBROS, 'COBROS')
+export default model('COBROS', COBROS)

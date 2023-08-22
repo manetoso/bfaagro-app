@@ -97,12 +97,33 @@ const fixProductosByType = async (req = request, res = response) => {
   }
 }
 
+const createProductoInAlmacen = async (product = {}, almacen, cantidad) => {
+  try {
+    const { NOMBRE_PRODUCTO, UNIDAD_MEDIDA, TIPO_PRODUCTO } = product
+    const producto = {
+      NOMBRE_PRODUCTO,
+      "CANTIDAD": cantidad,
+      UNIDAD_MEDIDA,
+      "CANTIDAD_MINIMA": 0,
+      TIPO_PRODUCTO,
+      "ALMACEN":{
+        "ID_ALMACEN": almacen._id,
+        "NOMBRE_ALMACEN": almacen.NOMBRE_ALMACEN
+      }
+    }
+    await PRODUCTOS.create(producto)
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export {
   createProducto,
   findProductos,
   deleteProducto,
   updateProducto,
   findProductosByType,
-  fixProductosByType
+  fixProductosByType,
+  createProductoInAlmacen
 }
 

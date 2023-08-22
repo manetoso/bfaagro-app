@@ -95,6 +95,7 @@ function AccountsPayableCombobox({
  * @returns Modal to edit a row
  */
 export function Form({ selectedRow, submitAction, modalId, field }) {
+  console.log({ selectedRow })
   const { accountsPayableData } = usePaymentsStore()
   const [selectedAccount, setSelectedAccount] = useState({})
   const [isEmpty, setIsEmpty] = useState(false)

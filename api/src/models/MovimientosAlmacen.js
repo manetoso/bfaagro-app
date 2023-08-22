@@ -32,8 +32,20 @@ const MOVIMIENTOS_ALMACEN = new Schema({
                 type: Number,
                 required: true
             },
+            UNIDAD_MEDIDA: {
+                type: String,
+                default: ''
+            },
+            PRECIO: {
+                type: Number,
+                default: 0
+            }
         }
-    ]
+    ],
+    OBSERVACIONES: {
+        type: String,
+        default: ''
+    },
 }, { timestamps: true })
 
 MOVIMIENTOS_ALMACEN.methods.toJSON = function () {

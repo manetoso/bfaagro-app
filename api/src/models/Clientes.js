@@ -1,15 +1,10 @@
 import { Schema, model } from 'mongoose'
 
 const CLIENTES = new Schema({
-  ID_CLIENTE: {
-    type: String,
-    unique: true,
-    index: true,
-    required: true
-  },
   TIPO_CLIENTE: {
     ID_TIPO_CLIENTE: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'TIPOS_DOCUMENTOS',
       required: true
     },
     TIPO_CLIENTE: {
@@ -32,12 +27,16 @@ const CLIENTES = new Schema({
   },
   CORREO: {
     type: String,
-    required: true,
     unique: true
+  },
+  DOMICILIO: {
+    type: String,
   },
   EMPRESA: {
     type: String,
-    required: true
+  },
+  RFC: {
+    type: String,
   }
 }, { timestamps: true })
 

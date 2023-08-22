@@ -89,7 +89,6 @@ const styles = StyleSheet.create({
     marginBottom: 40
   },
   header: {
-    color: '#000',
     color: '#008D36',
     fontSize: 32,
     fontWeight: 800,
