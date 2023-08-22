@@ -66,6 +66,18 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
           />
           <Input
             defaultValue={
+              Object.keys(selectedRow).length === 0 ? '' : selectedRow.rfc
+            }
+            id='rfc'
+            isEmpty={isEmpty}
+            required={false}
+            label='RFC'
+            name='rfc'
+            placeholder='GASA991022123'
+            type='text'
+          />
+          <Input
+            defaultValue={
               Object.keys(selectedRow).length === 0 ? '' : selectedRow.lastName
             }
             id='lastName'
@@ -111,7 +123,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
             required={false}
             label='Dirección'
             name='address'
-            placeholder='fernando@gmail.com'
+            placeholder='Calle 123, Colonia, Ciudad, Estado, CP'
             type='text'
           />
           <Input

@@ -11,7 +11,7 @@ export async function fetchData() {
     const { data: resp } = await bfaApi.get('/clientes')
     /**
      * The respponse body from the request.
-     * @typedef {{ _id: string, APELLIDOS: string, CORREO: string, DOMICILIO: string, EMPRESA: string, NOMBRE_CLIENTE: string, NUMERO_TELEFONO: string, TIPO_CLIENTE: { ID_TIPO_CLIENTE: string, TIPO_CLIENTE: string } } }} clientsDataBody
+     * @typedef {{ _id: string, APELLIDOS: string, CORREO: string, DOMICILIO: string, EMPRESA: string, NOMBRE_CLIENTE: string, NUMERO_TELEFONO: string, RFC: string, TIPO_CLIENTE: { ID_TIPO_CLIENTE: string, TIPO_CLIENTE: string } } }} clientsDataBody
      * @type {{body: clientsDataBody[]}} - The Payment response body.
      */
     const json = resp
@@ -83,8 +83,8 @@ export async function deleteData(id) {
 
 /**
  *
- * @param {{ id: string, name: string, lastName: string, phoneNumber: string, email: string, address: string, company: string, clientType: { clientTypeId: string, clientType: string } }} data
- * @returns {{ APELLIDOS: string, CORREO: string, DOMICILIO: string, EMPRESA: string, NOMBRE_CLIENTE: string, NUMERO_TELEFONO: string, TIPO_CLIENTE: { ID_TIPO_CLIENTE: string, TIPO_CLIENTE: string } }} - The client to DB Schema.
+ * @param {{ id: string, name: string, lastName: string, phoneNumber: string, email: string, address: string, company: string, rfc, string, clientType: { clientTypeId: string, clientType: string } }} data
+ * @returns {{ APELLIDOS: string, CORREO: string, DOMICILIO: string, EMPRESA: string, NOMBRE_CLIENTE: string, NUMERO_TELEFONO: string, RFC: string, TIPO_CLIENTE: { ID_TIPO_CLIENTE: string, TIPO_CLIENTE: string } }} - The client to DB Schema.
  */
 export function convertClientToDBSchema(data) {
   try {
@@ -95,6 +95,7 @@ export function convertClientToDBSchema(data) {
       EMPRESA: data.company,
       NOMBRE_CLIENTE: data.name,
       NUMERO_TELEFONO: data.phoneNumber,
+      RFC: data.rfc,
       TIPO_CLIENTE: {
         ID_TIPO_CLIENTE: data.clientType.clientTypeId,
         TIPO_CLIENTE: data.clientType.clientType
@@ -108,8 +109,8 @@ export function convertClientToDBSchema(data) {
 
 /**
  *
- * @param {{ _id: string, APELLIDOS: string, CORREO: string, DOMICILIO: string, EMPRESA: string, NOMBRE_CLIENTE: string, NUMERO_TELEFONO: string, TIPO_CLIENTE: { ID_TIPO_CLIENTE: string, TIPO_CLIENTE: string } }} data
- * @returns {{ id: string, name: string, lastName: string, phoneNumber: string, email: string, address: string, company: string, clientType: { clientTypeId: string, clientType: string } }} - The client to App Schema.
+ * @param {{ _id: string, APELLIDOS: string, CORREO: string, DOMICILIO: string, EMPRESA: string, NOMBRE_CLIENTE: string, NUMERO_TELEFONO: string, RFC: string, TIPO_CLIENTE: { ID_TIPO_CLIENTE: string, TIPO_CLIENTE: string } }} data
+ * @returns {{ id: string, name: string, lastName: string, phoneNumber: string, email: string, address: string, company: string, rfc, string, clientType: { clientTypeId: string, clientType: string } }} - The client to App Schema.
  */
 export function convertClientToAppSchema(data) {
   try {
@@ -121,6 +122,7 @@ export function convertClientToAppSchema(data) {
       email: data.CORREO,
       address: data.DOMICILIO,
       company: data.EMPRESA,
+      rfc: data.RFC,
       clientType: {
         clientTypeId: data.TIPO_CLIENTE.ID_TIPO_CLIENTE,
         clientType: data.TIPO_CLIENTE.TIPO_CLIENTE

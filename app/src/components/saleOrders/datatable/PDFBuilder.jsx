@@ -234,7 +234,8 @@ export function PDFBuilder() {
           .toLowerCase()}.pdf`}
       >
         {({ blob, url, loading, error }) =>
-          loading ? 'Cargando documento...' : 'Descargar ahora!'}
+          loading ? 'Cargando documento...' : 'Descargar ahora!'
+        }
       </PDFDownloadLink>
       <PDFViewer className='h-[78vh] w-full'>
         <MyPDFDocument
@@ -269,10 +270,16 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
                 {selected?.destinationClient?.clientName}{' '}
               </Text>
               <Text style={{ ...styles.muted, ...styles.small }}>
-                {suppliersData?.clientType?.clientType}
+                <Text style={{ ...styles.strong }}>Dir: </Text>
+                {suppliersData?.address}
               </Text>
               <Text style={{ ...styles.muted, ...styles.small }}>
-                {suppliersData?.address}
+                <Text style={{ ...styles.strong }}>RFC: </Text>
+                {suppliersData?.rfc}
+              </Text>
+              <Text style={{ ...styles.muted, ...styles.small }}>
+                <Text style={{ ...styles.strong }}>Tipo: </Text>
+                {suppliersData?.clientType?.clientType}
               </Text>
               <Text style={{ ...styles.muted, ...styles.small }}>
                 {suppliersData?.email}
@@ -316,7 +323,9 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
                 {formatNumberToMoneyString(product?.unitPrice)}
               </Text>
               <Text style={styles.tableRowCell}>
-                {formatNumberToMoneyString(product?.unitPrice * product?.quantity)}
+                {formatNumberToMoneyString(
+                  product?.unitPrice * product?.quantity
+                )}
               </Text>
             </View>
           ))}
@@ -340,7 +349,9 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
             >
               <Text>Total:</Text>
               <Text style={{ textAlign: 'right' }}>
-                {`${formatNumberToMoneyString(selected?.saleDetails?.total)} MXN`}
+                {`${formatNumberToMoneyString(
+                  selected?.saleDetails?.total
+                )} MXN`}
               </Text>
             </View>
           </View>
@@ -354,7 +365,8 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
         <Text
           style={styles.pageNumber}
           render={({ pageNumber, totalPages }) =>
-            `${pageNumber} / ${totalPages}`}
+            `${pageNumber} / ${totalPages}`
+          }
           fixed
         />
         <View style={styles.bottomDecorationWrapper} fixed>

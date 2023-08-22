@@ -41,7 +41,7 @@ export const useChargesDatatable = ({ field }) => {
   const columnHelper = createColumnHelper()
   const columns = useMemo(
     () => [
-      columnHelper.accessor('accountReceivableFolio', {
+      columnHelper.accessor('chargeFolio', {
         header: 'Folio',
         cell: (info) => (
           <span className='flex items-center justify-between gap-2 font-bold'>
@@ -56,7 +56,7 @@ export const useChargesDatatable = ({ field }) => {
         ),
         footer: (props) => props.column.id
       }),
-      columnHelper.accessor('chargeFolio', {
+      columnHelper.accessor('accountReceivableFolio', {
         header: 'Folio CxC',
         cell: (info) => info.getValue(),
         footer: (props) => props.column.id

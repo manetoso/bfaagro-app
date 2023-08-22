@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { useChargesStore } from '@/stores/useChargesStore'
 
-import { Input, ComboBox } from '@/components/form'
+import { Input, TextArea, ComboBox } from '@/components/form'
 import {
   handleInputMinMaxValue,
   formatNumberToMoneyString
@@ -23,7 +23,7 @@ function AccountsPayableCombobox({
         }
         dataDisplayAttribute='folio'
         id='accountReceivable'
-        label='Folio CxP'
+        label='Folio CxC'
         name='accountReceivable'
         getSelected={handleAccountChange}
       />
@@ -103,10 +103,12 @@ function AccountsPayableCombobox({
 export function Form({ selectedRow, submitAction, modalId, field }) {
   const { accountsReceivableData } = useChargesStore()
   const [selectedAccount, setSelectedAccount] = useState({})
+  const [observations, setObservations] = useState('')
   const [isEmpty, setIsEmpty] = useState(false)
 
   const handleAccountChange = (selected) => {
     setSelectedAccount(selected)
+    setObservations(selected.observations)
   }
 
   const handleSubmit = (e) => {
@@ -121,6 +123,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
         data[key] = value
       }
     }
+    delete data['accountReceivable[observations]']
 
     const newIsEmpty = Object.values(data).some((x) => x === null || x === '')
     setIsEmpty(newIsEmpty)
@@ -132,6 +135,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
       accountReceivableFolio: data['accountReceivable[folio]'],
       saleOrderId: data['accountReceivable[saleOrderId]'],
       quantityCharged: data.quantityCharged,
+      observations: data.observations,
       client: {
         clientId:
           data['accountReceivable[clients][destinationClient][clientId]'],
@@ -174,7 +178,17 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
           placeholder='300'
           type='number'
           onChange={(e) =>
-            handleInputMinMaxValue(e, 0, selectedAccount?.balance)}
+            handleInputMinMaxValue(e, 0, selectedAccount?.balance)
+          }
+        />
+        <TextArea
+          id='observations'
+          isEmpty={isEmpty}
+          label='Observaciones'
+          name='observations'
+          placeholder='Pagó la cantidad de 300'
+          value={observations}
+          onChange={(e) => setObservations(e.target.value)}
         />
         <hr className='my-2 h-1 w-full bg-gray-600' />
         <AccountsPayableCombobox

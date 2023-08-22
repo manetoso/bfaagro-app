@@ -72,8 +72,8 @@ export async function deleteData(id) {
 
 /**
  *
- * @param {{ accountReceivableId: string, accountReceivableFolio: string, saleOrderId: string, quantityCharged: number, client: { clientId: string, clientName: string } }} data
- * @returns {{ id: string, accountReceivableId: string, accountReceivableFolio: string, saleOrderId: string, quantityCharged: number, client: { clientId: string, clientName: string } }}
+ * @param {{ accountReceivableId: string, accountReceivableFolio: string, saleOrderId: string, quantityCharged: number, observations: string, client: { clientId: string, clientName: string } }} data
+ * @returns {{ ID_CUENTAxCOBRAR: string, FOLIO_CXC: string, ID_VENTA: string, CANTIDAD_COBRADA: number, OBSERVACIONES: string, CLIENTE: { ID_CLIENTE: string, NOMBRE_CLIENTE: string } }} - The charge to DB Schema.
  */
 export function convertChargeToDBSchema(data) {
   try {
@@ -82,6 +82,7 @@ export function convertChargeToDBSchema(data) {
       FOLIO_CXC: data.accountReceivableFolio,
       ID_VENTA: data.saleOrderId,
       CANTIDAD_COBRADA: data.quantityCharged,
+      OBSERVACIONES: data.observations,
       CLIENTE: {
         ID_CLIENTE: data.client.clientId,
         NOMBRE_CLIENTE: data.client.clientName

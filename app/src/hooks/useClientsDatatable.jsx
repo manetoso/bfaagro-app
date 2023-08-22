@@ -65,6 +65,15 @@ export const useClientsDatatable = ({ field }) => {
         ),
         footer: (props) => props.column.id
       }),
+      columnHelper.accessor('rfc', {
+        header: 'RFC',
+        cell: (info) => (
+          <span>
+            {info.getValue()}
+          </span>
+        ),
+        footer: (props) => props.column.id
+      }),
       columnHelper.accessor('address', {
         header: 'Dirección',
         cell: (info) => info.getValue(),
