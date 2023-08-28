@@ -21,7 +21,8 @@ import {
   Clientes,
   Ventas,
   Cuentas_por_Cobrar,
-  Cobros
+  Cobros,
+  Listas_Precios
 } from '../routes/index.routes.js'
 
 class Server {
@@ -50,6 +51,7 @@ class Server {
       ventas: '/api/ventas',
       cuentas_por_cobrar: '/api/cxc',
       cobros: '/api/cobros',
+      listas_precio: '/api/listas_precio',
     }
 
     // Func to Connect DB
@@ -92,6 +94,7 @@ class Server {
     this.app.use(this.paths.ventas, Ventas)
     this.app.use(this.paths.cuentas_por_cobrar, Cuentas_por_Cobrar)
     this.app.use(this.paths.cobros, Cobros)
+    this.app.use(this.paths.listas_precio, Listas_Precios)
   }
 
   listen() {
