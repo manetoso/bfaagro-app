@@ -22,7 +22,8 @@ import {
   Ventas,
   Cuentas_por_Cobrar,
   Cobros,
-  Listas_Precios
+  Listas_Precios,
+  BitacoraProductos
 } from '../routes/index.routes.js'
 
 class Server {
@@ -52,6 +53,7 @@ class Server {
       cuentas_por_cobrar: '/api/cxc',
       cobros: '/api/cobros',
       listas_precio: '/api/listas_precio',
+      bitacoraProductos: '/api/bitacoraproductos',
     }
 
     // Func to Connect DB
@@ -95,6 +97,7 @@ class Server {
     this.app.use(this.paths.cuentas_por_cobrar, Cuentas_por_Cobrar)
     this.app.use(this.paths.cobros, Cobros)
     this.app.use(this.paths.listas_precio, Listas_Precios)
+    this.app.use(this.paths.bitacoraProductos, BitacoraProductos)
   }
 
   listen() {
