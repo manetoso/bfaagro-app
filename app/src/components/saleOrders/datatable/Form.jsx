@@ -11,7 +11,7 @@ import { InfiniteInput } from './InfiniteInput'
  * @returns Modal to edit a row
  */
 export function Form({ selectedRow, submitAction, modalId, field }) {
-  const { clientsData, productsData } = useSaleOrdersStore()
+  const { clientsData, productsData, priceListData } = useSaleOrdersStore()
   const [isEmpty] = useState(false)
 
   const handleSubmit = (e) => {
@@ -165,6 +165,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
         <InfiniteInput
           data={productsData}
           displayedData={selectedRow.saleDetails?.products}
+          priceListData={priceListData}
           isEditing={Object.keys(selectedRow).length !== 0}
           placeholder='Producto'
         />

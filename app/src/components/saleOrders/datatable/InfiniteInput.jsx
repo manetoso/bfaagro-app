@@ -10,6 +10,7 @@ import { Plus, Close } from '🚀'
 export function InfiniteInput({
   data = [],
   displayedData = [],
+  priceListData = [],
   comboInputName = 'comboInfiniteInput',
   placeholder = '-',
   inputName = 'infiniteInput',
@@ -35,7 +36,7 @@ export function InfiniteInput({
           {
             id: 1,
             inputs: [
-              { id: 1, value: '' },
+              { id: 1, value: data[0].name },
               { id: 2, value: 0 },
               { id: 3, value: 0 },
               { id: 4, value: '' }
@@ -60,7 +61,7 @@ export function InfiniteInput({
         return (
           <div key={x.id} className='flex w-full flex-col items-end gap-2'>
             <div className='flex w-full items-start gap-1'>
-              <div className='grid w-full grid-cols-2 gap-1 md:grid-cols-3'>
+              <div className='grid w-full grid-cols-2 gap-1'>
                 {x.inputs.map((y, j) => {
                   if (y.id === 1) {
                     return (
@@ -73,16 +74,17 @@ export function InfiniteInput({
                           dataDisplayAttribute='name'
                           defaultSelected={displayedData[i]?.name}
                           name={`${comboInputName}[${i}]`}
-                          onChange={(e) => {
+                          getSelected={(selected) => {
                             const list = [...inputList]
-                            list[i].inputs[j].value = e.target.value
+                            list[i].inputs[j].value = selected.name
+                            list[i].inputs[2].value = priceListData.filter((price) => price.productName === inputList[i].inputs[0].value)[0].finalPrice
                             setInputList(list)
                           }}
                         />
                       </div>
                     )
                   } else {
-                    return j < 3 ? (
+                    return j === 1 ? (
                       <Input
                         key={y.id}
                         id={`${inputName}[${i}][${inputNames[j]}]`}
@@ -106,14 +108,32 @@ export function InfiniteInput({
                           setInputList(list)
                         }}
                       />
+                    ) : j === 2 ? (
+                      <Fragment key={y.id}>
+                        <input
+                          type='number'
+                          value={inputList[i].inputs[2].value}
+                          name={`${inputName}[${i}][${inputNames[2]}]`}
+                          className='hidden'
+                          readOnly
+                        />
+                        <span className='flex flex-col text-gray-600'>
+                          <p className='font-bold'>Precio Unitario:</p>
+                          <p className='p-2 font-black'>
+                            {formatNumberToMoneyString(
+                              inputList[i].inputs[2].value
+                            )}
+                          </p>
+                        </span>
+                      </Fragment>
                     ) : (
                       <Fragment key={y.id}>
                         <input
                           type='number'
                           value={inputList[i].inputs[3].value}
-                          onChange={(e) => {}}
                           name={`${inputName}[${i}][${inputNames[3]}]`}
                           className='hidden'
+                          readOnly
                         />
                         <span className='flex flex-col text-gray-600'>
                           <p className='font-bold'>{labels[j]}:</p>

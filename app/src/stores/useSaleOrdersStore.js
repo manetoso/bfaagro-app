@@ -8,6 +8,7 @@ import {
 import { fetchCompanyData } from '@/services/settingsServices'
 import { fetchData as fetchClientsData } from '@/services/clientsServices'
 import { fetchData as fetchWarehouseData } from '@/services/warehouseServices'
+import { fetchData as fetchPriceListData } from '@/services/priceListServices'
 import { fetchSaleStatusTypes } from '@/services/globalServices'
 
 import { PRODUCT_TYPES } from '@/utils/consts'
@@ -20,6 +21,7 @@ export const useSaleOrdersStore = create((set, get) => ({
   saleOrdersData: [],
   clientsData: [],
   productsData: [],
+  priceListData: [],
   saleStatusTypes: [],
   companyData: {},
   editModal: false,
@@ -98,10 +100,11 @@ export const useSaleOrdersStore = create((set, get) => ({
     const company = await fetchCompanyData()
     const products = await fetchWarehouseData()
     const saleStatusTypes = await fetchSaleStatusTypes()
+    const priceList = await fetchPriceListData()
+    console.log({ priceList })
     const filteredProducts = products.filter((product) =>
       product.productType.some(
-        (type) =>
-          type.name === PRODUCT_TYPES.FINISHED_PRODUCT
+        (type) => type.name === PRODUCT_TYPES.FINISHED_PRODUCT
       )
     )
     await clients.forEach((client) => {
@@ -112,6 +115,7 @@ export const useSaleOrdersStore = create((set, get) => ({
       clientsData: clients,
       productsData: filteredProducts,
       companyData: company,
+      priceListData: priceList,
       saleStatusTypes
     }))
   }

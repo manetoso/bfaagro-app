@@ -141,11 +141,11 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
       >
         <ComboBox
           data={productsData}
-          // defaultSelected={
-          //   Object.keys(selectedRow).length === 0
-          //     ? ''
-          //     : selectedRow.accountPayableFolio
-          // }
+          defaultSelected={
+            Object.keys(selectedRow).length === 0
+              ? ''
+              : selectedRow.productName
+          }
           dataDisplayAttribute='name'
           id='product'
           label='Producto'
