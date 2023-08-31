@@ -19,7 +19,7 @@ const createListaPrecio = async (req = request, res = response) => {
 
 const findListasPrecio = async (req = request, res = response) => {
     try {
-        const actionDB = await LISTAS_PRECIO.find().sort({ createdAt: -1 })
+        const actionDB = await LISTAS_PRECIO.find().sort({ createdAt: -1 }).populate('ID_PRODUCTO').populate('TIPO_LISTA')
         return serverOkMessage(res, actionDB)
     } catch (error) {
         return serverErrorMessage(res)

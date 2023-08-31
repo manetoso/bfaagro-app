@@ -145,6 +145,24 @@ export async function fetchSaleStatusTypes() {
 
 /**
  *
+ * @returns {{ id: string, value: string }[]} Process Status types data
+ */
+export async function fetchPriceListTypes() {
+  try {
+    const resp = await fetchTypes('lista_precio')
+
+    const data = resp.map((productType) => ({
+      id: productType.id,
+      value: productType.value
+    }))
+    return data
+  } catch (error) {
+    throw new Error('Error searching price list types')
+  }
+}
+
+/**
+ *
  * @returns {{ id: string, name: string, warehouseType: { id: number, name: string } }[]} warehouse data
  */
 export async function fetchWarehouses() {
