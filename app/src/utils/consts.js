@@ -47,3 +47,8 @@ export const PURCHASE_ORDERS_PERIODS = [
     value: 30
   }
 ]
+
+export const LOGBOOK_TYPES = {
+  PURCHASE: 'COMPRA',
+  SALE: 'VENTA'
+}

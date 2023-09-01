@@ -29,7 +29,7 @@ const BITACORA_PRODUCTOS = new Schema({
 }, { timestamps: true })
 
 BITACORA_PRODUCTOS.methods.toJSON = function () {
-  const { __v, createdAt, updatedAt, ...bitacoraProductos } = this.toObject()
+  const { __v, updatedAt, ...bitacoraProductos } = this.toObject()
   return bitacoraProductos
 }
 

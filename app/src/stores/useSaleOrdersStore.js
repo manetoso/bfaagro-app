@@ -101,7 +101,6 @@ export const useSaleOrdersStore = create((set, get) => ({
     const products = await fetchWarehouseData()
     const saleStatusTypes = await fetchSaleStatusTypes()
     const priceList = await fetchPriceListData()
-    console.log({ priceList })
     const filteredProducts = products.filter((product) =>
       product.productType.some(
         (type) => type.name === PRODUCT_TYPES.FINISHED_PRODUCT
