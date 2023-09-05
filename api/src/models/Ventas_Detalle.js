@@ -13,6 +13,10 @@ const VENTAS_DETALLE = new Schema({
         ref: 'PRODUCTOS_EMBALAJADOS',
         required: true
       },
+      INCREMENTO: {
+        type: Number,
+        required: true
+      },
       NOMBRE_PRODUCTO: {
         type: String,
         required: true
