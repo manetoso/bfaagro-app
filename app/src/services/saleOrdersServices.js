@@ -167,6 +167,7 @@ export function converCreateSaleOrderToDBSchema(data) {
           NOMBRE_PRODUCTO: product.name,
           CANTIDAD: product.quantity,
           UNIDAD_MEDIDA: product.unity,
+          INCREMENTO: product.increment,
           PRECIO_UNITARIO: product.unitPrice
         })),
         PRECIO_TOTAL: data.total

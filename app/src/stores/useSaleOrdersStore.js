@@ -27,6 +27,7 @@ export const useSaleOrdersStore = create((set, get) => ({
   editModal: false,
   pdfView: false,
   alert: false,
+  priceListWarning: false,
   selected: {},
 
   toggleAddModal: () => {
@@ -109,6 +110,15 @@ export const useSaleOrdersStore = create((set, get) => ({
     await clients.forEach((client) => {
       client.name = `${client.name} ${client.lastName}`
     })
+    if (priceList.length !== filteredProducts.length) {
+      return set((state) => ({
+        ...state,
+        clientsData: clients,
+        companyData: company,
+        priceListWarning: true,
+        saleStatusTypes
+      }))
+    }
     set((state) => ({
       ...state,
       clientsData: clients,

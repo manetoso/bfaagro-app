@@ -13,17 +13,27 @@ export function PriceListDatatable({
   addOrEditElement,
   removeElement,
   alert,
+  showAddButton,
   editModal,
   field
 }) {
   return (
     <div className='relative mt-4'>
-      <Datatable
-        columns={columns}
-        data={data}
-        title={title}
-        addHandler={toggleAddModal}
-      />
+      {String(showAddButton)}
+      {showAddButton ? (
+        <Datatable
+          columns={columns}
+          data={data}
+          title={title}
+          addHandler={toggleAddModal}
+        />
+      ) : (
+        <Datatable
+          columns={columns}
+          data={data}
+          title={title}
+        />
+      )}
       <DeleteAlert
         closeAlert={toggleAlert}
         deleteOnClick={() => removeElement(field)}

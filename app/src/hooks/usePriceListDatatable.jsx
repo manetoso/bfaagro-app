@@ -1,12 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
 
 import { DropdownMenu } from '@/components/datatable'
-import { usePriceListStore, FIELDS_TYPES } from '@/stores/usePriceListStore'
-import { fetchData } from '@/services/priceListServices'
+import { usePriceListStore } from '@/stores/usePriceListStore'
 import { formatNumberToMoneyString } from '@/utils/utils'
-
-const DEFAULT_FIELD = FIELDS_TYPES.PRICE_LIST
 
 /**
  *
@@ -14,28 +11,20 @@ const DEFAULT_FIELD = FIELDS_TYPES.PRICE_LIST
  * @returns
  */
 export const usePriceListDatatable = ({ field }) => {
-  const localField = FIELDS_TYPES[field] || DEFAULT_FIELD
   const {
     priceListData,
     editModal,
     alert,
+    showAddButton,
     selected,
     toggleAddModal,
     toggleAlert,
     toggleEditModal,
-    setDataFilds,
     addOrEditElement,
     removeElement,
     fetchExtraData
   } = usePriceListStore()
   const [isLoading, setIsLoading] = useState(true)
-
-  const FETCH_DATA_BY_FIELD = {
-    [FIELDS_TYPES.PRICE_LIST]: () => {
-      console.warn('FETCHING PRICE LIST DATA')
-      return fetchData()
-    }
-  }
 
   // COLUMNS FOR THE DATA TABLE
   const columnHelper = createColumnHelper()
@@ -85,23 +74,21 @@ export const usePriceListDatatable = ({ field }) => {
   )
 
   // FETCHING DATA FROM THE API
-  const getData = useMemo(async () => {
+  const getData = useCallback(async () => {
     await fetchExtraData()
-    const apiData = await FETCH_DATA_BY_FIELD[localField]()
-    setDataFilds(apiData, localField)
     setIsLoading(false)
-    return apiData
   }, [])
 
   // SETTING THE DATA TO THE STORE
   useEffect(() => {
-    getData
+    getData()
   }, [])
 
   return {
     priceListData,
     editModal,
     alert,
+    showAddButton,
     selected,
     toggleAddModal,
     toggleEditModal,

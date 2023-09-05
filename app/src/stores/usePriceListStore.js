@@ -3,7 +3,8 @@ import { create } from 'zustand'
 import {
   createData,
   updateData,
-  deleteData
+  deleteData,
+  fetchData
 } from '@/services/priceListServices'
 import { fetchPriceListTypes } from '@/services/globalServices'
 import { fetchData as fetchWarehouseData } from '@/services/warehouseServices'
@@ -23,6 +24,7 @@ export const usePriceListStore = create((set, get) => ({
   companyData: {},
   editModal: false,
   alert: false,
+  showAddButton: true,
   selected: {},
 
   toggleAddModal: () => {
@@ -85,6 +87,7 @@ export const usePriceListStore = create((set, get) => ({
     }
   },
   fetchExtraData: async () => {
+    const priceListData = await fetchData()
     const priceListTypes = await fetchPriceListTypes()
     const products = await fetchWarehouseData()
     const filteredProducts = products.filter((product) =>
@@ -92,9 +95,19 @@ export const usePriceListStore = create((set, get) => ({
         (type) => type.name === PRODUCT_TYPES.FINISHED_PRODUCT
       )
     )
+    const productsNotInPriceListData = filteredProducts.filter((product) => {
+      const index = priceListData.findIndex(
+        (priceList) => priceList.productId === product.id
+      )
+      return index === -1
+    })
+    if (productsNotInPriceListData.length === 0) {
+      set((state) => ({ ...state, showAddButton: false }))
+    }
     set((state) => ({
       ...state,
-      productsData: filteredProducts,
+      priceListData,
+      productsData: productsNotInPriceListData,
       priceListTypesData: priceListTypes
     }))
   }

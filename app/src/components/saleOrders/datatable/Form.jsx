@@ -4,6 +4,7 @@ import { useSaleOrdersStore } from '@/stores/useSaleOrdersStore'
 
 import { Input, ComboBox } from '@/components/form'
 import { InfiniteInput } from './InfiniteInput'
+import { converCreateSaleOrderToDBSchema } from '@/services/saleOrdersServices'
 
 /**
  *
@@ -37,6 +38,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     const comboUnity = []
     const infiniteQantity = []
     const infiniteUnitPrice = []
+    const infiniteIncrement = []
     const infiniteTotalUnit = []
     const formatedProducts = []
     for (const [key, value] of formData.entries()) {
@@ -65,6 +67,9 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
       if (key.includes('infiniteInput') && key.includes('unitPrice')) {
         infiniteUnitPrice.push(value)
       }
+      if (key.includes('infiniteInput') && key.includes('increment')) {
+        infiniteIncrement.push(value)
+      }
       if (key.includes('infiniteInput') && key.includes('totalUnit')) {
         infiniteTotalUnit.push(value)
       }
@@ -76,6 +81,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
         unity: comboUnity[index],
         quantity: Number(infiniteQantity[index]),
         unitPrice: Number(infiniteUnitPrice[index]),
+        increment: Number(infiniteIncrement[index]),
         totalUnit: Number(infiniteTotalUnit[index])
       })
     })
@@ -102,8 +108,9 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     }
 
     // console.log({ data })
-    // console.log({ formatedData })
-    submitAction(formatedData, field)
+    console.log({ formatedData })
+    console.log({ test: converCreateSaleOrderToDBSchema(formatedData) })
+    // submitAction(formatedData, field)
   }
 
   return (

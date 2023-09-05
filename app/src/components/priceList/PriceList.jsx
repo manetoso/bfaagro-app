@@ -10,6 +10,7 @@ export function PriceList() {
     priceListData,
     addOrEditElement,
     alert,
+    showAddButton,
     editModal,
     removeElement,
     selected,
@@ -34,6 +35,7 @@ export function PriceList() {
         addOrEditElement={addOrEditElement}
         removeElement={removeElement}
         alert={alert}
+        showAddButton={showAddButton}
         editModal={editModal}
         field={FIELDS_TYPES.PRICE_LIST}
       />
