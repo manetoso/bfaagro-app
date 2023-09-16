@@ -241,7 +241,7 @@ export function convertSaleOrderToAppSchema(data) {
 
 /**
  *
- * @param {{ _id: string, ID_VENTA: string, PRECIO_TOTAL: number, PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number }[] }} data
+ * @param {{ _id: string, ID_VENTA: string, PRECIO_TOTAL: number, PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number, INCREMENTO: number }[] }} data
  * @returns {{ id: string, saleOrderId: string, total: number, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number }[] }} - The sale order detail to App Schema.
  */
 export function convertSaleOrderDetailToAppSchema(data) {
@@ -255,7 +255,8 @@ export function convertSaleOrderDetailToAppSchema(data) {
         name: product.NOMBRE_PRODUCTO,
         quantity: product.CANTIDAD,
         unity: product.UNIDAD_MEDIDA,
-        unitPrice: product.PRECIO_UNITARIO
+        unitPrice: product.PRECIO_UNITARIO,
+        increment: product.INCREMENTO
       }))
     }
     return dbSchemaLike

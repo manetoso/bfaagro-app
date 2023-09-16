@@ -234,8 +234,7 @@ export function PDFBuilder() {
           .toLowerCase()}.pdf`}
       >
         {({ blob, url, loading, error }) =>
-          loading ? 'Cargando documento...' : 'Descargar ahora!'
-        }
+          loading ? 'Cargando documento...' : 'Descargar ahora!'}
       </PDFDownloadLink>
       <PDFViewer className='h-[78vh] w-full'>
         <MyPDFDocument
@@ -269,7 +268,7 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
               <Text style={styles.strong}>
                 {selected?.destinationClient?.clientName}{' '}
               </Text>
-              <Text style={{ ...styles.muted, ...styles.small }}>
+              <Text style={{ ...styles.muted, ...styles.small, maxWidth: 300 }}>
                 <Text style={{ ...styles.strong }}>Dir: </Text>
                 {suppliersData?.address}
               </Text>
@@ -310,8 +309,10 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
           <View style={styles.tableHeader}>
             <Text style={styles.tableHeaderCell}>#</Text>
             <Text style={styles.tableHeaderCellBig}>Descripción</Text>
-            <Text style={styles.tableHeaderCell}>Cantidad</Text>
+            <Text style={styles.tableHeaderCell}>Cant</Text>
             <Text style={styles.tableHeaderCell}>P.U.</Text>
+            <Text style={styles.tableHeaderCell}>Incr</Text>
+            <Text style={styles.tableHeaderCell}>Sub</Text>
             <Text style={styles.tableHeaderCell}>Total</Text>
           </View>
           {selected?.saleDetails?.products?.map((product, index) => (
@@ -322,10 +323,16 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
               <Text style={styles.tableRowCell}>
                 {formatNumberToMoneyString(product?.unitPrice)}
               </Text>
+              <Text style={styles.tableRowCell}>{product?.increment || 0}%</Text>
               <Text style={styles.tableRowCell}>
                 {formatNumberToMoneyString(
                   product?.unitPrice * product?.quantity
                 )}
+              </Text>
+              <Text style={styles.tableRowCell}>
+                {product?.increment ? formatNumberToMoneyString(
+                  (product?.unitPrice * product?.quantity) + (product?.unitPrice * product?.quantity) * product?.increment / 100
+                ) : formatNumberToMoneyString(product?.unitPrice * product?.quantity)}
               </Text>
             </View>
           ))}
@@ -365,8 +372,7 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
         <Text
           style={styles.pageNumber}
           render={({ pageNumber, totalPages }) =>
-            `${pageNumber} / ${totalPages}`
-          }
+            `${pageNumber} / ${totalPages}`}
           fixed
         />
         <View style={styles.bottomDecorationWrapper} fixed>

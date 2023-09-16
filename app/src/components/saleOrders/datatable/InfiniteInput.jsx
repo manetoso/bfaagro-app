@@ -29,7 +29,7 @@ export function InfiniteInput({
           { id: 1, value: x.name },
           { id: 2, value: x.quantity },
           { id: 3, value: x.unitPrice },
-          { id: 4, value: x.increment },
+          { id: 4, value: x.increment || 0 },
           { id: 5, value: x.quantity * x.unitPrice }
         ]
       }))

@@ -20,12 +20,12 @@ export const useLogbookDatatable = () => {
   const columnHelper = createColumnHelper()
   const columns = useMemo(
     () => [
-      columnHelper.accessor('id', {
-        header: '',
+      columnHelper.accessor('createdAtFormatted', {
+        header: 'Fecha',
         cell: (info) => {
           return (
             <span className='flex items-center justify-between gap-2 font-bold'>
-              {info.cell.row.index + 1}{' '}
+              {info.getValue()}{' '}
               <DropdownMenu
                 openModal={() => {
                   toggleDetailsModalModal(info.cell.row.original)
@@ -40,12 +40,12 @@ export const useLogbookDatatable = () => {
         header: 'Movimiento',
         cell: (info) => info.getValue(),
         footer: (props) => props.column.id
-      }),
-      columnHelper.accessor('createdAtFormatted', {
-        header: 'Fecha',
-        cell: (info) => info.getValue(),
-        footer: (props) => props.column.id
       })
+      // columnHelper.accessor('createdAtFormatted', {
+      //   header: 'Fecha',
+      //   cell: (info) => info.getValue(),
+      //   footer: (props) => props.column.id
+      // })
     ],
     []
   )

@@ -4,7 +4,6 @@ import { useSaleOrdersStore } from '@/stores/useSaleOrdersStore'
 
 import { Input, ComboBox } from '@/components/form'
 import { InfiniteInput } from './InfiniteInput'
-import { converCreateSaleOrderToDBSchema } from '@/services/saleOrdersServices'
 
 /**
  *
@@ -108,9 +107,8 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     }
 
     // console.log({ data })
-    console.log({ formatedData })
-    console.log({ test: converCreateSaleOrderToDBSchema(formatedData) })
-    // submitAction(formatedData, field)
+    // console.log({ formatedData })
+    submitAction(formatedData, field)
   }
 
   return (
