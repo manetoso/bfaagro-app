@@ -1,41 +1,13 @@
 import { Schema, model } from 'mongoose'
 
 const LISTAS_PRECIOS = new Schema({
-  
-  ID_LISTA_PRECIO: {
-    type: String,
-    unique: true,
-    index: true,
+  ID_PRODUCTO: {
+    type: Schema.Types.ObjectId,
+    ref: 'PRODUCTOS',
     required: true
-  },
-  PRODUCTO: {
-    ID_PRODCUTO: {
-      type: Schema.Types.ObjectId,
-      ref: 'PRODUCTOS',
-      required: true
-    },
-    NOMBRE_PRODUCTO: {
-      type: String,
-      required: true
-    }
-  },
-  CLIENTE: {
-    ID_CLIENTE: {
-      type: Schema.Types.ObjectId,
-      ref: 'CLIENTES',
-      required: true
-    },
-    NOMBRE_CLIENTE: {
-      type: String,
-      required: true
-    }
   },
   PRECIO_UNITARIO: {
     type: Number,
-    required: true
-  },
-  UNIDAD_MEDIDA: {
-    type: String,
     required: true
   },
   AUMENTO: {
@@ -51,6 +23,17 @@ const LISTAS_PRECIOS = new Schema({
   PRECIO_FINAL: {
     type: Number,
     required: true
+  },
+  TIPO_LISTA: {
+    ID_TIPO: {
+      type: Schema.Types.ObjectId,
+      ref: 'TIPOS_DOCUMENTOS',
+      required: true
+    },
+    TIPO_LISTA: {
+      type: String,
+      required: true
+    }
   }
 }, { timestamps: true })
 
@@ -59,4 +42,4 @@ LISTAS_PRECIOS.methods.toJSON = function () {
   return listasPrecios
 }
 
-export default model(LISTAS_PRECIOS, 'LISTAS_PRECIOS')
+export default model('LISTAS_PRECIOS', LISTAS_PRECIOS)

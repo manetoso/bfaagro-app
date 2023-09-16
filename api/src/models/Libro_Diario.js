@@ -1,13 +1,6 @@
 import { Schema, model } from 'mongoose'
 
 const LIBRO_DIARIO = new Schema({
-  
-  ID_DIARIO: {
-    type: String,
-    unique: true,
-    index: true,
-    required: true
-  },
   REGISTRO: {
     ID_TIPO_REGISTO: {
       type: String,

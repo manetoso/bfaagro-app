@@ -1,6 +1,6 @@
 import { SaleOrdersDatatable, PDFBuilder } from './datatable'
 import { CustomToast } from '@/components/toast'
-import { PDFView } from '@/components/alert'
+import { PDFView, RedirectAlert } from '@/components/alert'
 import { Loader } from '@/components/layout'
 
 import { useSaleOrdersDatatable } from '@/hooks/useSaleOrdersDatatable'
@@ -11,6 +11,7 @@ export function SaleOrders() {
     saleOrdersData,
     addOrEditElement,
     alert,
+    priceListWarning,
     editModal,
     pdfView,
     removeElement,
@@ -40,6 +41,7 @@ export function SaleOrders() {
         editModal={editModal}
         field={FIELDS_TYPES.SALE_ORDERS}
       />
+      <RedirectAlert href='/app/ventas/lista-precios' isOpen={priceListWarning} />
       <PDFView
         closeModal={() => printPurchaseOrder({})}
         isOpen={pdfView}

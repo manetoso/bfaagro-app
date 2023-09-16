@@ -17,6 +17,8 @@ import Clientes from './Clientes.routes.js'
 import Ventas from './Ventas.routes.js'
 import Cuentas_por_Cobrar from './Cuentas_por_Cobrar.routes.js'
 import Cobros from './Cobros.routes.js'
+import Listas_Precios from './Listas_Precio.routes.js'
+import BitacoraProductos from './BitacoraProductos.routes.js'
 
 export {
   AlmacenesRouter,
@@ -37,5 +39,7 @@ export {
   Clientes,
   Ventas,
   Cuentas_por_Cobrar,
-  Cobros
+  Cobros,
+  Listas_Precios,
+  BitacoraProductos
 }
