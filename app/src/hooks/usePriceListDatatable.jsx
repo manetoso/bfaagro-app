@@ -1,51 +1,37 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
 
-import { DropdownMenu } from '@/components/saleOrders/datatable/DropdownMenu'
-import { useSaleOrdersStore, FIELDS_TYPES } from '@/stores/useSaleOrdersStore'
-import { fetchData } from '@/services/saleOrdersServices'
+import { DropdownMenu } from '@/components/datatable'
+import { usePriceListStore } from '@/stores/usePriceListStore'
 import { formatNumberToMoneyString } from '@/utils/utils'
-
-const DEFAULT_FIELD = FIELDS_TYPES.SALE_ORDERS
 
 /**
  *
  * @param {{field: Like<FIELDS_TYPES>}} props
  * @returns
  */
-export const useSaleOrdersDatatable = ({ field }) => {
-  const localField = FIELDS_TYPES[field] || DEFAULT_FIELD
+export const usePriceListDatatable = ({ field }) => {
   const {
-    saleOrdersData,
+    priceListData,
     editModal,
-    pdfView,
     alert,
-    priceListWarning,
+    showAddButton,
     selected,
     toggleAddModal,
     toggleAlert,
     toggleEditModal,
-    printPurchaseOrder,
-    setDataFilds,
     addOrEditElement,
     removeElement,
     fetchExtraData
-  } = useSaleOrdersStore()
+  } = usePriceListStore()
   const [isLoading, setIsLoading] = useState(true)
-
-  const FETCH_DATA_BY_FIELD = {
-    [FIELDS_TYPES.SALE_ORDERS]: () => {
-      console.warn('FETCHING SALE ORDERS DATA')
-      return fetchData()
-    }
-  }
 
   // COLUMNS FOR THE DATA TABLE
   const columnHelper = createColumnHelper()
   const columns = useMemo(
     () => [
-      columnHelper.accessor('folio', {
-        header: 'Folio de orden',
+      columnHelper.accessor('productName', {
+        header: 'Producto',
         cell: (info) => (
           <span className='flex items-center justify-between gap-2 font-bold'>
             {info.getValue()}{' '}
@@ -54,26 +40,32 @@ export const useSaleOrdersDatatable = ({ field }) => {
               openModal={() => {
                 toggleEditModal(info.cell.row.original)
               }}
-              printHanlder={() => {
-                printPurchaseOrder(info.cell.row.original)
-              }}
             />
           </span>
         ),
         footer: (props) => props.column.id
       }),
-      columnHelper.accessor('originClient.clientName', {
-        header: 'Vendedor',
-        cell: (info) => info.getValue(),
+      columnHelper.accessor('unitPrice', {
+        header: 'Precio unitario',
+        cell: (info) => formatNumberToMoneyString(info.getValue()),
         footer: (props) => props.column.id
       }),
-      columnHelper.accessor('destinationClient.clientName', {
-        header: 'Cliente',
-        cell: (info) => info.getValue(),
+      columnHelper.accessor('rise', {
+        header: 'Aumento',
+        cell: (info) => (
+          <div className='flex flex-col'>
+            <span>
+              {info.getValue().risePercentage}%
+            </span>
+            <span>
+              {formatNumberToMoneyString(info.getValue().riseQuantity)}
+            </span>
+          </div>
+        ),
         footer: (props) => props.column.id
       }),
-      columnHelper.accessor('saleDetails.total', {
-        header: 'Total',
+      columnHelper.accessor('finalPrice', {
+        header: 'Precio final',
         cell: (info) => formatNumberToMoneyString(info.getValue()),
         footer: (props) => props.column.id
       })
@@ -82,29 +74,24 @@ export const useSaleOrdersDatatable = ({ field }) => {
   )
 
   // FETCHING DATA FROM THE API
-  const getData = useMemo(async () => {
+  const getData = useCallback(async () => {
     await fetchExtraData()
-    const apiData = await FETCH_DATA_BY_FIELD[localField]()
-    setDataFilds(apiData, localField)
     setIsLoading(false)
-    return apiData
   }, [])
 
   // SETTING THE DATA TO THE STORE
   useEffect(() => {
-    getData
+    getData()
   }, [])
 
   return {
-    saleOrdersData,
+    priceListData,
     editModal,
-    pdfView,
     alert,
-    priceListWarning,
+    showAddButton,
     selected,
     toggleAddModal,
     toggleEditModal,
-    printPurchaseOrder,
     toggleAlert,
     addOrEditElement,
     removeElement,

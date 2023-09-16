@@ -6,6 +6,7 @@ import { getAlmacenByIdCliente } from '../controllers/AlmacenesController.js'
 import { registerMovementByAlmacen, registerMovementAlmacen } from '../controllers/MovimientosAlmacenController.js'
 import { generateNewFolio } from '../helpers/FoliosGenerator.js'
 import { createCuentaxCobrarByVenta } from './Cuentas_por_CobrarController.js'
+import { createRegister, constructArrayProducts, updateRegisterByIdentificador } from './BitacoraProductosController.js'
 
 const createVenta = async (req = request, res = response) => {
     try {
@@ -74,14 +75,15 @@ const updateVenta = async (req = request, res = response) => {
         // Actualizamos los clientes en la cxc
         const cxcSaved = await CUENTASxCOBRAR.findOne({ 'FOLIO_VENTA': ventaSaved.FOLIO })
         await CUENTASxCOBRAR.findByIdAndUpdate(cxcSaved._id, { CLIENTES })
-        
-        await updateVentaDetalle(VENTA_DETALLE)
+
+        await updateVentaDetalle(id, VENTA_DETALLE)
 
         const actionDB = await VENTAS.findByIdAndUpdate(id, venta, {
             new: true
         })
         return serverOkMessage(res, actionDB)
     } catch (error) {
+        console.log(error);
         return serverErrorMessage(res)
     }
 }
@@ -111,20 +113,36 @@ const createVentaDetalle = async (idVenta, ventaDetalle = {}) => {
     try {
         const { PRODUCTOS, PRECIO_TOTAL } = ventaDetalle
         const actionDB = { "ID_VENTA": idVenta, PRODUCTOS, PRECIO_TOTAL }
-        await VENTAS_DETALLE.create(actionDB)
+        const venta_Detalle = await VENTAS_DETALLE.create(actionDB)
+        // Bitacora 
+        const products = constructArrayProducts(PRODUCTOS)
+        const register = {
+            "IDENTIFICADOR": venta_Detalle._id,
+            "PRODUCTOS": products,
+            "MOVIMIENTO": "VENTA"
+        }
+        await createRegister(register)
     } catch (error) {
         console.log(error);
         throw new Error
     }
 }
 
-const updateVentaDetalle = async (VENTA_DETALLE = {}) => {
+const updateVentaDetalle = async (idVenta, VENTA_DETALLE = {}) => {
     try {
-        const id = VENTA_DETALLE._id
         const data = VENTA_DETALLE
-        const actionDB = await VENTAS_DETALLE.findByIdAndUpdate(id, data)
+        const ventaDetalleSaved = await VENTAS_DETALLE.findOne({ID_VENTA: idVenta})
+        const actionDB = await VENTAS_DETALLE.findByIdAndUpdate(ventaDetalleSaved._id, data)
+        // Bitacora 
+        const products = constructArrayProducts(VENTA_DETALLE.PRODUCTOS)
+        const register = {
+            "IDENTIFICADOR": ventaDetalleSaved.id,
+            "PRODUCTOS": products,
+            "MOVIMIENTO": "VENTA"
+        }
+        await updateRegisterByIdentificador(ventaDetalleSaved.id, register)
     } catch (error) {
-        console.log();
+        console.log(error);
     }
 }
 

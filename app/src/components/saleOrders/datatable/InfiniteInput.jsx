@@ -10,13 +10,14 @@ import { Plus, Close } from '🚀'
 export function InfiniteInput({
   data = [],
   displayedData = [],
+  priceListData = [],
   comboInputName = 'comboInfiniteInput',
   placeholder = '-',
   inputName = 'infiniteInput',
   isEditing = false
 }) {
-  const labels = ['Producto', 'Cantidad', 'Precio Unitario', 'Total Unitario']
-  const inputNames = ['name', 'quantity', 'unitPrice', 'totalUnit']
+  const labels = ['Producto', 'Cantidad', 'Precio Unitario', 'Aumento (%)', 'Total Unitario']
+  const inputNames = ['name', 'quantity', 'unitPrice', 'increment', 'totalUnit']
   const [total, setTotal] = useState(0)
   const [subtotal, setSubtotal] = useState(0)
   const [balance, setBalance] = useState(0)
@@ -28,17 +29,19 @@ export function InfiniteInput({
           { id: 1, value: x.name },
           { id: 2, value: x.quantity },
           { id: 3, value: x.unitPrice },
-          { id: 4, value: x.quantity * x.unitPrice }
+          { id: 4, value: x.increment || 0 },
+          { id: 5, value: x.quantity * x.unitPrice }
         ]
       }))
       : [
           {
             id: 1,
             inputs: [
-              { id: 1, value: '' },
+              { id: 1, value: data[0].name },
               { id: 2, value: 0 },
               { id: 3, value: 0 },
-              { id: 4, value: '' }
+              { id: 4, value: 0 },
+              { id: 5, value: '' }
             ]
           }
         ]
@@ -46,7 +49,7 @@ export function InfiniteInput({
   useEffect(() => {
     setTotal(
       inputList.reduce((acc, curr) => {
-        return acc + Number(curr.inputs[3].value)
+        return acc + Number(curr.inputs[4].value)
       }, 0)
     )
   }, [inputList])
@@ -60,7 +63,7 @@ export function InfiniteInput({
         return (
           <div key={x.id} className='flex w-full flex-col items-end gap-2'>
             <div className='flex w-full items-start gap-1'>
-              <div className='grid w-full grid-cols-2 gap-1 md:grid-cols-3'>
+              <div className='grid w-full grid-cols-3 gap-1'>
                 {x.inputs.map((y, j) => {
                   if (y.id === 1) {
                     return (
@@ -73,16 +76,17 @@ export function InfiniteInput({
                           dataDisplayAttribute='name'
                           defaultSelected={displayedData[i]?.name}
                           name={`${comboInputName}[${i}]`}
-                          onChange={(e) => {
+                          getSelected={(selected) => {
                             const list = [...inputList]
-                            list[i].inputs[j].value = e.target.value
+                            list[i].inputs[j].value = selected.name
+                            list[i].inputs[2].value = priceListData.filter((price) => price.productName === inputList[i].inputs[0].value)[0].finalPrice
                             setInputList(list)
                           }}
                         />
                       </div>
                     )
                   } else {
-                    return j < 3 ? (
+                    return j === 1 ? (
                       <Input
                         key={y.id}
                         id={`${inputName}[${i}][${inputNames[j]}]`}
@@ -98,10 +102,53 @@ export function InfiniteInput({
                             return
                           }
                           const list = [...inputList]
-                          list[i].inputs[j].value = e.target.value
+                          list[i].inputs[j].value = Number(e.target.value)
 
-                          list[i].inputs[3].value =
+                          list[i].inputs[4].value =
                             list[i].inputs[2].value * list[i].inputs[1].value
+
+                          setInputList(list)
+                        }}
+                      />
+                    ) : j === 2 ? (
+                      <Fragment key={y.id}>
+                        <input
+                          type='number'
+                          value={inputList[i].inputs[2].value}
+                          name={`${inputName}[${i}][${inputNames[2]}]`}
+                          className='hidden'
+                          readOnly
+                        />
+                        <span className='flex flex-col text-gray-600'>
+                          <p className='font-bold'>Precio Unitario:</p>
+                          <p className='p-2 font-black'>
+                            {formatNumberToMoneyString(
+                              inputList[i].inputs[2].value
+                            )}
+                          </p>
+                        </span>
+                      </Fragment>
+                    ) : j === 3 ? (
+                      <Input
+                        key={y.id}
+                        id={`${inputName}[${i}][${inputNames[j]}]`}
+                        name={`${inputName}[${i}][${inputNames[j]}]`}
+                        label={`${labels[j]}`}
+                        required={false}
+                        placeholder={placeholder}
+                        defaultValue={y.value}
+                        type='number'
+                        onChange={(e) => {
+                          if (e.target.value < 0) {
+                            e.target.value = 0
+                            return
+                          }
+                          const list = [...inputList]
+                          const percentaje = Number(e.target.value)
+                          list[i].inputs[j].value = percentaje
+
+                          const price = list[i].inputs[2].value * list[i].inputs[1].value
+                          list[i].inputs[4].value = (price) + (price * percentaje) / 100
 
                           setInputList(list)
                         }}
@@ -110,17 +157,16 @@ export function InfiniteInput({
                       <Fragment key={y.id}>
                         <input
                           type='number'
-                          value={inputList[i].inputs[3].value}
-                          onChange={(e) => {}}
-                          name={`${inputName}[${i}][${inputNames[3]}]`}
+                          value={inputList[i].inputs[j].value}
+                          name={`${inputName}[${i}][${inputNames[j]}]`}
                           className='hidden'
+                          readOnly
                         />
                         <span className='flex flex-col text-gray-600'>
                           <p className='font-bold'>{labels[j]}:</p>
                           <p className='p-2 font-black'>
                             {formatNumberToMoneyString(
-                              inputList[i].inputs[2].value *
-                                inputList[i].inputs[1].value
+                              (inputList[i].inputs[2].value * inputList[i].inputs[1].value) + ((inputList[i].inputs[2].value * inputList[i].inputs[1].value) * inputList[i].inputs[3].value) / 100
                             )}
                           </p>
                         </span>
@@ -153,7 +199,8 @@ export function InfiniteInput({
                         { id: 1, value: '' },
                         { id: 2, value: 0 },
                         { id: 3, value: 0 },
-                        { id: 4, value: '' }
+                        { id: 4, value: 0 },
+                        { id: 5, value: '' }
                       ]
                     }
                   ])}
@@ -169,7 +216,7 @@ export function InfiniteInput({
         <p className='font-black'>
           {formatNumberToMoneyString(
             inputList.reduce((acc, curr) => {
-              return acc + Number(curr.inputs[3].value)
+              return acc + Number(curr.inputs[4].value)
             }, 0)
           )}
         </p>

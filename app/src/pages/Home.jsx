@@ -3,6 +3,7 @@ import { Card, CardsContainer } from '@/components/navigationCard'
 
 import Compras from '@/assets/compras2.webp'
 import Ventas from '@/assets/ventas.webp'
+import Bitacora from '@/assets/logbook.webp'
 import Production from '@/assets/production.webp'
 import Ajustes from '@/assets/ajustes.webp'
 
@@ -20,6 +21,13 @@ export const routesList = [
     to: '/app/ventas/inicio',
     imgURL: Ventas,
     style: { backgroundColor: '#afa793', color: '#363636' }
+  },
+  {
+    title: 'Bitácora',
+    description: 'Revisa la bitácora de compras y ventas',
+    to: '/app/bitacora',
+    imgURL: Bitacora,
+    style: { backgroundColor: '#ac9788', color: '#363636' }
   },
   {
     title: 'Producción',

@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 
-import { Auth, Home, NotFound } from '@/pages'
+import { Auth, Home, Logbook, NotFound } from '@/pages'
 import { Layout, ProtectedRoute } from '@/components/layout'
 
 import {
@@ -46,6 +46,10 @@ export function Router() {
           <Route
             path='ventas/*'
             element={<SalesRoutes permissions={permissions} roles={roles} />}
+          />
+          <Route
+            path='bitacora/*'
+            element={<Logbook />}
           />
           <Route
             path='produccion/*'

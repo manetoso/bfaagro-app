@@ -13,6 +13,15 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
   const [isEmpty, setIsEmpty] = useState(false)
   const { detailProductsData, productsData, unityTypes } = useRecipesStore()
 
+  const handleMinMaxValue = (e, minValue, maxValue) => {
+    if (e.target.value > maxValue) {
+      e.target.value = maxValue
+    }
+    if (e.target.value < minValue) {
+      e.target.value = minValue
+    }
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
     const form = e.target
@@ -79,7 +88,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
         className='mx-auto mt-4 flex flex-col items-center gap-2'
         onSubmit={handleSubmit}
       >
-        <div className='flex flex-col md:flex-row w-full gap-8'>
+        <div className='flex w-full flex-col gap-8 md:flex-row'>
           <div className='flex flex-1 flex-col gap-2'>
             <input
               className={`w-full text-xl font-bold focus:outline-none ${
@@ -116,6 +125,8 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                 isEmpty && 'border-rose-500'
               }`}
               type='number'
+              step='0.01'
+              onChange={(e) => handleMinMaxValue(e, 0, 999999999)}
               name='quantity'
               defaultValue={
                 Object.keys(selectedRow).length === 0

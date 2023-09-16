@@ -6,6 +6,7 @@ import { SaleOrders } from '@/components/saleOrders'
 import { ProtectedRoute } from '@/components/layout'
 import { AccountsReceivable } from '@/components/accountsReceivable'
 import { Charges } from '@/components/charges'
+import { PriceList } from '@/components/priceList'
 
 export function SalesRoutes({ permissions, roles }) {
   return (
@@ -84,6 +85,17 @@ export function SalesRoutes({ permissions, roles }) {
             redirectPath='/app/ventas/inicio'
           >
             <Charges />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path='lista-precios'
+        element={
+          <ProtectedRoute
+            isAllow={permissions.includes('write') && roles.includes('admin')}
+            redirectPath='/app/ventas/inicio'
+          >
+            <PriceList />
           </ProtectedRoute>
         }
       />

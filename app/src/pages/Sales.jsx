@@ -5,6 +5,7 @@ import Clients from '@/assets/clients.webp'
 import OrdenCompra from '@/assets/orden-compra.webp'
 import CuentasPagar from '@/assets/cuentas-pagar.webp'
 import Pagos from '@/assets/pagos.webp'
+import PriceList from '@/assets/price-list.webp'
 
 export const routesList = [
   {
@@ -36,6 +37,13 @@ export const routesList = [
     to: '/app/ventas/cobros',
     imgURL: Pagos,
     style: { backgroundColor: '#a9855e', color: '#e2e2e2' }
+  },
+  {
+    title: 'Lista de Precios',
+    description: 'Revisa y administra tu lista de precios.',
+    to: '/app/ventas/lista-precios',
+    imgURL: PriceList,
+    style: { backgroundColor: '#18253a', color: '#e2e2e2' }
   }
 ]
 

@@ -3,31 +3,28 @@ import { create } from 'zustand'
 import {
   createData,
   updateData,
-  deleteData
-} from '@/services/saleOrdersServices'
-import { fetchCompanyData } from '@/services/settingsServices'
-import { fetchData as fetchClientsData } from '@/services/clientsServices'
+  deleteData,
+  fetchData
+} from '@/services/priceListServices'
+import { fetchPriceListTypes } from '@/services/globalServices'
 import { fetchData as fetchWarehouseData } from '@/services/warehouseServices'
-import { fetchData as fetchPriceListData } from '@/services/priceListServices'
-import { fetchSaleStatusTypes } from '@/services/globalServices'
 
 import { PRODUCT_TYPES } from '@/utils/consts'
 
 export const FIELDS_TYPES = {
-  SALE_ORDERS: 'saleOrdersData'
+  PRICE_LIST: 'priceListData'
 }
 
-export const useSaleOrdersStore = create((set, get) => ({
-  saleOrdersData: [],
-  clientsData: [],
-  productsData: [],
+export const usePriceListStore = create((set, get) => ({
   priceListData: [],
-  saleStatusTypes: [],
+  productsData: [],
+  priceListTypesData: [],
+  accountsReceivableData: [],
+  suppliersData: [],
   companyData: {},
   editModal: false,
-  pdfView: false,
   alert: false,
-  priceListWarning: false,
+  showAddButton: true,
   selected: {},
 
   toggleAddModal: () => {
@@ -47,13 +44,6 @@ export const useSaleOrdersStore = create((set, get) => ({
       editModal: !state.editModal
     }))
   },
-  printPurchaseOrder: (newSelected) => {
-    set((state) => ({
-      ...state,
-      selected: newSelected,
-      pdfView: !state.pdfView
-    }))
-  },
   setDataFilds: (newData, field) => {
     set((state) => ({ ...state, [field]: newData }))
   },
@@ -62,7 +52,7 @@ export const useSaleOrdersStore = create((set, get) => ({
     element.id = selected.id
     const index = data.findIndex((e) => e.id === element.id)
     if (index === -1) {
-      const newElement = await createData(element)
+      const newElement = await createData(element, field)
       set((state) => ({
         ...state,
         [field]: [newElement, ...data],
@@ -70,7 +60,7 @@ export const useSaleOrdersStore = create((set, get) => ({
       }))
     }
     if (index !== -1) {
-      const newElement = await updateData(element, selected.saleDetails.id)
+      const newElement = await updateData(element, field)
       data[index] = newElement
       set((state) => ({
         ...state,
@@ -97,35 +87,28 @@ export const useSaleOrdersStore = create((set, get) => ({
     }
   },
   fetchExtraData: async () => {
-    const clients = await fetchClientsData()
-    const company = await fetchCompanyData()
+    const priceListData = await fetchData()
+    const priceListTypes = await fetchPriceListTypes()
     const products = await fetchWarehouseData()
-    const saleStatusTypes = await fetchSaleStatusTypes()
-    const priceList = await fetchPriceListData()
     const filteredProducts = products.filter((product) =>
       product.productType.some(
         (type) => type.name === PRODUCT_TYPES.FINISHED_PRODUCT
       )
     )
-    await clients.forEach((client) => {
-      client.name = `${client.name} ${client.lastName}`
+    const productsNotInPriceListData = filteredProducts.filter((product) => {
+      const index = priceListData.findIndex(
+        (priceList) => priceList.productId === product.id
+      )
+      return index === -1
     })
-    if (priceList.length !== filteredProducts.length) {
-      return set((state) => ({
-        ...state,
-        clientsData: clients,
-        companyData: company,
-        priceListWarning: true,
-        saleStatusTypes
-      }))
+    if (productsNotInPriceListData.length === 0) {
+      set((state) => ({ ...state, showAddButton: false }))
     }
     set((state) => ({
       ...state,
-      clientsData: clients,
-      productsData: filteredProducts,
-      companyData: company,
-      priceListData: priceList,
-      saleStatusTypes
+      priceListData,
+      productsData: productsNotInPriceListData,
+      priceListTypesData: priceListTypes
     }))
   }
 }))
