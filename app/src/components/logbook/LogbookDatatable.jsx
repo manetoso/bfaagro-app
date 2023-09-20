@@ -2,6 +2,7 @@ import { useLogbookDatatable } from '@/hooks/useLogbookDatatable'
 
 import { CustomToast } from '@/components/toast'
 import { Loader } from '@/components/layout'
+import { ChartCard, CustomAreaChart, CustomPieChart } from '@/components/charts'
 
 import { Datatable } from '../datatable'
 import { LogbookDetails } from './components/LogbookDetails'
@@ -28,8 +29,21 @@ export function LogbookDatatable() {
           title='Detalles'
         >
           <LogbookDetails selected={selected} />
-          {/* <pre>{JSON.stringify(selected, null, 2)}</pre> */}
         </EmptyModal>
+        <section className='mt-10 grid md:grid-cols-2'>
+          <ChartCard title='Grafica de puntos'>
+            <CustomAreaChart xLabel='Meses' yLabel='Valores' />
+          </ChartCard>
+          <ChartCard title='Grafica de pastel'>
+            <CustomPieChart />
+          </ChartCard>
+          <ChartCard title='Grafica de pastel'>
+            <CustomPieChart />
+          </ChartCard>
+          <ChartCard title='Grafica de puntos'>
+            <CustomAreaChart xLabel='Meses' yLabel='Valores' />
+          </ChartCard>
+        </section>
       </div>
     </>
   )

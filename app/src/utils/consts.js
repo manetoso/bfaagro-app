@@ -52,3 +52,10 @@ export const LOGBOOK_TYPES = {
   PURCHASE: 'COMPRA',
   SALE: 'VENTA'
 }
+
+export const CHARTS_DEFAULT_COLORS = [
+  '#0C923F',
+  '#3DA765',
+  '#6EBC8C',
+  '#9FD0B2'
+]

@@ -24,6 +24,16 @@ module.exports = {
         'bfaGreen-700': '#083e31',
         'bfaGreen-800': '#05281f',
         'bfaGreen-900': '#000000'
+        // 'bfaGreen-50': '#41ff89',
+        // 'bfaGreen-100': '#0eff6a',
+        // 'bfaGreen-200': '#00f35d',
+        // 'bfaGreen-300': '#00da53',
+        // 'bfaGreen-400': '#00c04a',
+        // 'bfaGreen-500': '#008D36',
+        // 'bfaGreen-600': '#005a22',
+        // 'bfaGreen-700': '#004119',
+        // 'bfaGreen-800': '#00270f',
+        // 'bfaGreen-900': '#000000'
       }
     }
   },

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
 
 import { useLogbookStore } from '@/stores/useLogbookStore'
-// import { LOGBOOK_TYPES } from '@/utils/consts'
+import { LOGBOOK_TYPES } from '@/utils/consts'
 
 import { DropdownMenu } from '@/components/logbook/datatable/DropdownMenu'
 
@@ -12,6 +12,7 @@ export const useLogbookDatatable = () => {
     detailsModal,
     selected,
     loadAllLogbookData,
+    fetchExtraData,
     toggleDetailsModalModal
   } = useLogbookStore()
   const [isLoading, setIsLoading] = useState(true)
@@ -38,31 +39,27 @@ export const useLogbookDatatable = () => {
       }),
       columnHelper.accessor('movement', {
         header: 'Movimiento',
-        cell: (info) => info.getValue(),
+        cell: (info) => (
+          <span
+            className={`font-bold ${
+              info.getValue() === LOGBOOK_TYPES.PURCHASE
+                ? 'text-sky-500'
+                : 'text-emerald-500'
+            }`}
+          >
+            {info.getValue()}
+          </span>
+        ),
         footer: (props) => props.column.id
       })
-      // columnHelper.accessor('createdAtFormatted', {
-      //   header: 'Fecha',
-      //   cell: (info) => info.getValue(),
-      //   footer: (props) => props.column.id
-      // })
     ],
     []
   )
 
-  // const totalSalesInLastWeek = useMemo(() => {
-  //   const totalSales = logbookData.reduce((acc, curr) => {
-  //     if (curr.movement === LOGBOOK_TYPES.SALE) {
-  //       acc += curr.amount
-  //     }
-  //     return acc
-  //   }, 0)
-  //   return totalSales
-  // }, [logbookData])
-
   // FETCHING DATA FROM THE API
   const getData = useCallback(async () => {
     await loadAllLogbookData()
+    await fetchExtraData()
     setIsLoading(false)
   }, [])
 
