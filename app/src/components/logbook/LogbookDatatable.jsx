@@ -2,10 +2,9 @@ import { useLogbookDatatable } from '@/hooks/useLogbookDatatable'
 
 import { CustomToast } from '@/components/toast'
 import { Loader } from '@/components/layout'
-import { ChartCard, CustomAreaChart, CustomPieChart } from '@/components/charts'
 
 import { Datatable } from '../datatable'
-import { LogbookDetails } from './components/LogbookDetails'
+import { LogbookCharts, LogbookDetails } from './components'
 import { EmptyModal } from '../alert'
 
 export function LogbookDatatable() {
@@ -21,7 +20,9 @@ export function LogbookDatatable() {
   return (
     <>
       <CustomToast />
-      <div className='relative mt-4'>
+      <div className='relative'>
+        <h2 className='mb-4 text-2xl font-black'>Bitácora</h2>
+        <LogbookCharts />
         <Datatable columns={columns} data={logbookData} title='Bitácora' />
         <EmptyModal
           closeModal={() => toggleDetailsModalModal({})}
@@ -30,20 +31,6 @@ export function LogbookDatatable() {
         >
           <LogbookDetails selected={selected} />
         </EmptyModal>
-        <section className='mt-10 grid md:grid-cols-2'>
-          <ChartCard title='Grafica de puntos'>
-            <CustomAreaChart xLabel='Meses' yLabel='Valores' />
-          </ChartCard>
-          <ChartCard title='Grafica de pastel'>
-            <CustomPieChart />
-          </ChartCard>
-          <ChartCard title='Grafica de pastel'>
-            <CustomPieChart />
-          </ChartCard>
-          <ChartCard title='Grafica de puntos'>
-            <CustomAreaChart xLabel='Meses' yLabel='Valores' />
-          </ChartCard>
-        </section>
       </div>
     </>
   )

@@ -34,6 +34,16 @@ module.exports = {
         // 'bfaGreen-700': '#004119',
         // 'bfaGreen-800': '#00270f',
         // 'bfaGreen-900': '#000000'
+        // 'bfaBlue-50': '#6097e4',
+        // 'bfaBlue-100': '#357add',
+        // 'bfaBlue-200': '#246dd4',
+        // 'bfaBlue-300': '#2062be',
+        // 'bfaBlue-400': '#1c56a9',
+        // 'bfaBlue-500': '#15407d',
+        // 'bfaBlue-600': '#0e2a51',
+        // 'bfaBlue-700': '#0a1e3c',
+        // 'bfaBlue-800': '#061326',
+        // 'bfaBlue-900': '#000000'
       }
     }
   },

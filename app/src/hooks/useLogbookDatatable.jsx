@@ -73,7 +73,6 @@ export const useLogbookDatatable = () => {
     detailsModal,
     selected,
     toggleDetailsModalModal,
-    // totalSalesInLastWeek,
     columns,
     isLoading
   }

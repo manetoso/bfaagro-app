@@ -19,12 +19,12 @@ const DATA = [
   { name: 'Otros', value: 100 }
 ]
 
-export function CustomPieChart({ data = DATA, colors = COLORS }) {
+export function CustomPieChart({ data = DATA, colors = COLORS, hasLegend }) {
   return (
     <ResponsiveContainer width='100%' aspect={16 / 9}>
       <PieChart>
         <Tooltip />
-        <Legend />
+        {hasLegend && <Legend />}
         <Pie
           data={data}
           cx='50%'
