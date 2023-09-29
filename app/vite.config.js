@@ -18,12 +18,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'prompt',
-      includeAssets: [
-        'bfaagro.ico',
-        'favicon.ico',
-        'apple-touch-icon.png',
-        'masked-icon.svg'
-      ],
+      includeAssets: ['bfaagro.ico'],
       manifest: {
         name: 'BFA Agro app',
         short_name: 'BFA Agro',
