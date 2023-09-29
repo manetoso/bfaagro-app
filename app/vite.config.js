@@ -20,7 +20,7 @@ export default defineConfig({
       registerType: 'prompt',
       includeAssets: ['bfaagro.ico'],
       manifest: {
-        name: 'BFA Agro app',
+        name: 'BFA Agro',
         short_name: 'BFA Agro',
         description: 'Aplicación interna de BFA Agro.',
         icons: [
@@ -48,7 +48,7 @@ export default defineConfig({
           }
         ],
         theme_color: '#0C923F',
-        background_color: '#204983',
+        background_color: '#FFFFFF',
         display: 'standalone',
         scope: '/',
         start_url: '/autenticacion',
