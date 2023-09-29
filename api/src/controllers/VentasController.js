@@ -119,7 +119,9 @@ const createVentaDetalle = async (idVenta, ventaDetalle = {}) => {
         const register = {
             "IDENTIFICADOR": venta_Detalle._id,
             "PRODUCTOS": products,
-            "MOVIMIENTO": "VENTA"
+            "MOVIMIENTO": "VENTA",
+            "MONEDA": "MXN",
+            "TOTAL":ventaDetalle.PRECIO_TOTAL
         }
         await createRegister(register)
     } catch (error) {
@@ -138,7 +140,9 @@ const updateVentaDetalle = async (idVenta, VENTA_DETALLE = {}) => {
         const register = {
             "IDENTIFICADOR": ventaDetalleSaved.id,
             "PRODUCTOS": products,
-            "MOVIMIENTO": "VENTA"
+            "MOVIMIENTO": "VENTA",
+            "MONEDA": "MXN",
+            "TOTAL": actionDB.PRECIO_TOTAL
         }
         await updateRegisterByIdentificador(ventaDetalleSaved.id, register)
     } catch (error) {
@@ -159,5 +163,26 @@ const registerMovementIfIsComisionista = async (idCliente = 0, PRODUCTOS = [], i
     }
 }
 
+const productsByVentas = async(req = request, res = response) =>{
+    try {
+        const allVentas = await VENTAS_DETALLE.aggregate([
+            {
+              $unwind: "$PRODUCTOS"
+            },
+            {
+              $group: {
+                _id: "$PRODUCTOS.ID_PRODUCTO",
+                NOMBRE_PRODUCTO: { $first: "$PRODUCTOS.NOMBRE_PRODUCTO" },
+                cantidadVendida: { $sum: "$PRODUCTOS.CANTIDAD" },
+              }
+            }
+          ]);
+          return serverOkMessage(res,allVentas)
+    } catch (error) {
+        console.log(error);
+        return serverErrorMessage(res, error)
+    }
+}
 
-export { createVenta, findVentas, deleteVenta, updateVenta, findVentas_Detalles, createVentaDetalle }
+
+export { createVenta, findVentas, deleteVenta, updateVenta, findVentas_Detalles, createVentaDetalle, productsByVentas }
