@@ -20,12 +20,14 @@ export const useLogbookStore = create((set, get) => ({
   last30DayProductsPurchased: [],
   detailsModal: false,
   selected: {},
+  isLogbookEmpty: true,
 
   loadAllLogbookData: async () => {
     const data = await fetchLogbook()
     set((state) => ({
       ...state,
-      logbookData: data
+      logbookData: data,
+      isLogbookEmpty: data.length === 0
     }))
   },
   toggleDetailsModalModal: (newSelected) => {
@@ -71,6 +73,8 @@ export const useLogbookStore = create((set, get) => ({
     return todaySales
   },
   fetchExtraData: async () => {
+    const { isLogbookEmpty } = get()
+    if (isLogbookEmpty) return
     const purchases = await fetchLogbookByMovement(LOGBOOK_TYPES.PURCHASE)
     const sales = await fetchLogbookByMovement(LOGBOOK_TYPES.SALE)
     const yearSalesByMonth = await getAllProductsSaleInTheYearGroupByMonth(

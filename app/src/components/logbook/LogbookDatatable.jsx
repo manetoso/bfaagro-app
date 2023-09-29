@@ -14,9 +14,11 @@ export function LogbookDatatable() {
     selected,
     toggleDetailsModalModal,
     columns,
-    isLoading
+    isLoading,
+    isLogbookEmpty
   } = useLogbookDatatable()
   if (isLoading) return <Loader />
+  if (isLogbookEmpty) return <p className='text-center'>No hay datos aún</p>
   return (
     <>
       <CustomToast />

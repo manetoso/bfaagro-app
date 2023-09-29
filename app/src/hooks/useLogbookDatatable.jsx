@@ -13,7 +13,8 @@ export const useLogbookDatatable = () => {
     selected,
     loadAllLogbookData,
     fetchExtraData,
-    toggleDetailsModalModal
+    toggleDetailsModalModal,
+    isLogbookEmpty
   } = useLogbookStore()
   const [isLoading, setIsLoading] = useState(true)
 
@@ -74,6 +75,7 @@ export const useLogbookDatatable = () => {
     selected,
     toggleDetailsModalModal,
     columns,
-    isLoading
+    isLoading,
+    isLogbookEmpty
   }
 }
