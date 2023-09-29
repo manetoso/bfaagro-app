@@ -22,6 +22,15 @@ const BITACORA_PRODUCTOS = new Schema({
       },
     }
   ],
+  TOTAL: {
+    type: Number,
+    default: 0,
+    required: true
+  },
+  MONEDA: {
+    type: String,
+    required: true
+  },
   MOVIMIENTO: {
     type: String,
     required: true

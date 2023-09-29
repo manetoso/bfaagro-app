@@ -3,7 +3,6 @@ import PRODUCTOS from '../models/Productos.js'
 import { request, response } from 'express'
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
 import { createProductoInAlmacen } from './../controllers/ProductosController.js'
-import { createRegister } from './../controllers/BitacoraProductosController.js'
 
 const createMovimientoAlmacen = async (req = request, res = response) => {
   try {
