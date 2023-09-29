@@ -28,7 +28,7 @@ export function CustomPieChart({ data = DATA, colors = COLORS, hasLegend }) {
         <Pie
           data={data}
           cx='50%'
-          cy='50%'
+          cy='52%'
           label
           outerRadius='80%'
           innerRadius='40%'
@@ -36,7 +36,7 @@ export function CustomPieChart({ data = DATA, colors = COLORS, hasLegend }) {
           legendType='circle'
         >
           {data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={colors[index % COLORS.length]} />
+            <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
           ))}
         </Pie>
       </PieChart>
