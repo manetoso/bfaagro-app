@@ -134,9 +134,9 @@ export function aggregateProductSalesLastPeriod(data, period) {
 export function calculateYearMovements(sales, purchases) {
   const yearSales = getAllProductsSaleInTheYear(sales)
   const yearPurchase = getAllProductsSaleInTheYear(purchases)
-  const yearSalesMXN = getAllProductsSaleInTheYear(purchases, 'MXN')
+  const yearSalesMXN = getAllProductsSaleInTheYear(sales, 'MXN')
   const yearPurchaseMXN = getAllProductsSaleInTheYear(purchases, 'MXN')
-  const yearSalesUSD = getAllProductsSaleInTheYear(purchases, 'USD')
+  const yearSalesUSD = getAllProductsSaleInTheYear(sales, 'USD')
   const yearPurchaseUSD = getAllProductsSaleInTheYear(purchases, 'USD')
   const yearMovements = [
     { name: 'ventas', value: yearSales[0]?.ventas },
@@ -176,7 +176,7 @@ export function calculateYearMovementsByMonth(sales, purchases) {
   )
   // prettier-ignore
   const yearMovementsMxnByMonth =
-    yearSalesMXNByMonth.length > 0
+    yearSalesMXNByMonth.length > 0 && yearSalesMXNByMonth.length > yearPurchasesMXNByMonth.length
       ? yearSalesMXNByMonth.map((sale, index) => ({
         name: sale?.name || yearPurchasesMXNByMonth[index]?.name,
         ventas: sale?.ventas || 0,
@@ -189,7 +189,7 @@ export function calculateYearMovementsByMonth(sales, purchases) {
       }))
   // prettier-ignore
   const yearMovementsUsdByMonth =
-    yearSalesUSDByMonth.length > 0
+    yearSalesUSDByMonth.length > 0 && yearSalesUSDByMonth.length > yearPurchasesUSDByMonth.length
       ? yearSalesUSDByMonth.map((sale, index) => ({
         name: sale?.name || yearPurchasesUSDByMonth[index]?.name,
         ventas: sale?.ventas || 0,
@@ -202,7 +202,7 @@ export function calculateYearMovementsByMonth(sales, purchases) {
       }))
   // prettier-ignore
   const yearMovementsByMonth =
-    yearSalesByMonth.length > 0
+    yearSalesByMonth.length > 0 && yearSalesByMonth.length > yearPurchasesByMonth.length
       ? yearSalesByMonth.map((sale, index) => ({
         name: sale?.name || yearPurchasesByMonth[index]?.name,
         ventas: sale?.ventas || 0,
