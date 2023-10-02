@@ -84,13 +84,11 @@ function RiseInputs({ selectedRow, isEmpty, unitPrice }) {
 export function Form({ selectedRow, submitAction, modalId, field }) {
   const { productsData, priceListTypesData } = usePriceListStore()
   const [isEmpty, setIsEmpty] = useState(false)
-  const [unitPrice, setUnitPrice] = useState(selectedRow?.unitPrice || 0)
+  const [unitPrice, setUnitPrice] = useState(selectedRow?.unitPrice || '')
 
   const handleUnitPrice = (e) => {
-    if (e.target.value < 0) {
-      e.target.value = 0
-    }
     const value = e.target.value
+    if (value < 0) e.target.value = 0
     setUnitPrice(Number(value))
   }
 
@@ -142,9 +140,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
         <ComboBox
           data={productsData}
           defaultSelected={
-            Object.keys(selectedRow).length === 0
-              ? ''
-              : selectedRow.productName
+            Object.keys(selectedRow).length === 0 ? '' : selectedRow.productName
           }
           dataDisplayAttribute='name'
           id='product'
@@ -152,7 +148,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
           name='product'
         />
         <Input
-          value={unitPrice}
+          defaultValue={selectedRow?.unitPrice || 0}
           id='unitPrice'
           isEmpty={isEmpty}
           label='Precio unitario'

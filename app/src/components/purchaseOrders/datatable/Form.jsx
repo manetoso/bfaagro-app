@@ -13,7 +13,7 @@ import { PURCHASE_ORDERS_PERIODS } from '@/utils/consts'
  */
 export function Form({ selectedRow, submitAction, modalId, field }) {
   const { suppliersData, productsData, companyData } = usePurchaseOrdersStore()
-  const [isEmpty, setIsEmpty] = useState(false)
+  const [isEmpty] = useState(false)
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -105,12 +105,11 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
       },
       products: formatedProducts,
       totalIva: data.totalIva,
+      // BUG: THE CURRENCY WAS NOT BEING SAVED
       currency:
         data.currency === undefined
           ? 'MXN'
-          : data.currency === 'on'
-          ? 'USD'
-          : 'MXN',
+          : 'USD',
       total: data.total,
       period: data['period[value]'],
       observations: data.observations
@@ -120,7 +119,6 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     // console.log({ formatedData })
     submitAction(formatedData, field)
   }
-  
 
   return (
     <>
@@ -177,8 +175,6 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
             Object.keys(selectedRow).length === 0
               ? false
               : selectedRow?.currency === 'USD'
-              ? true
-              : false
           }
           id='currency'
           label='Moneda en USD?'

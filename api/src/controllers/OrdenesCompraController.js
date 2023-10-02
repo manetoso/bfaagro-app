@@ -18,7 +18,9 @@ const createOrdenCompra = async (req = request, res = response) => {
     const register = {
       "IDENTIFICADOR": actionDB._id,
       "PRODUCTOS": products,
-      "MOVIMIENTO": "COMPRA"
+      "MOVIMIENTO": "COMPRA",
+      "MONEDA": MONEDA,
+      "TOTAL": TOTAL,
     }
     await createRegister(register)
     return serverOkMessage(res, actionDB, 201)
@@ -48,7 +50,9 @@ const updateOrdenCompra = async (req = request, res = response) => {
     const register = {
       "IDENTIFICADOR": id,
       "PRODUCTOS": products,
-      "MOVIMIENTO": "COMPRA"
+      "MOVIMIENTO": "COMPRA",
+      "MONEDA": actionDB.MONEDA,
+      "TOTAL": actionDB.TOTAL
     }
     console.log(register);
     await updateRegisterByIdentificador(id, register)
@@ -68,4 +72,26 @@ const deleteOrdenCompra = async (req = request, res = response) => {
   }
 }
 
-export { createOrdenCompra, findOrdenesCompra, deleteOrdenCompra, updateOrdenCompra }
+const productsByCompras = async(req = request, res = response) =>{
+  try {
+      const allCompras = await ORDENES_COMPRAS.aggregate([
+          {
+            $unwind: "$PRODUCTOS"
+          },
+          {
+            $group: {
+              _id: "$PRODUCTOS.ID_PRODUCTO",
+              NOMBRE_PRODUCTO: { $first: "$PRODUCTOS.NOMBRE_PRODUCTO" },
+              cantidadVendida: { $sum: "$PRODUCTOS.CANTIDAD" },
+            }
+          }
+        ]).sort({cantidadVendida:-1}).limit(5)
+        return serverOkMessage(res,allCompras)
+  } catch (error) {
+      console.log(error);
+      return serverErrorMessage(res, error)
+  }
+}
+
+
+export { createOrdenCompra, findOrdenesCompra, deleteOrdenCompra, updateOrdenCompra, productsByCompras }

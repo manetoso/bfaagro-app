@@ -125,7 +125,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     }
     delete data['accountReceivable[observations]']
 
-    const newIsEmpty = Object.values(data).some((x) => x === null || x === '')
+    const newIsEmpty = Object.values(data).some((x) => x === null)
     setIsEmpty(newIsEmpty)
 
     if (newIsEmpty) return
