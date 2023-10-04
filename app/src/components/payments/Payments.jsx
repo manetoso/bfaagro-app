@@ -1,6 +1,6 @@
 import { PaymentsDatatable } from './datatable'
 import { CustomToast } from '@/components/toast'
-import { Loader } from '@/components/layout'
+import { Loader, PageTransition } from '@/components/layout'
 
 import { usePaymentsDatatable } from '@/hooks/usePaymentsDatatable'
 import { FIELDS_TYPES } from '@/stores/usePaymentsStore'
@@ -21,7 +21,7 @@ export function Payments() {
   } = usePaymentsDatatable({ field: FIELDS_TYPES.PAYMENTS })
   if (isLoading) return <Loader />
   return (
-    <>
+    <PageTransition>
       <CustomToast />
       <PaymentsDatatable
         columns={columns}
@@ -37,6 +37,6 @@ export function Payments() {
         editModal={editModal}
         field={FIELDS_TYPES.PAYMENTS}
       />
-    </>
+    </PageTransition>
   )
 }

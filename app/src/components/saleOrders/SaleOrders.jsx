@@ -1,7 +1,7 @@
 import { SaleOrdersDatatable, PDFBuilder } from './datatable'
 import { CustomToast } from '@/components/toast'
 import { PDFView, RedirectAlert } from '@/components/alert'
-import { Loader } from '@/components/layout'
+import { Loader, PageTransition } from '@/components/layout'
 
 import { useSaleOrdersDatatable } from '@/hooks/useSaleOrdersDatatable'
 import { FIELDS_TYPES } from '@/stores/useSaleOrdersStore'
@@ -25,7 +25,7 @@ export function SaleOrders() {
   } = useSaleOrdersDatatable({ field: FIELDS_TYPES.SALE_ORDERS })
   if (isLoading) return <Loader />
   return (
-    <>
+    <PageTransition>
       <CustomToast />
       <SaleOrdersDatatable
         columns={columns}
@@ -41,7 +41,10 @@ export function SaleOrders() {
         editModal={editModal}
         field={FIELDS_TYPES.SALE_ORDERS}
       />
-      <RedirectAlert href='/app/ventas/lista-precios' isOpen={priceListWarning} />
+      <RedirectAlert
+        href='/app/ventas/lista-precios'
+        isOpen={priceListWarning}
+      />
       <PDFView
         closeModal={() => printPurchaseOrder({})}
         isOpen={pdfView}
@@ -49,6 +52,6 @@ export function SaleOrders() {
       >
         <PDFBuilder />
       </PDFView>
-    </>
+    </PageTransition>
   )
 }

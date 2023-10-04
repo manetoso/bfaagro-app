@@ -1,6 +1,6 @@
 import { AccountsPayableDatatable } from './datatable'
 import { CustomToast } from '@/components/toast'
-import { Loader } from '@/components/layout'
+import { Loader, PageTransition } from '@/components/layout'
 
 import { useAccountsPayableDatatable } from '@/hooks/useAccountsPayableDatatable'
 import { FIELDS_TYPES } from '@/stores/useAccountsPayableStore'
@@ -21,7 +21,7 @@ export function AccountsPayable() {
   } = useAccountsPayableDatatable({ field: FIELDS_TYPES.ACCOUNTS_PAYABLE })
   if (isLoading) return <Loader />
   return (
-    <>
+    <PageTransition>
       <CustomToast />
       <AccountsPayableDatatable
         columns={columns}
@@ -37,6 +37,6 @@ export function AccountsPayable() {
         editModal={editModal}
         field={FIELDS_TYPES.ACCOUNTS_PAYABLE}
       />
-    </>
+    </PageTransition>
   )
 }
