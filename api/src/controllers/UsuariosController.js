@@ -48,6 +48,7 @@ const login = async (req = request, res = response) => {
             return serverErrorMessage(res, '¡ERROR!. Revisa tus Credenciales!', 404)
         }
     } catch (error) {
+        console.log(error);
         return serverErrorMessage(res)
     }
 }
