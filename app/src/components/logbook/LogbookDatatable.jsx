@@ -4,7 +4,7 @@ import { CustomToast } from '@/components/toast'
 import { Loader } from '@/components/layout'
 
 import { Datatable } from '../datatable'
-import { LogbookDetails } from './components/LogbookDetails'
+import { LogbookCharts, LogbookDetails } from './components'
 import { EmptyModal } from '../alert'
 
 export function LogbookDatatable() {
@@ -14,13 +14,17 @@ export function LogbookDatatable() {
     selected,
     toggleDetailsModalModal,
     columns,
-    isLoading
+    isLoading,
+    isLogbookEmpty
   } = useLogbookDatatable()
   if (isLoading) return <Loader />
+  if (isLogbookEmpty) return <p className='text-center'>No hay datos aún</p>
   return (
     <>
       <CustomToast />
-      <div className='relative mt-4'>
+      <div className='relative'>
+        <h2 className='mb-4 text-2xl font-black'>Bitácora</h2>
+        <LogbookCharts />
         <Datatable columns={columns} data={logbookData} title='Bitácora' />
         <EmptyModal
           closeModal={() => toggleDetailsModalModal({})}
@@ -28,7 +32,6 @@ export function LogbookDatatable() {
           title='Detalles'
         >
           <LogbookDetails selected={selected} />
-          {/* <pre>{JSON.stringify(selected, null, 2)}</pre> */}
         </EmptyModal>
       </div>
     </>

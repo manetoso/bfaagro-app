@@ -19,7 +19,6 @@ export function PriceListDatatable({
 }) {
   return (
     <div className='relative mt-4'>
-      {String(showAddButton)}
       {showAddButton ? (
         <Datatable
           columns={columns}

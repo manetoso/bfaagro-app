@@ -85,7 +85,7 @@ const productsByCompras = async(req = request, res = response) =>{
               cantidadVendida: { $sum: "$PRODUCTOS.CANTIDAD" },
             }
           }
-        ]);
+        ]).sort({cantidadVendida:-1}).limit(5)
         return serverOkMessage(res,allCompras)
   } catch (error) {
       console.log(error);

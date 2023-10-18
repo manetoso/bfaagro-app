@@ -139,10 +139,6 @@ export function InfiniteInput({
                         defaultValue={y.value}
                         type='number'
                         onChange={(e) => {
-                          if (e.target.value < 0) {
-                            e.target.value = 0
-                            return
-                          }
                           const list = [...inputList]
                           const percentaje = Number(e.target.value)
                           list[i].inputs[j].value = percentaje

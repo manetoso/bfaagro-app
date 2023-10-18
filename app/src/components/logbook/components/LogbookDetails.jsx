@@ -1,3 +1,5 @@
+import { formatNumberToMoneyString } from '@/utils/utils'
+
 export function LogbookDetails({ selected }) {
   return (
     <section className='mt-10'>
@@ -21,6 +23,14 @@ export function LogbookDetails({ selected }) {
             <span className='text-center'>{quantity}</span>
           </li>
         ))}
+        <li className='col-span-5 grid grid-cols-5 pb-2 font-black'>
+          <span className='col-span-4 text-right'>Total:</span>
+          <span className='text-center'>
+            {`${formatNumberToMoneyString(selected?.total)} ${
+              selected?.currency
+            }`}
+          </span>
+        </li>
       </ul>
     </section>
   )
