@@ -1,21 +1,19 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes } from 'react-router-dom'
 
-import { Users } from "@/pages";
-import { ProtectedRoute } from "@/components/layout";
+import { Users } from '@/pages'
+import { ProtectedRoute } from '@/components/layout'
 
-export function UsersRoutes({ permissions, roles }) {
-	return (
-		<Routes>
+export function UsersRoutes() {
+  return (
+    <Routes>
       <Route
         path='inicio'
         element={
-          <ProtectedRoute
-            isAllow={permissions.includes('write') && roles.includes('admin')}
-          >
+          <ProtectedRoute>
             <Users />
           </ProtectedRoute>
         }
       />
     </Routes>
-	)
+  )
 }

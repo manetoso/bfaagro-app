@@ -81,7 +81,7 @@ export function CustomAreaChart({
             </linearGradient>
           ))}
         </defs>
-        <CartesianGrid strokeDasharray='10' />
+        <CartesianGrid strokeDasharray='5' />
         <XAxis
           dataKey='name'
           label={{ value: xLabel, position: 'insideBottomRight', offset: 0 }}

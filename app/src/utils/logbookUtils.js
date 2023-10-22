@@ -1,3 +1,33 @@
+const MONTHS = [
+  'enero',
+  'febrero',
+  'marzo',
+  'abril',
+  'mayo',
+  'junio',
+  'julio',
+  'agosto',
+  'septiembre',
+  'octubre',
+  'noviembre',
+  'diciembre'
+]
+
+const BASE_MONTHS = [
+  { name: 'enero' },
+  { name: 'febrero' },
+  { name: 'marzo' },
+  { name: 'abril' },
+  { name: 'mayo' },
+  { name: 'junio' },
+  { name: 'julio' },
+  { name: 'agosto' },
+  { name: 'septiembre' },
+  { name: 'octubre' },
+  { name: 'noviembre' },
+  { name: 'diciembre' }
+]
+
 export function getAllProductsSaleInTheYearGroupByMonth(
   movementData,
   currency = undefined
@@ -35,22 +65,7 @@ export function getAllProductsSaleInTheYearGroupByMonth(
 
   // Sort the result by month
   result.sort((a, b) => {
-    const months = [
-      'enero',
-      'febrero',
-      'marzo',
-      'abril',
-      'mayo',
-      'junio',
-      'julio',
-      'agosto',
-      'septiembre',
-      'octubre',
-      'noviembre',
-      'diciembre'
-    ]
-
-    return months.indexOf(a.name) - months.indexOf(b.name)
+    return MONTHS.indexOf(a.name) - MONTHS.indexOf(b.name)
   })
 
   return result
@@ -175,44 +190,35 @@ export function calculateYearMovementsByMonth(sales, purchases) {
     'USD'
   )
   // prettier-ignore
-  const yearMovementsMxnByMonth =
-    yearSalesMXNByMonth.length > 0 && yearSalesMXNByMonth.length > yearPurchasesMXNByMonth.length
-      ? yearSalesMXNByMonth.map((sale, index) => ({
-        name: sale?.name || yearPurchasesMXNByMonth[index]?.name,
-        ventas: sale?.ventas || 0,
-        compras: yearPurchasesMXNByMonth[index]?.ventas || 0
-      }))
-      : yearPurchasesMXNByMonth.map((purchase, index) => ({
-        name: purchase?.name || yearSalesMXNByMonth[index]?.name,
-        ventas: yearSalesMXNByMonth[index]?.ventas || 0,
-        compras: purchase?.ventas || 0
-      }))
+  const yearMovementsMxnByMonth = BASE_MONTHS.map((month, index) => {
+    const sale = yearSalesMXNByMonth.find((sale) => sale.name === month.name)
+    const purchase = yearPurchasesMXNByMonth.find((purchase) => purchase.name === month.name)
+    return {
+      name: month.name,
+      ventas: sale?.ventas || 0,
+      compras: purchase?.ventas || 0
+    }
+  })
   // prettier-ignore
-  const yearMovementsUsdByMonth =
-    yearSalesUSDByMonth.length > 0 && yearSalesUSDByMonth.length > yearPurchasesUSDByMonth.length
-      ? yearSalesUSDByMonth.map((sale, index) => ({
-        name: sale?.name || yearPurchasesUSDByMonth[index]?.name,
-        ventas: sale?.ventas || 0,
-        compras: yearPurchasesUSDByMonth[index]?.ventas || 0
-      }))
-      : yearPurchasesUSDByMonth.map((purchase, index) => ({
-        name: purchase?.name || yearSalesUSDByMonth[index]?.name,
-        ventas: yearSalesUSDByMonth[index]?.ventas || 0,
-        compras: purchase?.ventas || 0
-      }))
+  const yearMovementsUsdByMonth = BASE_MONTHS.map((month, index) => {
+    const sale = yearSalesUSDByMonth.find((sale) => sale.name === month.name)
+    const purchase = yearPurchasesUSDByMonth.find((purchase) => purchase.name === month.name)
+    return {
+      name: month.name,
+      ventas: sale?.ventas || 0,
+      compras: purchase?.ventas || 0
+    }
+  })
   // prettier-ignore
-  const yearMovementsByMonth =
-    yearSalesByMonth.length > 0 && yearSalesByMonth.length > yearPurchasesByMonth.length
-      ? yearSalesByMonth.map((sale, index) => ({
-        name: sale?.name || yearPurchasesByMonth[index]?.name,
-        ventas: sale?.ventas || 0,
-        compras: yearPurchasesByMonth[index]?.ventas || 0
-      }))
-      : yearPurchasesByMonth.map((purchase, index) => ({
-        name: purchase?.name || yearSalesByMonth[index]?.name,
-        ventas: yearSalesByMonth[index]?.ventas || 0,
-        compras: purchase?.ventas || 0
-      }))
+  const yearMovementsByMonth = BASE_MONTHS.map((month, index) => {
+    const sale = yearSalesByMonth.find((sale) => sale.name === month.name)
+    const purchase = yearPurchasesByMonth.find((purchase) => purchase.name === month.name)
+    return {
+      name: month.name,
+      ventas: sale?.ventas || 0,
+      compras: purchase?.ventas || 0
+    }
+  })
   return {
     yearMovementsByMonth,
     yearMovementsMxnByMonth,

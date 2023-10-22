@@ -1,6 +1,6 @@
 import { PriceListDatatable } from './datatable'
 import { CustomToast } from '@/components/toast'
-import { Loader } from '@/components/layout'
+import { Loader, PageTransition } from '@/components/layout'
 
 import { usePriceListDatatable } from '@/hooks/usePriceListDatatable'
 import { FIELDS_TYPES } from '@/stores/usePriceListStore'
@@ -22,7 +22,7 @@ export function PriceList() {
   } = usePriceListDatatable({ field: FIELDS_TYPES.PRICE_LIST })
   if (isLoading) return <Loader />
   return (
-    <>
+    <PageTransition>
       <CustomToast />
       <PriceListDatatable
         columns={columns}
@@ -39,6 +39,6 @@ export function PriceList() {
         editModal={editModal}
         field={FIELDS_TYPES.PRICE_LIST}
       />
-    </>
+    </PageTransition>
   )
 }

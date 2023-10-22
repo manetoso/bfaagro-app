@@ -26,7 +26,7 @@ export function Navigation() {
           )}
           {!window.location.pathname.includes('app/inicio') && (
             <>
-              <IconButton onClick={() => history.back()}>
+              <IconButton onClick={() => window.history.back()}>
                 <ChevronBack />
                 Atras
               </IconButton>
