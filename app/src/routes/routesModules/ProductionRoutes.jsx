@@ -1,18 +1,30 @@
 import { Route, Routes } from 'react-router-dom'
 
-import { Formulation, Processes, Production, Warehouses } from '@/pages'
+import {
+  Formulation,
+  Processes,
+  ProcessesKanvas,
+  Production,
+  Warehouses
+} from '@/pages'
 import { ProtectedRoute } from '@/components/layout'
-import { FinishedProducts, Packaging, Products, RawMaterial, Receipt } from '@/components/warehouses'
+import {
+  FinishedProducts,
+  Packaging,
+  Products,
+  RawMaterial,
+  Receipt
+} from '@/components/warehouses'
 
-export function ProductionRoutes({ permissions, roles }) {
+import { ROLES } from '@/utils/consts'
+
+export function ProductionRoutes() {
   return (
     <Routes>
       <Route
         path='inicio'
         element={
-          <ProtectedRoute
-            isAllow={permissions.includes('write') && roles.includes('admin')}
-          >
+          <ProtectedRoute allowedRoles={[ROLES.WAREHOUSE, ROLES.PROCESSES]}>
             <Production />
           </ProtectedRoute>
         }
@@ -21,7 +33,7 @@ export function ProductionRoutes({ permissions, roles }) {
         path='almacenes'
         element={
           <ProtectedRoute
-            isAllow={permissions.includes('write') && roles.includes('admin')}
+            allowedRoles={[ROLES.WAREHOUSE, ROLES.PRODUCTS]}
             redirectPath='/app/produccion/inicio'
           >
             <Warehouses />
@@ -32,7 +44,7 @@ export function ProductionRoutes({ permissions, roles }) {
           path='materia-prima'
           element={
             <ProtectedRoute
-              isAllow={permissions.includes('write') && roles.includes('admin')}
+              allowedRoles={[ROLES.WAREHOUSE, ROLES.PRODUCTS]}
               redirectPath='/app/produccion/inicio'
             >
               <RawMaterial />
@@ -43,7 +55,7 @@ export function ProductionRoutes({ permissions, roles }) {
           path='productos'
           element={
             <ProtectedRoute
-              isAllow={permissions.includes('write') && roles.includes('admin')}
+              allowedRoles={[ROLES.WAREHOUSE, ROLES.PRODUCTS]}
               redirectPath='/app/produccion/inicio'
             >
               <Products />
@@ -54,7 +66,7 @@ export function ProductionRoutes({ permissions, roles }) {
           path='embalaje'
           element={
             <ProtectedRoute
-              isAllow={permissions.includes('write') && roles.includes('admin')}
+              allowedRoles={[ROLES.WAREHOUSE, ROLES.PRODUCTS]}
               redirectPath='/app/produccion/inicio'
             >
               <Packaging />
@@ -65,7 +77,7 @@ export function ProductionRoutes({ permissions, roles }) {
           path='prod-terminados'
           element={
             <ProtectedRoute
-              isAllow={permissions.includes('write') && roles.includes('admin')}
+              allowedRoles={[ROLES.WAREHOUSE, ROLES.PRODUCTS]}
               redirectPath='/app/produccion/inicio'
             >
               <FinishedProducts />
@@ -76,7 +88,7 @@ export function ProductionRoutes({ permissions, roles }) {
           path='recibo-mercancia'
           element={
             <ProtectedRoute
-              isAllow={permissions.includes('write') && roles.includes('admin')}
+              allowedRoles={[ROLES.WAREHOUSE, ROLES.PRODUCTS]}
               redirectPath='/app/produccion/inicio'
             >
               <Receipt />
@@ -88,7 +100,7 @@ export function ProductionRoutes({ permissions, roles }) {
         path='formulas'
         element={
           <ProtectedRoute
-            isAllow={permissions.includes('write') && roles.includes('admin')}
+            allowedRoles={[ROLES.WAREHOUSE, ROLES.RECIPES]}
             redirectPath='/app/produccion/inicio'
           >
             <Formulation />
@@ -99,7 +111,7 @@ export function ProductionRoutes({ permissions, roles }) {
           path='productos'
           element={
             <ProtectedRoute
-              isAllow={permissions.includes('write') && roles.includes('admin')}
+              allowedRoles={[ROLES.WAREHOUSE, ROLES.RECIPES]}
               redirectPath='/app/produccion/inicio'
             >
               <Formulation />
@@ -110,7 +122,7 @@ export function ProductionRoutes({ permissions, roles }) {
           path='embalaje'
           element={
             <ProtectedRoute
-              isAllow={permissions.includes('write') && roles.includes('admin')}
+              allowedRoles={[ROLES.WAREHOUSE, ROLES.RECIPES]}
               redirectPath='/app/produccion/inicio'
             >
               <Formulation />
@@ -118,22 +130,12 @@ export function ProductionRoutes({ permissions, roles }) {
           }
         />
       </Route>
-      <Route
-        path='procesos'
-        element={
-          <ProtectedRoute
-            isAllow={permissions.includes('write') && roles.includes('admin')}
-            redirectPath='/app/produccion/inicio'
-          >
-            <Processes />
-          </ProtectedRoute>
-        }
-      >
+      <Route path='procesos'>
         <Route
           path='tabla'
           element={
             <ProtectedRoute
-              isAllow={permissions.includes('write') && roles.includes('admin')}
+              allowedRoles={[ROLES.WAREHOUSE]}
               redirectPath='/app/produccion/inicio'
             >
               <Processes />
@@ -144,10 +146,10 @@ export function ProductionRoutes({ permissions, roles }) {
           path='porHacer'
           element={
             <ProtectedRoute
-              isAllow={permissions.includes('write') && roles.includes('admin')}
+              allowedRoles={[ROLES.WAREHOUSE, ROLES.PROCESSES]}
               redirectPath='/app/produccion/inicio'
             >
-              <Processes />
+              <ProcessesKanvas />
             </ProtectedRoute>
           }
         />

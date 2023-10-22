@@ -37,7 +37,7 @@ export function MovementsCharts() {
             }
           ]}
           xLabel='Meses'
-          yLabel='Ventas'
+          yLabel='Mov.'
         />
       </ChartCard>
       <ChartCard title='Movimientos en MXN del año'>
@@ -63,7 +63,7 @@ export function MovementsCharts() {
             }
           ]}
           xLabel='Meses'
-          yLabel='Ventas'
+          yLabel='Mov.'
         />
       </ChartCard>
       <ChartCard title='Movimientos en USD del año'>
@@ -89,7 +89,7 @@ export function MovementsCharts() {
             }
           ]}
           xLabel='Meses'
-          yLabel='Ventas'
+          yLabel='Mov.'
         />
       </ChartCard>
     </>

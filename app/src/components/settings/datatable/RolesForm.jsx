@@ -10,6 +10,9 @@ import { Input } from '@/components/form'
 export function RolesForm({ selectedRow, submitAction, field }) {
   const [isEmpty, setIsEmpty] = useState(false)
 
+  const handleChange = (e) => {
+    e.target.value = e.target.value.toUpperCase()
+  }
   const handleSubmit = (e) => {
     e.preventDefault()
     const form = e.target
@@ -52,6 +55,7 @@ export function RolesForm({ selectedRow, submitAction, field }) {
           name='value'
           placeholder='admin'
           type='text'
+          onChange={handleChange}
         />
         <button type='submit' className='btn'>
           Guardar

@@ -1,11 +1,33 @@
+import { toast } from 'react-hot-toast'
 import { bfaApi } from '@/api/bfaApi'
 
-// export async function login({ username, password }) {
-//   try {
-//   } catch (error) {
-//     console.log({ error })
-//   }
-// }
+export async function login({ username, password }) {
+  try {
+    const { data: resp } = await bfaApi.post('/usuarios/login', {
+      USUARIO: username,
+      CONTRASENA: password
+    })
+    /**
+     * The respponse body from the request.
+     * @typedef {{ USUARIO: string, ROLES: { ID_ROL: string, ROL: string  }[], JWT: string }} LoginBody
+     * @type {{body: LoginBody}}
+     */
+    const { body } = resp
+    const data = {
+      username: body.USUARIO,
+      roles: body.ROLES.map((role) => role.ROL),
+      token: body.JWT
+    }
+    window.localStorage.setItem('bfa-auth-token', data.token)
+    return data
+  } catch (error) {
+    if (error.response.data.error) {
+      toast.error(error.response.data.error)
+      return null
+    }
+    throw new Error('Error logging in')
+  }
+}
 
 /**
  *
