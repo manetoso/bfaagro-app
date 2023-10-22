@@ -1,13 +1,14 @@
-import { findVentas, createVenta, deleteVenta, updateVenta, findVentas_Detalles, productsByVentas } from '../controllers/VentasController.js'
 import { Router } from 'express'
+import { findVentas, createVenta, deleteVenta, updateVenta, findVentas_Detalles, productsByVentas } from '../controllers/VentasController.js'
+import { validateFields, validateJWT, validateRol } from '../middlewares/Index.js'
 
 const router = Router()
 
-router.get('/', [], findVentas)
-router.get('/ventasdetalle', [], findVentas_Detalles)
-router.get('/cantidadproductovendido', [], productsByVentas)
-router.post('/', [], createVenta)
-router.put('/:idVenta', [], updateVenta)
-router.delete('/:idVenta', [], deleteVenta)
+router.get('/', [validateJWT, validateRol, validateFields], findVentas)
+router.get('/ventasdetalle', [validateJWT, validateRol, validateFields], findVentas_Detalles)
+router.get('/cantidadproductovendido', [validateJWT, validateRol, validateFields], productsByVentas)
+router.post('/', [validateJWT, validateRol, validateFields], createVenta)
+router.put('/:idVenta', [validateJWT, validateRol, validateFields], updateVenta)
+router.delete('/:idVenta', [validateJWT, validateRol, validateFields], deleteVenta)
 
 export default router

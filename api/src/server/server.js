@@ -1,7 +1,6 @@
 import cors from 'cors'
 import express from 'express'
 import { databaseConnect } from '../database/DatabaseConfig.js'
-import hola from '../routes/hola.routes.js'
 import {
   AlmacenesRouter,
   ProductosRouter,
@@ -32,7 +31,6 @@ class Server {
     this.app = express()
     this.port = process.env.PORT
     this.paths = {
-      hola: '/api',
       almacenes: '/api/almacenes',
       formulas: '/api/formulas',
       productos: '/api/productos',
@@ -76,7 +74,6 @@ class Server {
   }
 
   routes() {
-    this.app.use(this.paths.hola, hola)
     this.app.use(this.paths.almacenes, AlmacenesRouter)
     this.app.use(this.paths.formulas, FormulasRouter)
     this.app.use(this.paths.productos, ProductosRouter)
