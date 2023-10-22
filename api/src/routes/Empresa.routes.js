@@ -3,7 +3,7 @@ import { validateFields, validateJWT, validateRol } from '../middlewares/Index.j
 import { createEmpresa, deleteEmpresa, findEmpresa, updateEmpresa } from '../controllers/EmpresaController.js'
 const router = Router()
 
-router.get('/',[validateJWT, validateRol, validateFields], findEmpresa)
+router.get('/',[validateJWT, validateFields], findEmpresa)
 router.post('/',[validateJWT, validateRol, validateFields], createEmpresa)
 router.put('/:idEmpresa',[validateJWT, validateRol, validateFields], updateEmpresa)
 router.delete('/:idEmpresa',[validateJWT, validateRol, validateFields], deleteEmpresa)

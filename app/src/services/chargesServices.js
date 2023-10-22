@@ -1,10 +1,16 @@
 import toast from 'react-hot-toast'
 
 import { bfaApi } from '@/api/bfaApi'
+import { ROLES } from '@/utils/consts'
 
 export async function fetchData() {
   try {
-    const { data: resp } = await bfaApi.get('/cobros')
+    const { data: resp } = await bfaApi.get('/cobros', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.SALES
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, ID_CUENTAxCOBRAR: string, FOLIO_CXC: string, FOLIO_COBRO: string, ID_VENTA: string, FECHA_COBRO: string, CANTIDAD_COBRADA: number, CLIENTE: { ID_CLIENTE: string, NOMBRE_CLIENTE: string } }} ChargesBody
@@ -21,10 +27,12 @@ export async function fetchData() {
 export async function createData(data) {
   try {
     const elementToDBSchema = convertChargeToDBSchema(data)
-    const { data: resp } = await bfaApi.post(
-      '/cobros',
-      elementToDBSchema
-    )
+    const { data: resp } = await bfaApi.post('/cobros', elementToDBSchema, {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.SALES
+      }
+    })
 
     const json = resp
     const dataFormated = convertChargeToAppSchema(json.body)
@@ -41,7 +49,13 @@ export async function updateData(data) {
     const elementToDBSchema = convertChargeToDBSchema(data)
     const { data: resp } = await bfaApi.put(
       `/cobros/${data.id}`,
-      elementToDBSchema
+      elementToDBSchema,
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.SALES
+        }
+      }
     )
     const json = resp
     const respFormated = convertChargeToAppSchema(json.body)
@@ -60,7 +74,12 @@ export async function updateData(data) {
  */
 export async function deleteData(id) {
   try {
-    const { data: resp } = await bfaApi.delete(`/cobros/${id}`)
+    const { data: resp } = await bfaApi.delete(`/cobros/${id}`, {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.SALES
+      }
+    })
     const json = resp
     toast.success('Cobro eliminado con éxito')
     return !json.error

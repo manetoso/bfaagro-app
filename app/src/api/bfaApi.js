@@ -8,13 +8,13 @@ export const bfaApi = axios.create({
   }
 })
 
-// soloApi.interceptors.request.use(
-//   async (config) => {
-//     const token = await AsyncStorage.getItem('@auth-token')
-//     config.headers.Authorization = 'Bearer ' + token
-//     return config
-//   },
-//   (error) => {
-//     Promise.reject(error)
-//   }
-// )
+bfaApi.interceptors.request.use(
+  async (config) => {
+    const token = window.localStorage.getItem('bfa-auth-token')
+    config.headers['jwt-token'] = token
+    return config
+  },
+  (error) => {
+    Promise.reject(error)
+  }
+)

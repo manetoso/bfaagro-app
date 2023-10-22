@@ -1,6 +1,7 @@
 import toast from 'react-hot-toast'
 
 import { bfaApi } from '@/api/bfaApi'
+import { ROLES } from '@/utils/consts'
 
 /**
  *
@@ -8,7 +9,12 @@ import { bfaApi } from '@/api/bfaApi'
  */
 export async function fetchData() {
   try {
-    const { data: resp } = await bfaApi.get('/procesos')
+    const { data: resp } = await bfaApi.get('/procesos', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.PROCESSES
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef { { _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, CANTIDAD: number, createdAt: string, updatedAt: string } ProcessesBody
@@ -69,7 +75,13 @@ export async function createData(data) {
     }
     const { data: resp } = await bfaApi.post(
       '/procesos',
-      JSON.stringify(elementToSend)
+      JSON.stringify(elementToSend),
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.PROCESSES
+        }
+      }
     )
     const json = resp
     if (!json.error) {
@@ -94,7 +106,12 @@ export async function createData(data) {
  */
 export async function updateData({ id }) {
   try {
-    const { data: resp } = await bfaApi.put(`/procesos/editar_estado/${id}`)
+    const { data: resp } = await bfaApi.put(`/procesos/editar_estado/${id}`, {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.PROCESSES
+      }
+    })
     const json = resp
     const respFormated = convertToAppSchemaUpdate(json.body)
     toast.success('Proceso actualizado con éxito')
@@ -112,14 +129,19 @@ export async function updateData({ id }) {
  */
 export async function deleteData(id) {
   try {
-    const { data: resp } = await bfaApi.delete(`/procesos/${id}`)
+    const { data: resp } = await bfaApi.delete(`/procesos/${id}`, {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.PROCESSES
+      }
+    })
     const json = resp
     if (json.error) {
       toast.error(json.error)
     } else {
       toast.success('Proceso eliminado con éxito')
     }
-    return json.error ? false : true
+    return !json.error
   } catch (error) {
     toast.error('Error eliminando proceso')
     throw new Error('Error deleting recipe')
@@ -132,7 +154,12 @@ export async function deleteData(id) {
  */
 export async function fetchRawMaterial() {
   try {
-    const { data: resp } = await bfaApi.get('/productos')
+    const { data: resp } = await bfaApi.get('/productos', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.PROCESSES
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef { { _id: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, ALMACEN: { ID_ALMACEN: string, NOMBRE_ALMACEN: string }, TIPO_PRODUCTO: { ID_TIPO_PRODUCTO: number, TIPO_PRODUCTO: string }[] } } ProductsBody

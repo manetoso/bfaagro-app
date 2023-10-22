@@ -6,14 +6,14 @@ import {
   updateTipoDocumento
 } from '../controllers/TiposDocumentosController.js'
 import { Router } from 'express'
-import { validateFields, validateJWT, validateRol } from '../middlewares/Index.js'
+import { validateFields, validateJWT } from '../middlewares/Index.js'
 
 const router = Router()
 
-router.get('/', [validateJWT, validateRol, validateFields], findTiposDocumentos)
-router.get('/:tipoDocumentos', [validateJWT, validateRol, validateFields], findTiposDocumentosByType)
-router.post('/', [validateJWT, validateRol, validateFields], createTipoDocumento)
-router.put('/:idTipoDocumento', [validateJWT, validateRol, validateFields], updateTipoDocumento)
-router.delete('/:idTipoDocumento', [validateJWT, validateRol, validateFields], deleteTipoDocumento)
+router.get('/', [validateJWT, validateFields], findTiposDocumentos)
+router.get('/:tipoDocumentos', [validateJWT, validateFields], findTiposDocumentosByType)
+router.post('/', [validateJWT, validateFields], createTipoDocumento)
+router.put('/:idTipoDocumento', [validateJWT, validateFields], updateTipoDocumento)
+router.delete('/:idTipoDocumento', [validateJWT, validateFields], deleteTipoDocumento)
 
 export default router

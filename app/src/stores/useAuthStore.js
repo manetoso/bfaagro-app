@@ -24,6 +24,7 @@ export const useAuthStore = create((set) => ({
     })
   },
   logout: () => {
+    window.localStorage.removeItem('bfa-auth-token')
     set({
       isAuthenticated: false,
       roles: [],

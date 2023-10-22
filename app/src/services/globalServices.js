@@ -1,5 +1,6 @@
 import { toast } from 'react-hot-toast'
 import { bfaApi } from '@/api/bfaApi'
+import { ROLES } from '@/utils/consts'
 
 export async function login({ username, password }) {
   try {
@@ -189,7 +190,12 @@ export async function fetchPriceListTypes() {
  */
 export async function fetchWarehouses() {
   try {
-    const { data: resp } = await bfaApi.get('/almacenes')
+    const { data: resp } = await bfaApi.get('/almacenes', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.WAREHOUSE
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, NOMBRE_ALMACEN: string, TIPO_ALMACEN: { ID_TIPO_ALMACEN: number, TIPO_ALMACEN: string } }[]} WarehousesBody

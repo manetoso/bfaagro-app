@@ -1,6 +1,7 @@
 import toast from 'react-hot-toast'
 
 import { bfaApi } from '@/api/bfaApi'
+import { ROLES } from '@/utils/consts'
 
 function mergeTwoArrays({
   firstArray,
@@ -30,7 +31,12 @@ function mergeTwoArrays({
  */
 export async function fetchData() {
   try {
-    const { data: resp } = await bfaApi.get('/ventas')
+    const { data: resp } = await bfaApi.get('/ventas', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.SALES
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, FOLIO: string, CLIENTES: { CLIENTE_ORIGEN: { ID_CLIENTE: string, NOMBRE_CLIENTE: string }, CLIENTE_DESTINO: { ID_CLIENTE: string, NOMBRE_CLIENTE: string }, createdAt: string } }} SaleOrdersBody
@@ -38,7 +44,12 @@ export async function fetchData() {
      */
     const ventas = resp
     const sales = ventas.body.map((venta) => convertSaleOrderToAppSchema(venta))
-    const { data: resp2 } = await bfaApi.get('/ventas/ventasdetalle')
+    const { data: resp2 } = await bfaApi.get('/ventas/ventasdetalle', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.SALES
+      }
+    })
     /**
      * The respponse body from the request2.
      * @typedef {{ _id: string, ID_VENTA: string, PRECIO_TOTAL: number, PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number }[] }} SaleOrdersDetailsBody
@@ -74,7 +85,12 @@ export async function fetchData() {
 export async function createData(data) {
   try {
     const elementToDBSchema = converCreateSaleOrderToDBSchema(data)
-    const { data: resp } = await bfaApi.post('/ventas', elementToDBSchema)
+    const { data: resp } = await bfaApi.post('/ventas', elementToDBSchema, {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.SALES
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, FOLIO: string, CLIENTES: { CLIENTE_ORIGEN: { ID_CLIENTE: string, NOMBRE_CLIENTE: string }, CLIENTE_DESTINO: { ID_CLIENTE: string, NOMBRE_CLIENTE: string } } }} SaleOrderData
@@ -94,7 +110,12 @@ export async function updateData(data, detailId) {
   try {
     const dbSchemaLike = converCreateSaleOrderToDBSchema(data)
     dbSchemaLike.VENTA_DETALLE._id = detailId
-    const { data: resp } = await bfaApi.put(`/ventas/${data.id}`, dbSchemaLike)
+    const { data: resp } = await bfaApi.put(`/ventas/${data.id}`, dbSchemaLike, {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.SALES
+      }
+    })
     const json = resp
     const respFormated = convertSaleOrderToAppSchema(json.body)
     toast.success('Orden de venta actualizada con éxito')
@@ -112,7 +133,12 @@ export async function updateData(data, detailId) {
  */
 export async function deleteData(id) {
   try {
-    const { data: resp } = await bfaApi.delete(`/ventas/${id}`)
+    const { data: resp } = await bfaApi.delete(`/ventas/${id}`, {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.SALES
+      }
+    })
     const json = resp
     toast.success('Orden de venta eliminada con éxito')
     return !json.error
