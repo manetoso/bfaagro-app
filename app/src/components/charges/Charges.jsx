@@ -1,6 +1,6 @@
 import { ChargesDatatable } from './datatable'
 import { CustomToast } from '@/components/toast'
-import { Loader } from '@/components/layout'
+import { Loader, PageTransition } from '@/components/layout'
 
 import { useChargesDatatable } from '@/hooks/useChargesDatatable'
 import { FIELDS_TYPES } from '@/stores/useChargesStore'
@@ -21,7 +21,7 @@ export function Charges() {
   } = useChargesDatatable({ field: FIELDS_TYPES.CHARGES })
   if (isLoading) return <Loader />
   return (
-    <>
+    <PageTransition>
       <CustomToast />
       <ChargesDatatable
         columns={columns}
@@ -37,6 +37,6 @@ export function Charges() {
         editModal={editModal}
         field={FIELDS_TYPES.CHARGES}
       />
-    </>
+    </PageTransition>
   )
 }

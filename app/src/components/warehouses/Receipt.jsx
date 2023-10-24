@@ -21,7 +21,7 @@ export function Receipt() {
   const togglCconfirmModalIsOpen = () => {
     setConfirmModalIsOpen(!confirmModalIsOpen)
   }
-  
+
   const handleConfirm = () => {
     togglCconfirmModalIsOpen()
     productReceipt(receiptData)

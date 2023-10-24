@@ -20,7 +20,7 @@ export const usePriceListDatatable = ({ field }) => {
     toggleAddModal,
     toggleAlert,
     toggleEditModal,
-    addOrEditElement,
+    addOrEditElement: addOrEditElementFromStore,
     removeElement,
     fetchExtraData
   } = usePriceListStore()
@@ -72,6 +72,12 @@ export const usePriceListDatatable = ({ field }) => {
     ],
     []
   )
+
+  const addOrEditElement = async (data, field) => {
+    await addOrEditElementFromStore(data, field)
+    setIsLoading(true)
+    getData()
+  }
 
   // FETCHING DATA FROM THE API
   const getData = useCallback(async () => {

@@ -1,6 +1,7 @@
 import toast from 'react-hot-toast'
 
 import { bfaApi } from '@/api/bfaApi'
+import { ROLES } from '@/utils/consts'
 
 /**
  *
@@ -8,7 +9,12 @@ import { bfaApi } from '@/api/bfaApi'
  */
 export async function fetchData() {
   try {
-    const { data: resp } = await bfaApi.get('/cxp')
+    const { data: resp } = await bfaApi.get('/cxp', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.PURCHASES
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, ID_ORDEN_COMPRA: string, FECHA_EMISION: string, FOLIO_ORDEN: string, FOLIO_CXP: string, FECHA_PAGO: string, CANTIDAD: number, CANTIDAD_PAGADA: number, SALDO: number, OBSERVACIONES: string, ESTADO: string, PROVEEDOR: { ID_PROVEEDOR: string, NOMBRE_EMPRESA: string, AGENTE: string } }} AccountsPayableBody
@@ -34,7 +40,13 @@ export async function createData(data) {
     const elementToDBSchema = convertAccountPayableToDBSchema(data)
     const { data: resp } = await bfaApi.post(
       '/ordenescompra',
-      JSON.stringify(elementToDBSchema)
+      JSON.stringify(elementToDBSchema),
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.PURCHASES
+        }
+      }
     )
     /**
      * The respponse body from the request.
@@ -61,7 +73,13 @@ export async function updateData(data) {
   try {
     const { data: resp } = await bfaApi.put(
       `/cxp/${data.id}`,
-      convertAccountPayableToDBSchema(data)
+      convertAccountPayableToDBSchema(data),
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.PURCHASES
+        }
+      }
     )
     const json = resp
     const respFormated = convertAccountsPayableToAppSchema(json.body)
@@ -80,33 +98,18 @@ export async function updateData(data) {
  */
 export async function deleteData(id) {
   try {
-    const { data: resp } = await bfaApi.delete(`/cxp/${id}`)
+    const { data: resp } = await bfaApi.delete(`/cxp/${id}`, {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.PURCHASES
+      }
+    })
     const json = resp
     toast.success('Cuenta por pagar eliminada con éxito')
-    return json.error ? false : true
+    return !json.error
   } catch (error) {
     toast.error('Error eliminando cuenta por pagar')
     throw new Error('Error deleting accounts payable')
-  }
-}
-
-/**
- *
- * @returns {{ id: string, documentType: string, value: string }[]} - The suppliers types.
- */
-export async function fetchSupplierTypes() {
-  try {
-    const { data: resp } = await bfaApi.get('/tiposdocumentos/proveedor')
-    /**
-     * The respponse body from the request.
-     * @typedef {{ _id: string, TIPO_DOCUMENTO: string, VALOR: string }} SupplierTypesBody
-     * @type {{body: SupplierTypesBody[]}} - The SupplierTypes response body.
-     */
-    const json = resp
-    const data = json.body.map((type) => convertTypeToAppSchema(type))
-    return data
-  } catch (error) {
-    throw new Error('Error searching suppliers types')
   }
 }
 

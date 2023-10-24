@@ -1,7 +1,7 @@
 import { PurchaseOrdersDatatable, PDFBuilder } from './datatable'
 import { CustomToast } from '@/components/toast'
 import { PDFView } from '@/components/alert'
-import { Loader } from '@/components/layout'
+import { Loader, PageTransition } from '@/components/layout'
 
 import { usePurchaseOrdersDatatable } from '@/hooks/usePurchaseOrdersDatatable'
 import { FIELDS_TYPES } from '@/stores/usePurchaseOrdersStore'
@@ -24,7 +24,7 @@ export function PurchaseOrders() {
   } = usePurchaseOrdersDatatable({ field: FIELDS_TYPES.PURCHASE_ORDERS })
   if (isLoading) return <Loader />
   return (
-    <>
+    <PageTransition>
       <CustomToast />
       <PurchaseOrdersDatatable
         columns={columns}
@@ -47,6 +47,6 @@ export function PurchaseOrders() {
       >
         <PDFBuilder />
       </PDFView>
-    </>
+    </PageTransition>
   )
 }

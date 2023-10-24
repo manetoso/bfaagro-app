@@ -1,10 +1,16 @@
 import toast from 'react-hot-toast'
 
 import { bfaApi } from '@/api/bfaApi'
+import { ROLES } from '@/utils/consts'
 
 export async function fetchData() {
   try {
-    const { data: resp } = await bfaApi.get('/cxc')
+    const { data: resp } = await bfaApi.get('/cxc', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.SALES
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, ID_VENTA: string, FECHA_EMISION: string, FOLIO_VENTA: string, FOLIO_CXC: string, FECHA_VENCIMIENTO: string, TOTAL_VENTA: number, TOTAL_PAGADO: number, SALDO: number, OBSERVACIONES: string, ESTADO: string, MONEDA: string, CLIENTES: { CLIENTE_ORIGEN: { ID_CLIENTE: string, NOMBRE_CLIENTE: string }, CLIENTE_DESTINO: { ID_CLIENTE: string, NOMBRE_CLIENTE: string } } }} AccountsReceivableBody
@@ -22,7 +28,12 @@ export async function updateData(data) {
   try {
     const { data: resp } = await bfaApi.put(
       `/cxc/${data.id}`,
-      convertAccountToDBSchema(data)
+      convertAccountToDBSchema(data), {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.SALES
+        }
+      }
     )
     const json = resp
     const respFormated = convertAccountsToAppSchema(json.body)
@@ -41,7 +52,12 @@ export async function updateData(data) {
  */
 export async function deleteData(id) {
   try {
-    const { data: resp } = await bfaApi.delete(`/cxc/${id}`)
+    const { data: resp } = await bfaApi.delete(`/cxc/${id}`, {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.SALES
+      }
+    })
     const json = resp
     toast.success('Cuenta por cobrar eliminada con éxito')
     return !json.error

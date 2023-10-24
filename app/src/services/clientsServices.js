@@ -1,6 +1,7 @@
 import toast from 'react-hot-toast'
 
 import { bfaApi } from '@/api/bfaApi'
+import { ROLES } from '@/utils/consts'
 
 /**
  *
@@ -8,7 +9,12 @@ import { bfaApi } from '@/api/bfaApi'
  */
 export async function fetchData() {
   try {
-    const { data: resp } = await bfaApi.get('/clientes')
+    const { data: resp } = await bfaApi.get('/clientes', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.SALES
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, APELLIDOS: string, CORREO: string, DOMICILIO: string, EMPRESA: string, NOMBRE_CLIENTE: string, NUMERO_TELEFONO: string, RFC: string, TIPO_CLIENTE: { ID_TIPO_CLIENTE: string, TIPO_CLIENTE: string } } }} clientsDataBody
@@ -30,7 +36,12 @@ export async function fetchData() {
 export async function createData(data) {
   try {
     const elementToDBSchema = convertClientToDBSchema(data)
-    const { data: resp } = await bfaApi.post('/clientes', elementToDBSchema)
+    const { data: resp } = await bfaApi.post('/clientes', elementToDBSchema, {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.SALES
+      }
+    })
 
     const json = resp
     const dataFormated = convertClientToAppSchema(json.body)
@@ -52,7 +63,13 @@ export async function updateData(data) {
     const elementToDBSchema = convertClientToDBSchema(data)
     const { data: resp } = await bfaApi.put(
       `/clientes/${data.id}`,
-      elementToDBSchema
+      elementToDBSchema,
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.SALES
+        }
+      }
     )
     const json = resp
     const respFormated = convertClientToAppSchema(json.body)
@@ -71,7 +88,12 @@ export async function updateData(data) {
  */
 export async function deleteData(id) {
   try {
-    const { data: resp } = await bfaApi.delete(`/clientes/${id}`)
+    const { data: resp } = await bfaApi.delete(`/clientes/${id}`, {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.SALES
+      }
+    })
     const json = resp
     toast.success('Cliente eliminado con éxito')
     return json.error || true

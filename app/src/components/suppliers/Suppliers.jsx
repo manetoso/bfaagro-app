@@ -1,6 +1,6 @@
 import { SuppliersDatatable } from './datatable'
 import { CustomToast } from '@/components/toast'
-import { Loader } from '@/components/layout'
+import { Loader, PageTransition } from '@/components/layout'
 
 import { useSuppliersDatatable } from '@/hooks/useSuppliersDatatable'
 import { FIELDS_TYPES } from '@/stores/useSuppliersStore'
@@ -22,7 +22,7 @@ export function Suppliers() {
   } = useSuppliersDatatable({ field: FIELDS_TYPES.SUPPLIERS })
   if (isLoading) return <Loader />
   return (
-    <>
+    <PageTransition>
       <CustomToast />
       <SuppliersDatatable
         columns={columns}
@@ -38,6 +38,6 @@ export function Suppliers() {
         editModal={editModal}
         field={FIELDS_TYPES.SUPPLIERS}
       />
-    </>
+    </PageTransition>
   )
 }

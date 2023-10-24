@@ -1,17 +1,25 @@
 import toast from 'react-hot-toast'
 
 import { bfaApi } from '@/api/bfaApi'
+import { ROLES } from '@/utils/consts'
 
 export async function fetchData() {
   try {
-    const { data: resp } = await bfaApi.get('/listas_precio')
+    const { data: resp } = await bfaApi.get('/listas_precio', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.SALES
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, AUMENTO: { PORCENTAJE: number, CANTIDAD: number }, TIPO_LISTA: { ID_TIPO: string, TIPO_LISTA: string }, PRECIO_UNITARIO: number, PRECIO_FINAL: number, ID_PRODUCTO: { _id: string, NOMBRE_PRODUCTO: string } }} PriceListBody
      * @type {{body: PriceListBody[]}} - The price list response body.
      */
     const json = resp
-    const data = json.body.map((priceList) => convertPriceListToAppSchema(priceList))
+    const data = json.body.map((priceList) =>
+      convertPriceListToAppSchema(priceList)
+    )
     return data
   } catch (error) {
     throw new Error('Error searching price list')
@@ -23,7 +31,13 @@ export async function createData(data) {
     const elementToDBSchema = convertPriceListToDBSchema(data)
     const { data: resp } = await bfaApi.post(
       '/listas_precio',
-      elementToDBSchema
+      elementToDBSchema,
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.SALES
+        }
+      }
     )
 
     const json = resp
@@ -41,7 +55,13 @@ export async function updateData(data) {
     const elementToDBSchema = convertPriceListToDBSchema(data)
     const { data: resp } = await bfaApi.put(
       `/listas_precio/${data.id}`,
-      elementToDBSchema
+      elementToDBSchema,
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.SALES
+        }
+      }
     )
     const json = resp
     const respFormated = convertPriceListToAppSchema(json.body)
@@ -60,7 +80,12 @@ export async function updateData(data) {
  */
 export async function deleteData(id) {
   try {
-    const { data: resp } = await bfaApi.delete(`/listas_precio/${id}`)
+    const { data: resp } = await bfaApi.delete(`/listas_precio/${id}`, {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.SALES
+      }
+    })
     const json = resp
     toast.success('Lista de precio eliminada con éxito')
     return !json.error
@@ -99,7 +124,7 @@ export function convertPriceListToDBSchema(data) {
 /**
  *
  * @param {{ _id: string, AUMENTO: { PORCENTAJE: number, CANTIDAD: number }, TIPO_LISTA: { ID_TIPO: string, TIPO_LISTA: string }, PRECIO_UNITARIO: number, PRECIO_FINAL: number, ID_PRODUCTO: { _id: string, NOMBRE_PRODUCTO: string } }} data
-  * @returns {{ id: string, rise: { risePercentage: number, riseQuantity: number }, priceListType: { priceListId: string, priceListName: string }, unitPrice: number, finalPrice: number, productId: string, productName: string }} - The price list to App Schema.
+ * @returns {{ id: string, rise: { risePercentage: number, riseQuantity: number }, priceListType: { priceListId: string, priceListName: string }, unitPrice: number, finalPrice: number, productId: string, productName: string }} - The price list to App Schema.
  */
 export function convertPriceListToAppSchema(data) {
   try {
