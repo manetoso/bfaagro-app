@@ -23,6 +23,5 @@
     "standard": "^17.0.0"
   },
   "dependencies": {
-    "socket.io": "^4.7.2"
   }
 }
