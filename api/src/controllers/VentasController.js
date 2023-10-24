@@ -4,7 +4,7 @@ import { VENTAS, VENTAS_DETALLE, CUENTASxCOBRAR } from '../models/Index.js'
 import { getTypeCliente } from '../controllers/ClientesController.js'
 import { getAlmacenByIdCliente } from '../controllers/AlmacenesController.js'
 import { registerMovementByAlmacen, registerMovementAlmacen } from '../controllers/MovimientosAlmacenController.js'
-import { generateNewFolio, sendMessageToClient } from '../helpers/Index.js'
+import { generateNewFolio } from '../helpers/Index.js'
 import { createCuentaxCobrarByVenta } from './Cuentas_por_CobrarController.js'
 import { createRegister, constructArrayProducts, updateRegisterByIdentificador } from './BitacoraProductosController.js'
 
@@ -27,7 +27,6 @@ const createVenta = async (req = request, res = response) => {
         await registerMovementAlmacen('SALIDA', VENTA_DETALLE.PRODUCTOS)
         // CREAR LA CXC
         await createCuentaxCobrarByVenta(actionDB._id, CLIENTES, FOLIO, FECHA_VENCIMIENTO, ESTADO, TOTAL_VENTA, TOTAL_PAGADO, SALDO)
-        sendMessageToClient("Hola desde el socket")
         return serverOkMessage(res, actionDB, 201)
     } catch (error) {
         console.log(error);
