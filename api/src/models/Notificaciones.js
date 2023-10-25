@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose'
 
 const NOTIFICACIONES = new Schema({
-  NOTIFICAION: {
+  NOTIFICACION: {
     TIPO_NOTIFICACION: {
       type: String,
       required: true
