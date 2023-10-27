@@ -1,4 +1,5 @@
 import { bfaApi } from '@/api/bfaApi'
+import { ROLES } from '@/utils/consts'
 
 /**
  *
@@ -6,7 +7,12 @@ import { bfaApi } from '@/api/bfaApi'
  */
 export async function fetchLogbook() {
   try {
-    const { data: resp } = await bfaApi.get('/bitacoraproductos')
+    const { data: resp } = await bfaApi.get('/bitacoraproductos', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.LOGBOOK
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, IDENTIFICADOR: string, MOVIMIENTO: string, PRODUCTOS: { _id: string, ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number }[], TOTAL: number, MONEDA: string, createdAt }[]} WarehousesBody
@@ -46,7 +52,13 @@ export async function fetchLogbook() {
 export async function fetchLogbookByMovement(movement) {
   try {
     const { data: resp } = await bfaApi.get(
-      `/bitacoraproductos/movement/${movement}`
+      `/bitacoraproductos/movement/${movement}`,
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.LOGBOOK
+        }
+      }
     )
     /**
      * The respponse body from the request.
@@ -82,7 +94,12 @@ export async function fetchLogbookByMovement(movement) {
 
 export async function fetchTop5SellingProducts() {
   try {
-    const { data: resp } = await bfaApi.get('/ventas/cantidadproductovendido')
+    const { data: resp } = await bfaApi.get('/ventas/cantidadproductovendido', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.LOGBOOK
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, NOMBRE_PRODUCTO: string, cantidadVendida: number }[]} Top5Products
@@ -102,7 +119,15 @@ export async function fetchTop5SellingProducts() {
 
 export async function fetchTop5PurchasingProducts() {
   try {
-    const { data: resp } = await bfaApi.get('/ordenescompra/cantidadproductocomprado')
+    const { data: resp } = await bfaApi.get(
+      '/ordenescompra/cantidadproductocomprado',
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.LOGBOOK
+        }
+      }
+    )
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, NOMBRE_PRODUCTO: string, cantidadVendida: number }[]} Top5Products

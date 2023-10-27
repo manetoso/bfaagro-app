@@ -1,6 +1,6 @@
 import { ClientsDatatable } from './datatable'
 import { CustomToast } from '@/components/toast'
-import { Loader } from '@/components/layout'
+import { Loader, PageTransition } from '@/components/layout'
 
 import { useClientsDatatable } from '@/hooks/useClientsDatatable'
 import { FIELDS_TYPES } from '@/stores/useClientsStore'
@@ -21,7 +21,7 @@ export function Clients() {
   } = useClientsDatatable({ field: FIELDS_TYPES.CLIENTS })
   if (isLoading) return <Loader />
   return (
-    <>
+    <PageTransition>
       <CustomToast />
       <ClientsDatatable
         columns={columns}
@@ -37,6 +37,6 @@ export function Clients() {
         editModal={editModal}
         field={FIELDS_TYPES.CLIENTS}
       />
-    </>
+    </PageTransition>
   )
 }

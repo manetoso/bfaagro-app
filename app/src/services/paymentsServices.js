@@ -1,6 +1,7 @@
 import toast from 'react-hot-toast'
 
 import { bfaApi } from '@/api/bfaApi'
+import { ROLES } from '@/utils/consts'
 
 /**
  *
@@ -8,7 +9,12 @@ import { bfaApi } from '@/api/bfaApi'
  */
 export async function fetchData() {
   try {
-    const { data: resp } = await bfaApi.get('/pagos')
+    const { data: resp } = await bfaApi.get('/pagos', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.PURCHASES
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, ID_CUENTAxPAGAR: string, FOLIO_CXP: string, FOLIO_PAGO: string, FECHA_PAGO: string, CANTIDAD_PAGADA: number, PROVEEDOR: { ID_PROVEEDOR: string, NOMBRE_EMPRESA: string, AGENTE: string } }} PaymentBody
@@ -32,7 +38,13 @@ export async function createData(data) {
     const elementToDBSchema = convertPaymentToDBSchema(data)
     const { data: resp } = await bfaApi.post(
       '/pagos',
-      JSON.stringify(elementToDBSchema)
+      JSON.stringify(elementToDBSchema),
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.PURCHASES
+        }
+      }
     )
 
     const json = resp
@@ -54,7 +66,13 @@ export async function updateData(data) {
   try {
     const { data: resp } = await bfaApi.put(
       `/pagos/${data.id}`,
-      convertPaymentToDBSchema(data)
+      convertPaymentToDBSchema(data),
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.PURCHASES
+        }
+      }
     )
     const json = resp
     const respFormated = convertPaymentToAppSchema(json.body)
@@ -73,33 +91,18 @@ export async function updateData(data) {
  */
 export async function deleteData(id) {
   try {
-    const { data: resp } = await bfaApi.delete(`/pagos/${id}`)
+    const { data: resp } = await bfaApi.delete(`/pagos/${id}`, {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.PURCHASES
+      }
+    })
     const json = resp
     toast.success('Pago eliminado con éxito')
-    return json.error ? false : true
+    return !json.error
   } catch (error) {
     toast.error('Error eliminando pago')
     throw new Error('Error deleting payment')
-  }
-}
-
-/**
- *
- * @returns {{ id: string, documentType: string, value: string }[]} - The suppliers types.
- */
-export async function fetchSupplierTypes() {
-  try {
-    const { data: resp } = await bfaApi.get('/tiposdocumentos/proveedor')
-    /**
-     * The respponse body from the request.
-     * @typedef {{ _id: string, TIPO_DOCUMENTO: string, VALOR: string }} SupplierTypesBody
-     * @type {{body: SupplierTypesBody[]}} - The SupplierTypes response body.
-     */
-    const json = resp
-    const data = json.body.map((type) => convertTypeToAppSchema(type))
-    return data
-  } catch (error) {
-    throw new Error('Error searching suppliers types')
   }
 }
 

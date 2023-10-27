@@ -3,7 +3,7 @@ import toast from 'react-hot-toast'
 import { bfaApi } from '@/api/bfaApi'
 
 import { FIELDS_TYPES } from '@/stores/useRecipesStore'
-import { PRODUCT_TYPES } from '@/utils/consts'
+import { PRODUCT_TYPES, ROLES } from '@/utils/consts'
 
 /**
  *
@@ -12,7 +12,12 @@ import { PRODUCT_TYPES } from '@/utils/consts'
  */
 export async function fetchData({ field }) {
   try {
-    const { data: resp } = await bfaApi.get('/formulas')
+    const { data: resp } = await bfaApi.get('/formulas', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.RECIPES
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef { { _id: string, NOMBRE_FORMULA: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, TIPO_PRODUCTO: { ID_TIPO_PRODUCTO: string, TIPO_PRODUCTO: string }[] }, FORMULACION_DETALLE: { CANTIDAD: number, ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }[] } } RecipesBody
@@ -69,7 +74,13 @@ export async function createData(data) {
     const elementToDBSchema = convertToDBSchema(data)
     const { data: resp } = await bfaApi.post(
       '/formulas',
-      JSON.stringify(elementToDBSchema)
+      JSON.stringify(elementToDBSchema),
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.RECIPES
+        }
+      }
     )
     const json = resp
     const respFormated = convertToAppSchema(json.body)
@@ -91,7 +102,13 @@ export async function updateData(data) {
     const elementToDBSchema = convertToDBSchema(data)
     const { data: resp } = await bfaApi.put(
       `/formulas/${data.id}`,
-      JSON.stringify(elementToDBSchema)
+      JSON.stringify(elementToDBSchema),
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.RECIPES
+        }
+      }
     )
     const json = resp
     const respFormated = convertToAppSchema(json.body)
@@ -99,8 +116,6 @@ export async function updateData(data) {
     return respFormated
   } catch (error) {
     toast.error('Error actualizando receta')
-    // TODO: IF EVERITHING WORKS, DELETE THIS LINE
-    console.log({error})
     throw new Error('Error updating recipe')
   }
 }
@@ -112,10 +127,15 @@ export async function updateData(data) {
  */
 export async function deleteData(id) {
   try {
-    const { data: resp } = await bfaApi.delete(`/formulas/${id}`)
+    const { data: resp } = await bfaApi.delete(`/formulas/${id}`, {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.RECIPES
+      }
+    })
     const json = resp
     toast.success('Receta eliminada con éxito')
-    return json.error ? false : true
+    return !json.error
   } catch (error) {
     toast.error('Error eliminando receta')
     throw new Error('Error deleting recipe')
@@ -129,7 +149,12 @@ export async function deleteData(id) {
  */
 export async function fetchProductsForDetails({ field }) {
   try {
-    const { data: resp } = await bfaApi.get('/productos')
+    const { data: resp } = await bfaApi.get('/productos', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.RECIPES
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef { { _id: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, ALMACEN: { ID_ALMACEN: string, NOMBRE_ALMACEN: string }, TIPO_PRODUCTO: { ID_TIPO_PRODUCTO: number, TIPO_PRODUCTO: string }[] } } ProductsBody
@@ -167,26 +192,6 @@ export async function fetchProductsForDetails({ field }) {
     return { material, products }
   } catch (error) {
     throw new Error('Error searching products for details')
-  }
-}
-
-export async function fetchUnityTypes() {
-  try {
-    const { data: resp } = await bfaApi.get('/tiposdocumentos/unidad')
-    /**
-     * The respponse body from the request.
-     * @typedef {{ _id: string, TIPO_DOCUMENTO: string, VALOR: string }[]} ProductTypesBody
-     * @type {{body: ProductTypesBody}} - The Products Types response body.
-     */
-    const json = resp
-
-    const data = json.body.map((productType) => ({
-      id: productType._id,
-      unityType: productType.VALOR
-    }))
-    return data
-  } catch (error) {
-    throw new Error('Error searching product types')
   }
 }
 

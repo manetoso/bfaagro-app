@@ -36,7 +36,7 @@ export function Datatable({ columns, data, title = 'Table', addHandler }) {
   return (
     <>
       <div className='rounded-md border-2'>
-        <div className='flex justify-between p-2 md:py-4 md:px-6'>
+        <div className='flex justify-between p-2 md:py-4 md:px-6 bg-white'>
           <h3 className='text-xl font-black'>
             {title}{' '}
             <small className='text-xs font-bold text-gray-400'>{`(${formatNumberToString(

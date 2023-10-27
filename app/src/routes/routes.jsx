@@ -12,8 +12,10 @@ import {
 } from './routesModules'
 import { useRouterLists } from '@/hooks/useRouterLists'
 
+import { ROLES } from '@/utils/consts'
+
 export function Router() {
-  const { isAuthenticated, location, permissions, roles } = useRouterLists()
+  const { isAuthenticated, location } = useRouterLists()
   return (
     <AnimatePresence mode='wait'>
       <Routes key={location.pathname} location={location}>
@@ -25,42 +27,19 @@ export function Router() {
           path='/app'
           element={<Layout isAuthenticated={isAuthenticated} />}
         >
+          <Route path='inicio' element={<Home />} />
+          <Route path='compras/*' element={<PurchasesRoutes />} />
+          <Route path='ventas/*' element={<SalesRoutes />} />
           <Route
-            path='inicio'
+            path='bitacora/*'
             element={
-              <ProtectedRoute
-                isAllow={
-                  permissions.includes('write') && roles.includes('admin')
-                }
-              >
-                <Home />
+              <ProtectedRoute allowedRoles={[ROLES.LOGBOOK]}>
+                <Logbook />
               </ProtectedRoute>
             }
           />
-          <Route
-            path='compras/*'
-            element={
-              <PurchasesRoutes permissions={permissions} roles={roles} />
-            }
-          />
-          <Route
-            path='ventas/*'
-            element={<SalesRoutes permissions={permissions} roles={roles} />}
-          />
-          <Route
-            path='bitacora/*'
-            element={<Logbook />}
-          />
-          <Route
-            path='produccion/*'
-            element={
-              <ProductionRoutes permissions={permissions} roles={roles} />
-            }
-          />
-          <Route
-            path='usuarios/*'
-            element={<UsersRoutes permissions={permissions} roles={roles} />}
-          />
+          <Route path='produccion/*' element={<ProductionRoutes />} />
+          <Route path='usuarios/*' element={<UsersRoutes />} />
         </Route>
         <Route
           path='*'

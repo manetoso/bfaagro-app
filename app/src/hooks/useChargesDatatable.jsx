@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
 
 import { DropdownMenu } from '@/components/datatable'
@@ -24,7 +24,7 @@ export const useChargesDatatable = ({ field }) => {
     toggleAlert,
     toggleEditModal,
     setDataFilds,
-    addOrEditElement,
+    addOrEditElement: addOrEditElementFromStore,
     removeElement,
     fetchExtraData
   } = useChargesStore()
@@ -80,8 +80,14 @@ export const useChargesDatatable = ({ field }) => {
     []
   )
 
+  const addOrEditElement = async (data, field) => {
+    await addOrEditElementFromStore(data, field)
+    setIsLoading(true)
+    getData()
+  }
+
   // FETCHING DATA FROM THE API
-  const getData = useMemo(async () => {
+  const getData = useCallback(async () => {
     await fetchExtraData()
     const apiData = await FETCH_DATA_BY_FIELD[localField]()
     setDataFilds(apiData, localField)
@@ -91,7 +97,7 @@ export const useChargesDatatable = ({ field }) => {
 
   // SETTING THE DATA TO THE STORE
   useEffect(() => {
-    getData
+    getData()
   }, [])
 
   return {

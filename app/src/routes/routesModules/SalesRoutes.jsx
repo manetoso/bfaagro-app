@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 
 import { Sales } from '@/pages'
+
 import { Clients } from '@/components/clients'
 import { SaleOrders } from '@/components/saleOrders'
 import { ProtectedRoute } from '@/components/layout'
@@ -8,15 +9,15 @@ import { AccountsReceivable } from '@/components/accountsReceivable'
 import { Charges } from '@/components/charges'
 import { PriceList } from '@/components/priceList'
 
-export function SalesRoutes({ permissions, roles }) {
+import { ROLES } from '@/utils/consts'
+
+export function SalesRoutes() {
   return (
     <Routes>
       <Route
         path='inicio'
         element={
-          <ProtectedRoute
-            isAllow={permissions.includes('write') && roles.includes('admin')}
-          >
+          <ProtectedRoute allowedRoles={[ROLES.SALES]}>
             <Sales />
           </ProtectedRoute>
         }
@@ -25,7 +26,7 @@ export function SalesRoutes({ permissions, roles }) {
         path='clientes'
         element={
           <ProtectedRoute
-            isAllow={permissions.includes('write') && roles.includes('admin')}
+            allowedRoles={[ROLES.SALES]}
             redirectPath='/app/ventas/inicio'
           >
             <Clients />
@@ -36,7 +37,7 @@ export function SalesRoutes({ permissions, roles }) {
         path='ordenes'
         element={
           <ProtectedRoute
-            isAllow={permissions.includes('write') && roles.includes('admin')}
+            allowedRoles={[ROLES.SALES]}
             redirectPath='/app/ventas/inicio'
           >
             <SaleOrders />
@@ -47,7 +48,7 @@ export function SalesRoutes({ permissions, roles }) {
           path='bfa'
           element={
             <ProtectedRoute
-              isAllow={permissions.includes('write') && roles.includes('admin')}
+              allowedRoles={[ROLES.SALES]}
               redirectPath='/app/ventas/inicio'
             >
               <SaleOrders />
@@ -58,7 +59,7 @@ export function SalesRoutes({ permissions, roles }) {
           path='comisionistas'
           element={
             <ProtectedRoute
-              isAllow={permissions.includes('write') && roles.includes('admin')}
+              allowedRoles={[ROLES.SALES]}
               redirectPath='/app/ventas/inicio'
             >
               <SaleOrders />
@@ -70,7 +71,7 @@ export function SalesRoutes({ permissions, roles }) {
         path='cuentas'
         element={
           <ProtectedRoute
-            isAllow={permissions.includes('write') && roles.includes('admin')}
+            allowedRoles={[ROLES.SALES]}
             redirectPath='/app/ventas/inicio'
           >
             <AccountsReceivable />
@@ -81,7 +82,7 @@ export function SalesRoutes({ permissions, roles }) {
         path='cobros'
         element={
           <ProtectedRoute
-            isAllow={permissions.includes('write') && roles.includes('admin')}
+            allowedRoles={[ROLES.SALES]}
             redirectPath='/app/ventas/inicio'
           >
             <Charges />
@@ -92,7 +93,7 @@ export function SalesRoutes({ permissions, roles }) {
         path='lista-precios'
         element={
           <ProtectedRoute
-            isAllow={permissions.includes('write') && roles.includes('admin')}
+            allowedRoles={[ROLES.SALES]}
             redirectPath='/app/ventas/inicio'
           >
             <PriceList />
