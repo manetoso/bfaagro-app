@@ -111,7 +111,8 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
           ? 'MXN'
           : 'USD',
       total: data.total,
-      period: data['period[value]'],
+      period: 2,
+      // period: data['period[value]'],
       observations: data.observations
     }
 

@@ -1,16 +1,15 @@
-import { useLocation } from 'react-router-dom'
-import { useAuthStore } from '@/stores'
 import { useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useAuthStore } from '@/stores'
 
 export const useRouterLists = () => {
   const location = useLocation()
-  const { isAuthenticated, roles, token, login } = useAuthStore()
+  const navigate = useNavigate()
+  const { isAuthenticated, roles, token } = useAuthStore()
 
   useEffect(() => {
     if (token !== '') {
-      const user = JSON.parse(window.localStorage.getItem('bfa-user'))
-      if (!user) return
-      login({ password: user.password, username: user.username })
+      navigate('/autenticacion')
     }
   }, [])
 

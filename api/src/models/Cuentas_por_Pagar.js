@@ -67,6 +67,10 @@ const CUENTASxPAGAR = new Schema(
       type: String,
       default: 'MXN'
     },
+    NOTIFICADA: {
+      type: Boolean,
+      default: false
+    }
   },
   { timestamps: true }
 )

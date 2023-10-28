@@ -1,6 +1,8 @@
 import { request, response } from 'express'
+
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
 import { NOTIFICACIONES } from '../models/Index.js'
+import { checkVencimientoCxC, checkVencimientoCxP } from '../helpers/Notificacion.js'
 
 const createNotificacion = async (notificacion = {}) => {
     try {
@@ -23,6 +25,8 @@ const createNotificacionBySystem = async (req = request, res = response) => {
 
 const findNotificaciones = async (req = request, res = response) => {
     try {
+        await checkVencimientoCxC()
+        await checkVencimientoCxP()
         const actionDB = await NOTIFICACIONES.find({ VISTA: false }).sort({ createdAt: -1 })
         return serverOkMessage(res, actionDB)
     } catch (error) {

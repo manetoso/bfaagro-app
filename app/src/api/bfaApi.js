@@ -18,3 +18,17 @@ bfaApi.interceptors.request.use(
     Promise.reject(error)
   }
 )
+
+bfaApi.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    console.log(error.response.data.msg)
+    if (
+      error.response.status === 401 ||
+      error.response.data.msg === 'Token no Valid'
+    ) {
+      window.localStorage.removeItem('bfa-auth-token')
+      window.location.href = '/autenticacion'
+    }
+  }
+)
