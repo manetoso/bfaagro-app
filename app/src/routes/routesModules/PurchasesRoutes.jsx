@@ -8,15 +8,15 @@ import { PurchaseOrders } from '@/components/purchaseOrders'
 import { AccountsPayable } from '@/components/accountsPayable'
 import { Payments } from '@/components/payments'
 
-export function PurchasesRoutes({ permissions, roles }) {
+import { ROLES } from '@/utils/consts'
+
+export function PurchasesRoutes() {
   return (
     <Routes>
       <Route
         path='inicio'
         element={
-          <ProtectedRoute
-            isAllow={permissions.includes('write') && roles.includes('admin')}
-          >
+          <ProtectedRoute allowedRoles={[ROLES.PURCHASES]}>
             <Purchases />
           </ProtectedRoute>
         }
@@ -25,7 +25,7 @@ export function PurchasesRoutes({ permissions, roles }) {
         path='proveedores'
         element={
           <ProtectedRoute
-            isAllow={permissions.includes('write') && roles.includes('admin')}
+            allowedRoles={[ROLES.PURCHASES]}
             redirectPath='/app/compras/inicio'
           >
             <Suppliers />
@@ -36,7 +36,7 @@ export function PurchasesRoutes({ permissions, roles }) {
           path='tabla'
           element={
             <ProtectedRoute
-              isAllow={permissions.includes('write') && roles.includes('admin')}
+              allowedRoles={[ROLES.PURCHASES]}
               redirectPath='/app/compras/inicio'
             >
               <Suppliers />
@@ -48,7 +48,7 @@ export function PurchasesRoutes({ permissions, roles }) {
         path='ordenes'
         element={
           <ProtectedRoute
-            isAllow={permissions.includes('write') && roles.includes('admin')}
+            allowedRoles={[ROLES.PURCHASES]}
             redirectPath='/app/compras/inicio'
           >
             <PurchaseOrders />
@@ -59,7 +59,7 @@ export function PurchasesRoutes({ permissions, roles }) {
           path='tabla'
           element={
             <ProtectedRoute
-              isAllow={permissions.includes('write') && roles.includes('admin')}
+              allowedRoles={[ROLES.PURCHASES]}
               redirectPath='/app/compras/inicio'
             >
               <PurchaseOrders />
@@ -71,7 +71,7 @@ export function PurchasesRoutes({ permissions, roles }) {
         path='cuentas'
         element={
           <ProtectedRoute
-            isAllow={permissions.includes('write') && roles.includes('admin')}
+            allowedRoles={[ROLES.PURCHASES]}
             redirectPath='/app/compras/inicio'
           >
             <AccountsPayable />
@@ -82,7 +82,7 @@ export function PurchasesRoutes({ permissions, roles }) {
           path='tabla'
           element={
             <ProtectedRoute
-              isAllow={permissions.includes('write') && roles.includes('admin')}
+              allowedRoles={[ROLES.PURCHASES]}
               redirectPath='/app/compras/inicio'
             >
               <AccountsPayable />
@@ -94,7 +94,7 @@ export function PurchasesRoutes({ permissions, roles }) {
         path='pagos'
         element={
           <ProtectedRoute
-            isAllow={permissions.includes('write') && roles.includes('admin')}
+            allowedRoles={[ROLES.PURCHASES]}
             redirectPath='/app/compras/inicio'
           >
             <Payments />
@@ -105,7 +105,7 @@ export function PurchasesRoutes({ permissions, roles }) {
           path='tabla'
           element={
             <ProtectedRoute
-              isAllow={permissions.includes('write') && roles.includes('admin')}
+              allowedRoles={[ROLES.PURCHASES]}
               redirectPath='/app/compras/inicio'
             >
               <Payments />

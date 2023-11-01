@@ -1,14 +1,22 @@
+import { useAuthStore } from '@/stores'
 import { Navigate } from 'react-router-dom'
+
+import { ROLES } from '@/utils/consts'
 
 /**
  *
- * @param {{isAllow: boolean, children: React.ReactNode, redirectPath?: string}} props
+ * @param {{allowedRoles: string[], children: React.ReactNode, redirectPath?: string}} props
  * @returns {JSX.Element}
  */
-export function ProtectedRoute({ isAllow, children, redirectPath = '/' }) {
-  if (!isAllow) {
-    return <Navigate to={redirectPath} replace />
-  } else {
-    return children
-  }
+export function ProtectedRoute({
+  allowedRoles = [],
+  children,
+  redirectPath = '/'
+}) {
+  const { roles } = useAuthStore()
+  if (roles.includes(ROLES.ADMIN)) return children
+
+  if (allowedRoles.some((allowedRole) => roles.includes(allowedRole))) return children
+
+  return <Navigate to={redirectPath} replace />
 }

@@ -1,6 +1,7 @@
 import toast from 'react-hot-toast'
 
 import { bfaApi } from '@/api/bfaApi'
+import { ROLES } from '@/utils/consts'
 
 /**
  *
@@ -8,7 +9,12 @@ import { bfaApi } from '@/api/bfaApi'
  */
 export async function fetchData() {
   try {
-    const { data: resp } = await bfaApi.get('/productos')
+    const { data: resp } = await bfaApi.get('/productos', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.WAREHOUSE
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef { { _id: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, CANTIDAD_MINIMA: number, UNIDAD_MEDIDA: string, ALMACEN: { ID_ALMACEN: string, NOMBRE_ALMACEN: string }, TIPO_PRODUCTO: { ID_TIPO_PRODUCTO: number, TIPO_PRODUCTO: string }[] } } ProductsBody
@@ -47,7 +53,12 @@ export async function createData(data) {
     const elementToDBSchema = convertToDBSchema(data)
     const { data: resp } = await bfaApi.post(
       '/productos',
-      JSON.stringify(elementToDBSchema)
+      JSON.stringify(elementToDBSchema), {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.WAREHOUSE
+        }
+      }
     )
     const json = resp
     const respFormated = convertToAppSchema(json.body)
@@ -69,7 +80,12 @@ export async function updateData(data) {
     const elementToDBSchema = convertToDBSchema(data)
     const { data: resp } = await bfaApi.put(
       `/productos/${data.id}`,
-      JSON.stringify(elementToDBSchema)
+      JSON.stringify(elementToDBSchema), {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.WAREHOUSE
+        }
+      }
     )
     const json = resp
     const respFormated = convertToAppSchema(json.body)
@@ -88,7 +104,12 @@ export async function updateData(data) {
  */
 export async function deleteData(id) {
   try {
-    const { data: resp } = await bfaApi.delete(`/productos/${id}`)
+    const { data: resp } = await bfaApi.delete(`/productos/${id}`, {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.WAREHOUSE
+      }
+    })
     const json = resp
     toast.success('Producto eliminado con éxito')
     return !json.error
@@ -118,7 +139,12 @@ export async function productReceipt(data) {
     }
     const { data: resp } = await bfaApi.post(
       '/movimientosAlmacen',
-      JSON.stringify(elementToDBSchema)
+      JSON.stringify(elementToDBSchema), {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.WAREHOUSE
+        }
+      }
     )
     console.log({ resp })
     toast.success('Registro de entrada de productos exitoso')

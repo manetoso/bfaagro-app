@@ -1,40 +1,24 @@
 import { Schema, model } from 'mongoose'
 
 const NOTIFICACIONES = new Schema({
-  ID_NOTIFICACION: {
-    type: String,
-    unique: true,
-    index: true,
-    required: true
-  },
-  NOTIFICAION: {
-    ID_TIPO_NOTIFICACION: {
-      type: String,
-      required: true
-    },
+  NOTIFICACION: {
     TIPO_NOTIFICACION: {
       type: String,
       required: true
-    }
-  },
-  CATALOGO: {
-    ID_CATALOGO: {
-      type: String,
-      required: true
     },
-    NOMBRE_CATALAGO: {
+    NOTIFICACION:{
       type: String,
       required: true
     }
   },
-  NOTIFICAR_RESTEN: {
-    type: Number,
-    required: true
+  VISTA: {
+    type: Boolean,
+    default: false
   }
 },{ timestamps: true })
 
 NOTIFICACIONES.methods.toJSON = function () {
-  const { __v, createdAt, updatedAt, ...notificaciones } = this.toObject()
+  const { __v, ...notificaciones } = this.toObject()
   return notificaciones
 }
 export default model('NOTIFICACIONES', NOTIFICACIONES)

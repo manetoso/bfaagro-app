@@ -1,7 +1,6 @@
 import cors from 'cors'
 import express from 'express'
 import { databaseConnect } from '../database/DatabaseConfig.js'
-import hola from '../routes/hola.routes.js'
 import {
   AlmacenesRouter,
   ProductosRouter,
@@ -23,7 +22,8 @@ import {
   Cuentas_por_Cobrar,
   Cobros,
   Listas_Precios,
-  BitacoraProductos
+  BitacoraProductos,
+  Notificaciones
 } from '../routes/index.routes.js'
 
 class Server {
@@ -32,7 +32,6 @@ class Server {
     this.app = express()
     this.port = process.env.PORT
     this.paths = {
-      hola: '/api',
       almacenes: '/api/almacenes',
       formulas: '/api/formulas',
       productos: '/api/productos',
@@ -54,6 +53,7 @@ class Server {
       cobros: '/api/cobros',
       listas_precio: '/api/listas_precio',
       bitacoraProductos: '/api/bitacoraproductos',
+      notificaciones: '/api/notificaciones',
     }
 
     // Func to Connect DB
@@ -76,7 +76,6 @@ class Server {
   }
 
   routes() {
-    this.app.use(this.paths.hola, hola)
     this.app.use(this.paths.almacenes, AlmacenesRouter)
     this.app.use(this.paths.formulas, FormulasRouter)
     this.app.use(this.paths.productos, ProductosRouter)
@@ -98,6 +97,7 @@ class Server {
     this.app.use(this.paths.cobros, Cobros)
     this.app.use(this.paths.listas_precio, Listas_Precios)
     this.app.use(this.paths.bitacoraProductos, BitacoraProductos)
+    this.app.use(this.paths.notificaciones, Notificaciones)
   }
 
   listen() {

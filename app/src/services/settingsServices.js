@@ -2,6 +2,7 @@ import toast from 'react-hot-toast'
 
 import { bfaApi } from '@/api/bfaApi'
 import { FIELDS_TYPES } from '@/stores/useSettingsStore'
+import { ROLES } from '@/utils/consts'
 
 /**
  *
@@ -9,7 +10,12 @@ import { FIELDS_TYPES } from '@/stores/useSettingsStore'
  */
 export async function fetchCompanyData() {
   try {
-    const { data: resp } = await bfaApi.get('/empresa')
+    const { data: resp } = await bfaApi.get('/empresa', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.ADMIN
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef { { _id: string, EMPRESA: string, DIRECCION: string } } CompanyData
@@ -48,7 +54,13 @@ export async function createUpdateCompanyData(companyData) {
     if (companyData.id !== '') {
       const { data } = await bfaApi.put(
         `/empresa/${companyData.id}`,
-        companyToDB
+        companyToDB,
+        {
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            section: ROLES.ADMIN
+          }
+        }
       )
       resp = data
       toast.success('Empresa actualizada')
@@ -78,7 +90,12 @@ export async function createUpdateCompanyData(companyData) {
  */
 export async function fetchUsersData() {
   try {
-    const { data: resp } = await bfaApi.get('/usuarios')
+    const { data: resp } = await bfaApi.get('/usuarios', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.ADMIN
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, USUARIO: string, ROLES: {ID_ROL: string, ROL: string}[] createdAt: string, createdAt: string updatedAt: string }} UserData
@@ -89,6 +106,7 @@ export async function fetchUsersData() {
     const data = json.body.map((user) => convertUserDataToAppShema(user))
     return data
   } catch (error) {
+    console.log(error)
     throw new Error('Error searching users data')
   }
 }
@@ -99,7 +117,12 @@ export async function fetchUsersData() {
  */
 export async function fetchRolesData() {
   try {
-    const { data: resp } = await bfaApi.get('/tiposdocumentos/rol')
+    const { data: resp } = await bfaApi.get('/tiposdocumentos/rol', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.ADMIN
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, VALOR: string, TIPO_DOCUMENTO: string }} RolData
@@ -127,7 +150,13 @@ export async function createData(data, field) {
         : convertRolDataToDBShema(data)
     const { data: resp } = await bfaApi.post(
       field === FIELDS_TYPES.USERS ? '/usuarios' : '/tiposdocumentos',
-      JSON.stringify(elementToDBSchema)
+      JSON.stringify(elementToDBSchema),
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.ADMIN
+        }
+      }
     )
     const json = resp
     const respFormated =
@@ -158,7 +187,13 @@ export async function updateData(data, field) {
       field === FIELDS_TYPES.USERS
         ? `/usuarios/${data.id}`
         : `/tiposdocumentos/${data.id}`,
-      JSON.stringify(elementToDBSchema)
+      JSON.stringify(elementToDBSchema),
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.ADMIN
+        }
+      }
     )
     const json = resp
     const respFormated =
@@ -183,11 +218,17 @@ export async function deleteData(id, field) {
     const { data: resp } = await bfaApi.delete(
       field === FIELDS_TYPES.USERS
         ? `/usuarios/${id}`
-        : `/tiposdocumentos/${id}`
+        : `/tiposdocumentos/${id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.ADMIN
+        }
+      }
     )
     const json = resp
     toast.success('Elemento eliminado con éxito')
-    return json.error ? false : true
+    return !json.error
   } catch (error) {
     toast.error('Error eliminando elemento')
     throw new Error('Error deleting user/rol')
@@ -212,7 +253,7 @@ export function convertCopmanyDataToDBSchema(companyData) {
  */
 export function convertUserDataToDBShema(userData) {
   const data = {
-    USUARIO: userData.user,
+    USUARIO: userData.user
   }
   if (userData.roles) {
     data.ROLES = userData.roles.map((role) => ({

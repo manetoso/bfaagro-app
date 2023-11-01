@@ -2,6 +2,7 @@ import { USUARIOS } from '../models/Index.js'
 import { request, response } from 'express'
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
 import { generateJWT } from '../helpers/Index.js'
+import jwt from 'jsonwebtoken'
 import bcryptjs from 'bcryptjs'
 
 const createUsuario = async (req = request, res = response) => {
@@ -48,6 +49,7 @@ const login = async (req = request, res = response) => {
             return serverErrorMessage(res, '¡ERROR!. Revisa tus Credenciales!', 404)
         }
     } catch (error) {
+        console.log(error);
         return serverErrorMessage(res)
     }
 }

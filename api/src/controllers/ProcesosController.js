@@ -7,7 +7,8 @@ import {
 } from '../models/Index.js'
 import { request, response } from 'express'
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
-import { checkMinAmountProduct } from '../helpers/Index.js'
+import { createNotificacion } from './NotificacionesController.js'
+import { checkMinAmountProduct, makeObjectNotification } from '../helpers/Index.js'
 
 const createProceso = async (req = request, res = response) => {
   try {
@@ -117,6 +118,7 @@ const updateStatusProceso = async (req = request, res = response) => {
         })
         // Checamos que los productos restados no hallan llegado a su nivel minimo de inventario    
         if(checkMinAmountProduct(dbProduct)) {
+          // Si entramos aqui quiere decir que se ha llegado a la cantidad minima o bajado aun más
           amountsProducts = {
             'PRODUCTO': dbProduct.NOMBRE_PRODUCTO,
             'CANTIDAD': dbProduct.CANTIDAD,
@@ -124,6 +126,11 @@ const updateStatusProceso = async (req = request, res = response) => {
             'DIFERENCIA': dbProduct.CANTIDAD_MINIMA - dbProduct.CANTIDAD
           }
           checksMinAmountProducts.push(amountsProducts)
+          let NOTIFICACION = makeObjectNotification("ARTICULOS")
+          if(NOTIFICACION != false){
+            NOTIFICACION.NOTIFICACION += amountsProducts.PRODUCTO + `\n CATIDAD EXISTENTE = ${amountsProducts.CANTIDAD}\n CANTIDAD MINIMA = ${amountsProducts.CANTIDAD_MINIMA}` 
+            await createNotificacion(NOTIFICACION)
+          }
         }
       })      
       // Consultamos la Formula Usada para sumar la cantidad de Producto que esta produce

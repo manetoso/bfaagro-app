@@ -1,6 +1,6 @@
 import { AccountsReceivableDatatable } from './datatable'
 import { CustomToast } from '@/components/toast'
-import { Loader } from '@/components/layout'
+import { Loader, PageTransition } from '@/components/layout'
 
 import { useAccountsReceivableDatatable } from '@/hooks/useAccountsReceivableDatatable'
 import { FIELDS_TYPES } from '@/stores/useAccountsReceivableStore'
@@ -22,7 +22,7 @@ export function AccountsReceivable() {
   })
   if (isLoading) return <Loader />
   return (
-    <>
+    <PageTransition>
       <CustomToast />
       <AccountsReceivableDatatable
         columns={columns}
@@ -37,6 +37,6 @@ export function AccountsReceivable() {
         editModal={editModal}
         field={FIELDS_TYPES.ACCOUNTS_RECEIVABLES}
       />
-    </>
+    </PageTransition>
   )
 }

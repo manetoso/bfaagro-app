@@ -1,6 +1,7 @@
 import toast from 'react-hot-toast'
 
 import { bfaApi } from '@/api/bfaApi'
+import { ROLES } from '@/utils/consts'
 
 /**
  *
@@ -8,7 +9,12 @@ import { bfaApi } from '@/api/bfaApi'
  */
 export async function fetchData() {
   try {
-    const { data: resp } = await bfaApi.get('/proveedores')
+    const { data: resp } = await bfaApi.get('/proveedores', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.PURCHASES
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, NOMBRE_EMPRESA: string, AGENTE: string, NUMERO_TELEFONO: string, TIPO_PROVEEDOR: { ID_TIPO_PROVEEDOR: string, TIPO_PROVEEDOR: string } }} SuppliersBody
@@ -34,7 +40,13 @@ export async function createData(data) {
     const elementToDBSchema = convertSupplierToDBSchema(data)
     const { data: resp } = await bfaApi.post(
       '/proveedores',
-      JSON.stringify(elementToDBSchema)
+      JSON.stringify(elementToDBSchema),
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.PURCHASES
+        }
+      }
     )
     /**
      * The respponse body from the request.
@@ -60,7 +72,13 @@ export async function updateData(data) {
   try {
     const { data: resp } = await bfaApi.put(
       `/proveedores/${data.id}`,
-      convertSupplierToDBSchema(data)
+      convertSupplierToDBSchema(data),
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.PURCHASES
+        }
+      }
     )
     const json = resp
     const respFormated = convertSupplierToAppSchema(json.body)
@@ -79,10 +97,15 @@ export async function updateData(data) {
  */
 export async function deleteData(id) {
   try {
-    const { data: resp } = await bfaApi.delete(`/proveedores/${id}`)
+    const { data: resp } = await bfaApi.delete(`/proveedores/${id}`, {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.PURCHASES
+      }
+    })
     const json = resp
     toast.success('Proveedor eliminado con éxito')
-    return json.error ? false : true
+    return !json.error
   } catch (error) {
     toast.error('Error eliminando proveedor')
     throw new Error('Error deleting supplier')
@@ -95,7 +118,12 @@ export async function deleteData(id) {
  */
 export async function fetchSupplierTypes() {
   try {
-    const { data: resp } = await bfaApi.get('/tiposdocumentos/proveedor')
+    const { data: resp } = await bfaApi.get('/tiposdocumentos/proveedor', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.PURCHASES
+      }
+    })
     /**
      * The respponse body from the request.
      * @typedef {{ _id: string, TIPO_DOCUMENTO: string, VALOR: string }} SupplierTypesBody

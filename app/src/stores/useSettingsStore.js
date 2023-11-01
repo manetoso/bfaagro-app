@@ -85,13 +85,4 @@ export const useSettingsStore = create((set, get) => ({
       }))
     }
   }
-  // fetchProductsForDetailsFromApi: async ({ field }) => {
-  //   const { material, products } = await fetchProductsForDetails({ field })
-  //   set((state) => ({
-  //     ...state,
-  //     detailProductsData: material,
-  //     productsData: products,
-  //     unityTypes: newUnityTypes
-  //   }))
-  // }
 }))

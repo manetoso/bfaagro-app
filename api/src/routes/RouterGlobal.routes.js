@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { validateFields, validateJWT, validateRol } from '../middlewares/Index.js'
 
 class RouterGlobal extends Router {
   #router
@@ -8,7 +9,7 @@ class RouterGlobal extends Router {
     this.#router = Router()
     this.parameters = {
       uri: '',
-      arrayChecks: [],
+      arrayChecks: [validateJWT, validateRol, validateFields],
       method: async () => {}
     }
   }

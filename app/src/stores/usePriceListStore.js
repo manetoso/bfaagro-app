@@ -68,7 +68,6 @@ export const usePriceListStore = create((set, get) => ({
         editModal: false
       }))
     }
-    window.location.reload()
   },
   removeElement: async (field) => {
     const { [field]: data, selected } = get()

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
 
 import { DropdownMenu } from '@/components/saleOrders/datatable/DropdownMenu'
@@ -27,7 +27,7 @@ export const useSaleOrdersDatatable = ({ field }) => {
     toggleEditModal,
     printPurchaseOrder,
     setDataFilds,
-    addOrEditElement,
+    addOrEditElement: addOrEditElementFromStore,
     removeElement,
     fetchExtraData
   } = useSaleOrdersStore()
@@ -81,8 +81,16 @@ export const useSaleOrdersDatatable = ({ field }) => {
     []
   )
 
+  const addOrEditElement = async (data, field) => {
+    await addOrEditElementFromStore(data, field)
+    setIsLoading(true)
+    const apiData = await FETCH_DATA_BY_FIELD[localField]()
+    setDataFilds(apiData, localField)
+    setIsLoading(false)
+  }
+
   // FETCHING DATA FROM THE API
-  const getData = useMemo(async () => {
+  const getData = useCallback(async () => {
     await fetchExtraData()
     const apiData = await FETCH_DATA_BY_FIELD[localField]()
     setDataFilds(apiData, localField)
@@ -92,7 +100,7 @@ export const useSaleOrdersDatatable = ({ field }) => {
 
   // SETTING THE DATA TO THE STORE
   useEffect(() => {
-    getData
+    getData()
   }, [])
 
   return {
