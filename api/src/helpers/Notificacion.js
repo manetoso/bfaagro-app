@@ -1,10 +1,6 @@
 import { request, response } from 'express'
 
-import {
-  CUENTASxCOBRAR,
-  CUENTASxPAGAR,
-  NOTIFICACIONES
-} from '../models/Index.js'
+import { CUENTASxCOBRAR, CUENTASxPAGAR } from '../models/Index.js'
 import { createNotificacion } from '../controllers/NotificacionesController.js'
 
 import { makeObjectNotification } from '../helpers/Index.js'
@@ -14,11 +10,10 @@ const checkVencimientoCxC = async (req = request, res = response) => {
     const fechaActual = new Date()
     const fechaLimite = new Date(fechaActual)
     fechaLimite.setDate(fechaActual.getDate() + 5)
+
     const CxCPorVencer = await CUENTASxCOBRAR.find({
-      FECHA_VENCIMIENTO: {
-        $gte: fechaActual,
-        $lte: fechaLimite
-      }
+      FECHA_VENCIMIENTO: { $lte: fechaLimite, $gte: fechaActual },
+      NOTIFICADA: false
     })
     for (const cxc of CxCPorVencer) {
       const fechaVencimiento = new Date(
@@ -28,15 +23,10 @@ const checkVencimientoCxC = async (req = request, res = response) => {
         month: 'long',
         year: 'numeric'
       })
-
-      const existingNotification = await NOTIFICACIONES.findOne({
-        'NOTIFICACION.NOTIFICACION': `LA SIGUIENTE CUENTA POR COBRAR ESTA A PUNTO DE VENCER. Folio CxC = ${cxc.FOLIO_CXC} FECHA VENCIMIENTO = ${fechaVencimiento}`
-      })
-      if (!existingNotification) {
-        const NOTIFICACION = makeObjectNotification('CUENTAS_COBRAR')
-        NOTIFICACION.NOTIFICACION += `Folio CxC = ${cxc.FOLIO_CXC} FECHA VENCIMIENTO = ${fechaVencimiento}`
-        await createNotificacion({ NOTIFICACION })
-      }
+      const NOTIFICACION = makeObjectNotification('CUENTAS_COBRAR')
+      NOTIFICACION.NOTIFICACION += `Folio CxC = ${cxc.FOLIO_CXC} FECHA VENCIMIENTO = ${fechaVencimiento}`
+      await createNotificacion({ NOTIFICACION })
+      await CUENTASxCOBRAR.findByIdAndUpdate(cxc._id, { NOTIFICADA: true })
     }
     return true
   } catch (error) {
@@ -53,23 +43,19 @@ const checkVencimientoCxP = async (req = request, res = response) => {
       FECHA_PAGO: {
         $gte: fechaActual,
         $lte: fechaLimite
-      }
+      },
+      NOTIFICADA: false
     })
-    for (const cxc of CxCPorVencer) {
-      const fechaPago = new Date(cxc.FECHA_PAGO).toLocaleDateString('es-MX', {
+    for (const cxp of CxCPorVencer) {
+      const fechaPago = new Date(cxp.FECHA_PAGO).toLocaleDateString('es-MX', {
         day: '2-digit',
         month: 'long',
         year: 'numeric'
       })
-
-      const existingNotification = await NOTIFICACIONES.findOne({
-        'NOTIFICACION.NOTIFICACION': `LA SIGUIENTE CUENTA POR PAGAR ESTA A PUNTO DE VENCER. Folio CxP = ${cxc.FOLIO_CXP} FECHA PAGO = ${fechaPago}`
-      })
-      if (!existingNotification) {
-        const NOTIFICACION = makeObjectNotification('CUENTAS_PAGAR')
-        NOTIFICACION.NOTIFICACION += `Folio CxP = ${cxc.FOLIO_CXP} FECHA PAGO = ${fechaPago}`
-        await createNotificacion({ NOTIFICACION })
-      }
+      const NOTIFICACION = makeObjectNotification('CUENTAS_PAGAR')
+      NOTIFICACION.NOTIFICACION += `Folio CxP = ${cxp.FOLIO_CXP} FECHA PAGO = ${fechaPago}`
+      await createNotificacion({ NOTIFICACION })
+      await CUENTASxPAGAR.findByIdAndUpdate(cxp._id, { NOTIFICADA: true })
     }
     return true
   } catch (error) {

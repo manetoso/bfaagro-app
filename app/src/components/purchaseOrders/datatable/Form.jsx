@@ -105,14 +105,13 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
       },
       products: formatedProducts,
       totalIva: data.totalIva,
-      // BUG: THE CURRENCY WAS NOT BEING SAVED
       currency:
         data.currency === undefined
           ? 'MXN'
           : 'USD',
       total: data.total,
-      period: 2,
-      // period: data['period[value]'],
+      // period: 3,
+      period: data['period[value]'],
       observations: data.observations
     }
 
