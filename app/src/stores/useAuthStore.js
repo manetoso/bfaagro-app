@@ -10,18 +10,25 @@ export const useAuthStore = create((set) => ({
   isLoading: false,
   login: async ({ username, password }) => {
     set({ isLoading: true })
-    const user = await login({ username, password })
-    if (!user) {
-      set({ isLoading: false })
-      return
+    try {
+      const user = await login({ username, password })
+      if (!user) {
+        set({ isLoading: false })
+        return
+      }
+      set({
+        isAuthenticated: true,
+        isLoading: false,
+        roles: user.roles,
+        token: user.token,
+        username: user.username
+      })
+    } catch (error) {
+    } finally {
+      set({
+        isLoading: false
+      })
     }
-    set({
-      isAuthenticated: true,
-      isLoading: false,
-      roles: user.roles,
-      token: user.token,
-      username: user.username
-    })
   },
   logout: () => {
     window.localStorage.removeItem('bfa-auth-token')
