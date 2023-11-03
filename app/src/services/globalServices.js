@@ -4,10 +4,16 @@ import { ROLES } from '@/utils/consts'
 
 export async function login({ username, password }) {
   try {
-    const { data: resp } = await bfaApi.post('/usuarios/login', {
-      USUARIO: username,
-      CONTRASENA: password
-    })
+    const { data: resp } = await bfaApi.post(
+      '/usuarios/login',
+      {
+        USUARIO: username,
+        CONTRASENA: password
+      },
+      {
+        timeout: 5000
+      }
+    )
     /**
      * The respponse body from the request.
      * @typedef {{ USUARIO: string, ROLES: { ID_ROL: string, ROL: string  }[], JWT: string }} LoginBody
