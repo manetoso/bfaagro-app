@@ -94,7 +94,12 @@ export async function createData(data) {
       return { data: {}, error: { errors, msg } }
     }
   } catch (error) {
-    toast.error('Error eliminando proceso')
+    if (error.response.status === 409) {
+      toast.error('Materiales insuficientes para crear proceso')
+      const { errors, msg } = convertCreateErrorToAppSchema(error.response.data)
+      return { data: {}, error: { errors, msg } }
+    }
+    toast.error('Error creando proceso')
     throw new Error('Error creating new recipe')
   }
 }
