@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { createColumnHelper } from '@tanstack/react-table'
 
-import { DropdownMenu } from '@/components/datatable'
+import { DropdownMenu } from '@/components/processes/datatable/DropdownMenu'
 import { useProcessesStore, FIELDS_TYPES } from '@/stores/useProcessesStore'
 import { fetchData } from '@/services/processesServices'
 
@@ -22,14 +22,17 @@ export const useProcessesDatatable = ({ field }) => {
   const {
     processesData,
     editModal,
+    incompleteModal,
     alert,
     selected,
     toggleAddModal,
     toggleAlert,
     toggleEditModal,
+    toggleIncompleteModal,
     setDataFilds,
     addOrEditElement,
     removeElement,
+    markAsIncompleteStatus,
     fetchExtraData
   } = useProcessesStore()
   const [isLoading, setIsLoading] = useState(true)
@@ -51,6 +54,7 @@ export const useProcessesDatatable = ({ field }) => {
           <span className='flex items-center justify-between gap-2 font-bold'>
             {info.getValue()}{' '}
             <DropdownMenu
+              onIncomplete={() => toggleIncompleteModal(info.cell.row.original)}
               openAlert={() => toggleAlert(info.cell.row.original)}
               openModal={() => {
                 toggleEditModal(info.cell.row.original)
@@ -107,13 +111,16 @@ export const useProcessesDatatable = ({ field }) => {
   return {
     processesData,
     editModal,
+    incompleteModal,
     alert,
     selected,
     toggleAddModal,
     toggleEditModal,
+    toggleIncompleteModal,
     toggleAlert,
     addOrEditElement,
     removeElement,
+    markAsIncompleteStatus,
     columns,
     isLoading
   }

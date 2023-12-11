@@ -94,7 +94,12 @@ export async function createData(data) {
       return { data: {}, error: { errors, msg } }
     }
   } catch (error) {
-    toast.error('Error eliminando proceso')
+    if (error.response.status === 409) {
+      toast.error('Materiales insuficientes para crear proceso')
+      const { errors, msg } = convertCreateErrorToAppSchema(error.response.data)
+      return { data: {}, error: { errors, msg } }
+    }
+    toast.error('Error creando proceso')
     throw new Error('Error creating new recipe')
   }
 }
@@ -145,6 +150,41 @@ export async function deleteData(id) {
   } catch (error) {
     toast.error('Error eliminando proceso')
     throw new Error('Error deleting recipe')
+  }
+}
+
+/**
+ *
+ * @param {{ movementType: { movementTypeId: string, value: string }, products: { productId: string, productName: string, productQuantity: number }[] }} data
+ */
+export async function setIncompleteProcess(data) {
+  try {
+    const elementToDBSchema = {
+      MOVIMIENTO: {
+        ID_MOVIMIENTO: data.movementType.movementTypeId,
+        MOVIMIENTO: data.movementType.value
+      },
+      FECHA: new Date().toISOString().split('T')[0],
+      PRODUCTOS: data.products.map((product) => ({
+        ID_PRODUCTO: product.productId,
+        NOMBRE_PRODUCTO: product.productName,
+        CANTIDAD: product.productQuantity
+      }))
+    }
+    await bfaApi.post(
+      '/movimientosAlmacen',
+      JSON.stringify(elementToDBSchema),
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.PROCESSES
+        }
+      }
+    )
+    toast.success('Se agregó la cantidad faltante de productos')
+  } catch (error) {
+    toast.error('Error agregando cantidad faltante de productos')
+    throw new Error('Error adding missing products')
   }
 }
 

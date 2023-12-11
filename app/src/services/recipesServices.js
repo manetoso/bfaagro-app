@@ -24,25 +24,46 @@ export async function fetchData({ field }) {
      * @type {{body: RecipesBody[]}} - The Recipes response body.
      */
     const json = resp
-    const data = json.body.map((recipe) => ({
-      id: recipe._id,
-      recipeName: recipe.NOMBRE_FORMULA,
-      quantity: recipe.CANTIDAD,
-      unity: recipe.UNIDAD_MEDIDA,
-      product: {
-        id: recipe.PRODUCTO.ID_PRODUCTO,
-        name: recipe.PRODUCTO.NOMBRE_PRODUCTO,
-        type: recipe.PRODUCTO.TIPO_PRODUCTO.map((type) => ({
-          id: type.ID_TIPO_PRODUCTO,
-          name: type.TIPO_PRODUCTO
+    // NOTES: APP CAN CRASH IF THE PRODUCT TYPE IS NOT DEFINED
+    // console.log({ json })
+    const data = []
+    json.body.forEach((recipe, index) => {
+      const newRecipe = {
+        id: recipe._id,
+        recipeName: recipe.NOMBRE_FORMULA,
+        quantity: recipe.CANTIDAD,
+        unity: recipe.UNIDAD_MEDIDA,
+        product: {
+          id: recipe.PRODUCTO.ID_PRODUCTO,
+          name: recipe.PRODUCTO.NOMBRE_PRODUCTO,
+          type: recipe.PRODUCTO.TIPO_PRODUCTO.map((type) => ({
+            id: type.ID_TIPO_PRODUCTO,
+            name: type.TIPO_PRODUCTO
+          }))
+          // type: recipe.PRODUCTO.TIPO_PRODUCTO
+          //   ? recipe.PRODUCTO.TIPO_PRODUCTO.map((type) => ({
+          //       id: type.ID_TIPO_PRODUCTO,
+          //       name: type.TIPO_PRODUCTO
+          //     }))
+          //   : []
+        },
+        details: recipe.FORMULACION_DETALLE.map((material) => ({
+          id: material.ID_PRODUCTO,
+          name: material.NOMBRE_PRODUCTO,
+          quantity: material.CANTIDAD
         }))
-      },
-      details: recipe.FORMULACION_DETALLE.map((material) => ({
-        id: material.ID_PRODUCTO,
-        name: material.NOMBRE_PRODUCTO,
-        quantity: material.CANTIDAD
-      }))
-    }))
+      }
+      // console.log(`>>> recipe no: ${index} with id: ${newRecipe.id}`)
+      // console.log({ newRecipe })
+      data.push(newRecipe)
+    })
+    // const test = []
+    // data.forEach((recipe) => {
+    //   if (recipe.product.type.length === 0) {
+    //     test.push(recipe)
+    //   }
+    // })
+    // console.log({ length: test.length, test })
     if (field === FIELDS_TYPES.RECIPES_PACKAGING) {
       return data
     } else {
@@ -57,6 +78,7 @@ export async function fetchData({ field }) {
             (type) => type.name === PRODUCT_TYPES.FINISHED_PRODUCT
           )
         }
+        return false
       })
     }
   } catch (error) {
@@ -169,6 +191,7 @@ export async function fetchProductsForDetails({ field }) {
         if (field === FIELDS_TYPES.PACKAGING) {
           return y.TIPO_PRODUCTO !== PRODUCT_TYPES.RAW_MATERIAL_PRODUCT
         }
+        return false
       })
     )
     const filtered2 = json.body.filter((x) =>
@@ -179,6 +202,7 @@ export async function fetchProductsForDetails({ field }) {
         if (field === FIELDS_TYPES.PACKAGING) {
           return y.TIPO_PRODUCTO === PRODUCT_TYPES.FINISHED_PRODUCT
         }
+        return false
       })
     )
     const material = filtered1.map((product) => ({
