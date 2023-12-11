@@ -4,13 +4,15 @@ import {
   fetchRawMaterial,
   createData,
   updateData,
-  deleteData
+  deleteData,
+  setIncompleteProcess
 } from '@/services/processesServices'
 import { FIELDS_TYPES as RECIPES_FIELDS_TYPES } from '@/stores/useRecipesStore'
 import { fetchData as fetchRecipes } from '@/services/recipesServices'
 import {
   fetchWarehouses,
-  fetchProcessStatusTypes
+  fetchProcessStatusTypes,
+  fetchMovementTypes
 } from '@/services/globalServices'
 
 export const FIELDS_TYPES = {
@@ -22,6 +24,7 @@ export const useProcessesStore = create((set, get) => ({
   materials: [],
   recipes: [],
   warehouses: [],
+  movementTypes: [],
   processesStatus: [],
   error: {
     message: '',
@@ -30,6 +33,7 @@ export const useProcessesStore = create((set, get) => ({
   },
   detailModal: false,
   editModal: false,
+  incompleteModal: false,
   alert: false,
   selected: {},
 
@@ -56,6 +60,19 @@ export const useProcessesStore = create((set, get) => ({
         message: '',
         status: false
       }
+    }))
+  },
+  toggleIncompleteModal: async (newSelected) => {
+    const movementTypes = await fetchMovementTypes()
+    set((state) => ({
+      ...state,
+      selected: newSelected,
+      incompleteModal: !state.incompleteModal,
+      error: {
+        message: '',
+        status: false
+      },
+      movementTypes
     }))
   },
   toggleDetailModal: (newSelected) => {
@@ -124,6 +141,23 @@ export const useProcessesStore = create((set, get) => ({
         ...state,
         [field]: [...data],
         editModal: false
+      }))
+    }
+  },
+  markAsIncompleteStatus: async (element, field) => {
+    const { [field]: data, selected } = get()
+    await setIncompleteProcess(element)
+    const deletedFlag = await deleteData(selected.id)
+    if (!deletedFlag) {
+      return
+    }
+    const index = data.findIndex((e) => e.id === selected.id)
+    if (index !== -1) {
+      data.splice(index, 1)
+      set((state) => ({
+        ...state,
+        [field]: [...data],
+        incompleteModal: false
       }))
     }
   },
