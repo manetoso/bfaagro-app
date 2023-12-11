@@ -109,7 +109,8 @@ export const useSaleOrdersStore = create((set, get) => ({
     await clients.forEach((client) => {
       client.name = `${client.name} ${client.lastName}`
     })
-    if (priceList.length !== filteredProducts.length) {
+    // NOTES: CONDITION WHERE CHANGE BECAUSE THERE IS A DATA INCONSISTENCY
+    if (priceList.length < filteredProducts.length) {
       return set((state) => ({
         ...state,
         clientsData: clients,
