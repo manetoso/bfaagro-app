@@ -187,6 +187,7 @@ export function converCreateSaleOrderToDBSchema(data) {
       TOTAL_VENTA: data.total,
       TOTAL_PAGADO: data.totalPaid,
       SALDO: data.balance,
+      PERIODO: data.period,
       VENTA_DETALLE: {
         PRODUCTOS: data.products.map((product) => ({
           ID_PRODUCTO: product.productId,

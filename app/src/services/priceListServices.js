@@ -17,9 +17,15 @@ export async function fetchData() {
      * @type {{body: PriceListBody[]}} - The price list response body.
      */
     const json = resp
-    const data = json.body.map((priceList) =>
-      convertPriceListToAppSchema(priceList)
-    )
+    // NOTES: APP CAN CRASH
+    const data = []
+    json.body.forEach((priceList, index) => {
+      // console.log(`>>> priceList no: ${index}`)
+      // console.log({ priceList })
+      const newPriceList = convertPriceListToAppSchema(priceList)
+      // console.log({ newPriceList })
+      data.push(newPriceList)
+    })
     return data
   } catch (error) {
     throw new Error('Error searching price list')

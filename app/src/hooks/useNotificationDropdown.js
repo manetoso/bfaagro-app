@@ -1,34 +1,43 @@
-import { sleep } from '@/utils/sleep'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import {
+  fetchData,
+  deleteData
+} from '@/services/notificationsServices'
 
-export const useNotificationDropdown = () => {
+export const useNotificationDropdown = (isOpen) => {
   const [isLoading, setIsLoading] = useState(true)
-  const [hasFetch, setHasFetch] = useState(false)
   const [notifications, setNotifications] = useState([])
 
   const fetchNotifications = async () => {
-    if (hasFetch) return
     try {
-      await sleep(2)
-      setNotifications([
-        {
-          id: 1,
-          title: 'La factura 1234 tiene como fecha de vencimiento el 12/12/2020',
-          type: 'Cuenta por cobrar'
-        }
-      ])
+      const notifications = await fetchData()
+      setNotifications(notifications)
       setIsLoading(false)
     } catch (error) {
       console.log(error)
+      throw new Error('Error fetching notifications')
     } finally {
       setIsLoading(false)
-      setHasFetch(true)
     }
   }
 
+  const removeNotification = async (id) => {
+    try {
+      await deleteData(id)
+      setNotifications((prev) => prev.filter((not) => not.id !== id))
+    } catch (error) {
+      console.log(error)
+      throw new Error('Error deleting notification')
+    }
+  }
+
+  useEffect(() => {
+    fetchNotifications()
+  }, [])
+
   return {
-    fetchNotifications,
     isLoading,
-    notifications
+    notifications,
+    removeNotification
   }
 }

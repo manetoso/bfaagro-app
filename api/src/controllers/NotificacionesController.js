@@ -1,7 +1,8 @@
 import { request, response } from 'express'
+
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
 import { NOTIFICACIONES } from '../models/Index.js'
-import { checkVencimientoCxC, checkVencimientoCxP } from '../helpers/Index.js'
+import { checkVencimientoCxC, checkVencimientoCxP } from '../helpers/Notificacion.js'
 
 const createNotificacion = async (notificacion = {}) => {
     try {

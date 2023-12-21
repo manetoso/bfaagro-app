@@ -1,40 +1,67 @@
-import { CUENTASxCOBRAR, CUENTASxPAGAR, NOTIFICACIONES } from '../models/Index.js'
-import { makeObjectNotification } from './Index.js'
+import { request, response } from 'express'
+
+import { CUENTASxCOBRAR, CUENTASxPAGAR } from '../models/Index.js'
 import { createNotificacion } from '../controllers/NotificacionesController.js'
 
-const checkVencimientoCxC = async () => {
-    try {
-        const fechaActual = new Date();
-        const fechaLimite = new Date(fechaActual);
-        let NOTIFICACION;
-        fechaLimite.setDate(fechaActual.getDate() + 5);
-        let CxCPorVencer = await CUENTASxCOBRAR.find({ "FECHA_VENCIMIENTO": { $lte: fechaLimite, $gte: fechaActual }, "NOTIFICADA": false })
-        for (const cxc of CxCPorVencer) {
-            NOTIFICACION = makeObjectNotification("CUENTAS_COBRAR")
-            NOTIFICACION.NOTIFICACION.NOTIFICACION += `\n VENTA = ${cxc.ID_VENTA}/n FECHA VENCIMIENTO = ${cxc.FECHA_VENCIMIENTO}`
-            await createNotificacion(NOTIFICACION)
-            await CUENTASxCOBRAR.findByIdAndUpdate(cxc._id, { NOTIFICADA: true })
-        }
-    } catch (error) {
-        console.log(error);
+import { makeObjectNotification } from '../helpers/Index.js'
+
+const checkVencimientoCxC = async (req = request, res = response) => {
+  try {
+    const fechaActual = new Date()
+    const fechaLimite = new Date(fechaActual)
+    fechaLimite.setDate(fechaActual.getDate() + 5)
+
+    const CxCPorVencer = await CUENTASxCOBRAR.find({
+      FECHA_VENCIMIENTO: { $lte: fechaLimite, $gte: fechaActual },
+      NOTIFICADA: false
+    })
+    for (const cxc of CxCPorVencer) {
+      const fechaVencimiento = new Date(
+        cxc.FECHA_VENCIMIENTO
+      ).toLocaleDateString('es-MX', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      })
+      const NOTIFICACION = makeObjectNotification('CUENTAS_COBRAR')
+      NOTIFICACION.NOTIFICACION += `Folio CxC = ${cxc.FOLIO_CXC} FECHA VENCIMIENTO = ${fechaVencimiento}`
+      await createNotificacion({ NOTIFICACION })
+      await CUENTASxCOBRAR.findByIdAndUpdate(cxc._id, { NOTIFICADA: true })
     }
-};
-const checkVencimientoCxP = async () => {
-    try {
-        const fechaActual = new Date();
-        const fechaLimite = new Date(fechaActual);
-        let NOTIFICACION = {}
-        fechaLimite.setDate(fechaActual.getDate() + 5);
-        let CxPPorVencer = await CUENTASxPAGAR.find({ "FECHA_PAGO": { $lte: fechaLimite, $gte: fechaActual } })
-        for (const cxp of CxPPorVencer) {
-            NOTIFICACION = makeObjectNotification("CUENTAS_PAGAR")
-            NOTIFICACION.NOTIFICACION.NOTIFICACION += `\n ORDEN DE COMPRA = ${cxp.ID_ORDEN_COMPRA}/n FECHA PAGO = ${cxp.FECHA_PAGO}`
-            await createNotificacion(NOTIFICACION)
-            await CUENTASxCOBRAR.findByIdAndUpdate(cxp._id, { NOTIFICADA: true })
-        }
-    } catch (error) {
-        console.log(error);
+    return true
+  } catch (error) {
+    console.log(error)
+    return false
+  }
+}
+const checkVencimientoCxP = async (req = request, res = response) => {
+  try {
+    const fechaActual = new Date()
+    const fechaLimite = new Date(fechaActual)
+    fechaLimite.setDate(fechaActual.getDate() + 5)
+    const CxCPorVencer = await CUENTASxPAGAR.find({
+      FECHA_PAGO: {
+        $gte: fechaActual,
+        $lte: fechaLimite
+      },
+      NOTIFICADA: false
+    })
+    for (const cxp of CxCPorVencer) {
+      const fechaPago = new Date(cxp.FECHA_PAGO).toLocaleDateString('es-MX', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      })
+      const NOTIFICACION = makeObjectNotification('CUENTAS_PAGAR')
+      NOTIFICACION.NOTIFICACION += `Folio CxP = ${cxp.FOLIO_CXP} FECHA PAGO = ${fechaPago}`
+      await createNotificacion({ NOTIFICACION })
+      await CUENTASxPAGAR.findByIdAndUpdate(cxp._id, { NOTIFICADA: true })
     }
-};
+    return true
+  } catch (error) {
+    console.log(error)
+    return false
+  }
+}
 
 export { checkVencimientoCxC, checkVencimientoCxP }

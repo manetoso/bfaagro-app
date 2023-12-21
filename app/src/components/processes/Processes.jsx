@@ -10,6 +10,7 @@ export function Processes() {
     addOrEditElement,
     alert,
     editModal,
+    incompleteModal,
     removeElement,
     selected,
     columns,
@@ -17,6 +18,8 @@ export function Processes() {
     toggleAddModal,
     toggleAlert,
     toggleEditModal,
+    toggleIncompleteModal,
+    markAsIncompleteStatus,
     isLoading
   } = useProcessesDatatable({ field: FIELDS_TYPES.PROCESSES })
   if (isLoading) return <Loader />
@@ -30,12 +33,15 @@ export function Processes() {
         toggleAddModal={toggleAddModal}
         toggleAlert={toggleAlert}
         toggleEditModal={toggleEditModal}
+        toggleIncompleteModal={toggleIncompleteModal}
         selected={selected}
         addOrEditElement={addOrEditElement}
         removeElement={removeElement}
         alert={alert}
         editModal={editModal}
         field={FIELDS_TYPES.PROCESSES}
+        incompleteModal={incompleteModal}
+        markAsIncompleteStatus={markAsIncompleteStatus}
       />
     </>
   )

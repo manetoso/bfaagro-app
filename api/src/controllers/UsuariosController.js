@@ -2,6 +2,7 @@ import { USUARIOS } from '../models/Index.js'
 import { request, response } from 'express'
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
 import { generateJWT } from '../helpers/Index.js'
+import jwt from 'jsonwebtoken'
 import bcryptjs from 'bcryptjs'
 
 const createUsuario = async (req = request, res = response) => {

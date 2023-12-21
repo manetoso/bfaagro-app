@@ -8,9 +8,20 @@ import { generateNewFolio } from '../helpers/Index.js'
 import { createCuentaxCobrarByVenta } from './Cuentas_por_CobrarController.js'
 import { createRegister, constructArrayProducts, updateRegisterByIdentificador } from './BitacoraProductosController.js'
 
+const sumarPeriodo = (FECHA_VENCIMIENTO, PERIODO) => {
+    const fechaVencimiento = new Date(FECHA_VENCIMIENTO)
+    fechaVencimiento.setDate(fechaVencimiento.getDate() + PERIODO + 1)
+    const year = fechaVencimiento.getFullYear()
+    const month = String(fechaVencimiento.getMonth() + 1).padStart(2, '0')
+    const day = String(fechaVencimiento.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+}
+
 const createVenta = async (req = request, res = response) => {
     try {
         const { CLIENTES, FECHA_VENCIMIENTO, ESTADO, TOTAL_VENTA, TOTAL_PAGADO, SALDO, VENTA_DETALLE, PERIODO } = req.body
+
+        let NEW_FECHA_VENCIMIENTO = PERIODO ? sumarPeriodo(FECHA_VENCIMIENTO, PERIODO) : FECHA_VENCIMIENTO
         const FOLIO = await generateNewFolio("VENTAS")
         const venta = {
             FOLIO, CLIENTES
@@ -26,7 +37,7 @@ const createVenta = async (req = request, res = response) => {
         // REGISTRAMOS EL MOVIMIENTO DE SALIDA
         await registerMovementAlmacen('SALIDA', VENTA_DETALLE.PRODUCTOS)
         // CREAR LA CXC
-        await createCuentaxCobrarByVenta(actionDB._id, CLIENTES, FOLIO, FECHA_VENCIMIENTO, ESTADO, TOTAL_VENTA, TOTAL_PAGADO, SALDO)
+        await createCuentaxCobrarByVenta(actionDB._id, CLIENTES, FOLIO, NEW_FECHA_VENCIMIENTO, ESTADO, TOTAL_VENTA, TOTAL_PAGADO, SALDO)
         return serverOkMessage(res, actionDB, 201)
     } catch (error) {
         console.log(error);

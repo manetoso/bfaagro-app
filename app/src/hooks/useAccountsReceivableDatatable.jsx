@@ -72,10 +72,10 @@ export const useAccountsReceivableDatatable = ({ field }) => {
       columnHelper.accessor('expirationDateFormatted', {
         header: 'Fecha de vencimiento',
         cell: (info) => {
-          const paymentDate = new Date(info.row.original.paymentDate)
+          const expirationDate = new Date(info.row.original.expirationDate)
           const todayDate = new Date()
           const isPayed = info.row.original.status.toLowerCase() === 'pagado'
-          const hasExpired = paymentDate <= todayDate
+          const hasExpired = expirationDate <= todayDate
           return (
             <span
               className={`font-bold ${
