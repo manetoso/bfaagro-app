@@ -311,7 +311,7 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
             <Text style={styles.tableHeaderCellBig}>Descripción</Text>
             <Text style={styles.tableHeaderCell}>Cant</Text>
             <Text style={styles.tableHeaderCell}>P.U.</Text>
-            <Text style={styles.tableHeaderCell}>Incr</Text>
+            <Text style={styles.tableHeaderCell}>Desc</Text>
             <Text style={styles.tableHeaderCell}>Sub</Text>
             <Text style={styles.tableHeaderCell}>Total</Text>
           </View>
@@ -331,7 +331,7 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
               </Text>
               <Text style={styles.tableRowCell}>
                 {product?.increment ? formatNumberToMoneyString(
-                  (product?.unitPrice * product?.quantity) + (product?.unitPrice * product?.quantity) * product?.increment / 100
+                  (product?.unitPrice * product?.quantity) - (product?.unitPrice * product?.quantity) * product?.increment / 100
                 ) : formatNumberToMoneyString(product?.unitPrice * product?.quantity)}
               </Text>
             </View>
