@@ -23,7 +23,8 @@ import {
   Cobros,
   Listas_Precios,
   BitacoraProductos,
-  Notificaciones
+  Notificaciones,
+  Lotes
 } from '../routes/index.routes.js'
 
 class Server {
@@ -54,6 +55,7 @@ class Server {
       listas_precio: '/api/listas_precio',
       bitacoraProductos: '/api/bitacoraproductos',
       notificaciones: '/api/notificaciones',
+      lotes: '/api/lotes'
     }
 
     // Func to Connect DB
@@ -98,6 +100,7 @@ class Server {
     this.app.use(this.paths.listas_precio, Listas_Precios)
     this.app.use(this.paths.bitacoraProductos, BitacoraProductos)
     this.app.use(this.paths.notificaciones, Notificaciones)
+    this.app.use(this.paths.lotes, Lotes)
   }
 
   listen() {
