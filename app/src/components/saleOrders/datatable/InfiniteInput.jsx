@@ -30,7 +30,12 @@ export function InfiniteInput({
           { id: 2, value: x.quantity },
           { id: 3, value: x.unitPrice },
           { id: 4, value: x.increment || 0 },
-          { id: 5, value: x.quantity * x.unitPrice }
+          {
+            id: 5,
+            value:
+              x.quantity * x.unitPrice -
+              (x.quantity * x.unitPrice * x.increment) / 100
+          }
         ]
       }))
       : [
