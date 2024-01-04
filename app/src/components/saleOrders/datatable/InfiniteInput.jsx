@@ -16,7 +16,7 @@ export function InfiniteInput({
   inputName = 'infiniteInput',
   isEditing = false
 }) {
-  const labels = ['Producto', 'Cantidad', 'Precio Unitario', 'Aumento (%)', 'Total Unitario']
+  const labels = ['Producto', 'Cantidad', 'Precio Unitario', 'Descuento (%)', 'Total Unitario']
   const inputNames = ['name', 'quantity', 'unitPrice', 'increment', 'totalUnit']
   const [total, setTotal] = useState(0)
   const [subtotal, setSubtotal] = useState(0)
@@ -144,7 +144,7 @@ export function InfiniteInput({
                           list[i].inputs[j].value = percentaje
 
                           const price = list[i].inputs[2].value * list[i].inputs[1].value
-                          list[i].inputs[4].value = (price) + (price * percentaje) / 100
+                          list[i].inputs[4].value = (price) - (price * percentaje) / 100
 
                           setInputList(list)
                         }}
@@ -162,7 +162,7 @@ export function InfiniteInput({
                           <p className='font-bold'>{labels[j]}:</p>
                           <p className='p-2 font-black'>
                             {formatNumberToMoneyString(
-                              (inputList[i].inputs[2].value * inputList[i].inputs[1].value) + ((inputList[i].inputs[2].value * inputList[i].inputs[1].value) * inputList[i].inputs[3].value) / 100
+                              (inputList[i].inputs[2].value * inputList[i].inputs[1].value) - ((inputList[i].inputs[2].value * inputList[i].inputs[1].value) * inputList[i].inputs[3].value) / 100
                             )}
                           </p>
                         </span>
