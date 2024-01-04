@@ -11,7 +11,7 @@ import { fetchData as fetchWarehouseData } from '@/services/warehouseServices'
 import { fetchData as fetchPriceListData } from '@/services/priceListServices'
 import { fetchSaleStatusTypes } from '@/services/globalServices'
 
-import { PRODUCT_TYPES } from '@/utils/consts'
+import { PRODUCT_TYPES, WAREHOUSE_TYPES } from '@/utils/consts'
 
 export const FIELDS_TYPES = {
   SALE_ORDERS: 'saleOrdersData'
@@ -103,7 +103,7 @@ export const useSaleOrdersStore = create((set, get) => ({
     const priceList = await fetchPriceListData()
     const filteredProducts = products.filter((product) =>
       product.productType.some(
-        (type) => type.name === PRODUCT_TYPES.FINISHED_PRODUCT
+        (type) => type.name === PRODUCT_TYPES.FINISHED_PRODUCT && product.warehouse.name === WAREHOUSE_TYPES.FINISHED_PRODUCT_WAREHOUSE
       )
     )
     await clients.forEach((client) => {
