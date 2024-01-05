@@ -17,7 +17,7 @@ const LOTES = new Schema(
     },
     ULTIMO_REALIZADO:{
         type: String,
-        default: null
+        default: ""
     }
   },
   { timestamps: true }

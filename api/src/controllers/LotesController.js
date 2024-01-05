@@ -9,7 +9,8 @@ const createLote = async (req = request, res = response) => {
       SERIE, CONSECUTIVO, ID_PRODUCTO, ULTIMO_REALIZADO
     }
     const actionDB = await LOTES.create(lote)
-    return serverOkMessage(res, actionDB, 201)
+    const loteCreado = await LOTES.findById(actionDB._id).populate('ID_PRODUCTO')
+    return serverOkMessage(res, loteCreado, 201)
   } catch (error) {
     return serverErrorMessage(res)
   }
@@ -17,7 +18,7 @@ const createLote = async (req = request, res = response) => {
 
 const findLotes = async (req = request, res = response) => {
   try {
-    const actionDB = await LOTES.find().sort({ createdAt: -1 })
+    const actionDB = await LOTES.find().sort({ createdAt: -1 }).populate('ID_PRODUCTO')
     return serverOkMessage(res, actionDB)
   } catch (error) {
     return serverErrorMessage(res)
@@ -31,7 +32,8 @@ const updateLote = async (req = request, res = response) => {
     const actionDB = await LOTES.findByIdAndUpdate(id, data, {
       new: true
     })
-    return serverOkMessage(res, actionDB)
+    const loteActualizado = await LOTES.findById(actionDB._id).populate('ID_PRODUCTO')
+    return serverOkMessage(res, loteActualizado)
   } catch (error) {
     return serverErrorMessage(res)
   }
