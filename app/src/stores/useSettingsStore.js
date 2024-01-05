@@ -9,13 +9,15 @@ import {
 export const FIELDS_TYPES = {
   SETTINGS: 'settingsData',
   USERS: 'usersData',
-  ROLES: 'rolesData'
+  ROLES: 'rolesData',
+  LOTS: 'lotsData'
 }
 
 export const useSettingsStore = create((set, get) => ({
   settingsData: [],
   usersData: [],
   rolesData: [],
+  lotsData: [],
   editModal: false,
   alert: false,
   selected: {},

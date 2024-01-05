@@ -2,7 +2,7 @@ import { CustomToast } from '@/components/toast'
 import { DeleteAlert, EmptyModal } from '../../alert'
 
 import { Datatable } from '../../datatable'
-import { UsersForm, RolesForm } from '.'
+import { UsersForm, RolesForm, LotsForm } from '.'
 
 import { FIELDS_TYPES } from '@/stores/useSettingsStore'
 
@@ -41,6 +41,13 @@ export function SettingsDatatable({
       >
         {field === FIELDS_TYPES.USERS && (
           <UsersForm
+            selectedRow={selected}
+            submitAction={addOrEditElement}
+            field={field}
+          />
+        )}
+        {field === FIELDS_TYPES.LOTS && (
+          <LotsForm
             selectedRow={selected}
             submitAction={addOrEditElement}
             field={field}

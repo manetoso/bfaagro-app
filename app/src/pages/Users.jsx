@@ -12,6 +12,7 @@ export function Users() {
     settingsData,
     usersData,
     rolesData,
+    lotsData,
     editModal,
     alert,
     selected,
@@ -23,6 +24,7 @@ export function Users() {
     removeElement,
     userColumns,
     rolColumns,
+    lotColumns,
     isLoading
   } = useSettings({ field: FIELDS_TYPES.SETTINGS })
   const [selectedTable, setSelectedTable] = useState(FIELDS_TYPES.USERS)
@@ -44,6 +46,16 @@ export function Users() {
           }`}
         >
           USUARIOS
+        </button>
+        <button
+          onClick={() => setSelectedTable(FIELDS_TYPES.LOTS)}
+          className={`w-full rounded-lg py-2.5 text-sm font-medium leading-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-1 ${
+            selectedTable === FIELDS_TYPES.LOTS
+              ? 'bg-black text-white'
+              : 'hover:bg-black/10'
+          }`}
+        >
+          LOTES
         </button>
         <button
           onClick={() => setSelectedTable(FIELDS_TYPES.ROLES)}
@@ -70,6 +82,22 @@ export function Users() {
           alert={alert}
           editModal={editModal}
           field={FIELDS_TYPES.USERS}
+        />
+      )}
+      {selectedTable === FIELDS_TYPES.LOTS && (
+        <SettingsDatatable
+          columns={lotColumns}
+          data={lotsData}
+          title='Lotes'
+          toggleAddModal={toggleAddModal}
+          toggleAlert={toggleAlert}
+          toggleEditModal={toggleEditModal}
+          selected={selected}
+          addOrEditElement={addOrEditElement}
+          removeElement={removeElement}
+          alert={alert}
+          editModal={editModal}
+          field={FIELDS_TYPES.LOTS}
         />
       )}
       {selectedTable === FIELDS_TYPES.ROLES && (
