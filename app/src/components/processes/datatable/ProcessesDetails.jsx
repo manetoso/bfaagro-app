@@ -38,8 +38,12 @@ export function ProcessesDetails({ process, recipes, materials }) {
           </span>
           <span>
             <label>Observaciones:</label>
-            <h6 className='font-bold'>
-              {process?.observations || 'Sin observaciones'}
+            <h6
+              className={`font-bold ${
+                process.observations && 'text-amber-500'
+              }`}
+            >
+              {process.observations || 'Sin observaciones'}
             </h6>
           </span>
         </div>

@@ -201,7 +201,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
       observations: data?.observations
     }
     console.log({ formatedData })
-    // submitAction(formatedData, field)
+    submitAction(formatedData, field)
   }
 
   return (

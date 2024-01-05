@@ -42,10 +42,10 @@ const deleteLote_Producto = async (req = request, res = response) => {
 }
 
 const constructLoteProducto = async (producto) => {
-  try {    
+  try {
     const lote = await LOTES.findOne({ ID_PRODUCTO: producto._id })
-    let fecha = new Date();
-    fecha.setHours(fecha.getHours() - 6);
+    let fecha = new Date()
+    fecha.setHours(fecha.getHours() - 6)
     let fechaCorta = fecha.toISOString().substring(0, 10).replace(/-/g, '')
     const loteProducto = {
       LOTE: `${lote.SERIE}+${fechaCorta}+${lote.CONSECUTIVO}`,
@@ -63,4 +63,10 @@ const constructLoteProducto = async (producto) => {
   }
 }
 
-export { createLote_Producto, findLotes_Productos, deleteLote_Producto, updateLote_Producto, discountLote, constructLoteProducto }
+export {
+  createLote_Producto,
+  findLotes_Productos,
+  deleteLote_Producto,
+  updateLote_Producto,
+  constructLoteProducto
+}
