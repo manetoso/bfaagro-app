@@ -20,6 +20,7 @@ import Cobros from './Cobros.routes.js'
 import Listas_Precios from './Listas_Precio.routes.js'
 import BitacoraProductos from './BitacoraProductos.routes.js'
 import Notificaciones from './Notificaciones.routes.js'
+import Lotes from './Lotes.routes.js'
 
 export {
   AlmacenesRouter,
@@ -43,5 +44,6 @@ export {
   Cobros,
   Listas_Precios,
   BitacoraProductos,
-  Notificaciones
+  Notificaciones,
+  Lotes
 }
