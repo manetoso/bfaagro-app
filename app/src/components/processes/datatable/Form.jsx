@@ -4,7 +4,7 @@ import { useProcessesStore } from '@/stores'
 import { DetailInput } from './DetailInput'
 import { ComboBox } from '@/components/form/ComboBox'
 import { PROCESSES_STATUS } from '@/utils/consts'
-import { Input } from '@/components/form'
+import { Input, TextArea } from '@/components/form'
 
 const detailsIds = []
 const detailsOldMaterialId = []
@@ -197,12 +197,12 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
         },
         details: recipeDetails
       },
-      quantity: data.quantity
+      quantity: data.quantity,
+      observations: data?.observations
     }
-    // console.log({ formatedData })
-    submitAction(formatedData, field)
+    console.log({ formatedData })
+    // submitAction(formatedData, field)
   }
-  
 
   return (
     <>
@@ -244,6 +244,15 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                 required={false}
                 type='number'
               />
+              <TextArea
+                defaultValue={selectedRow?.observations}
+                id='observations'
+                label='Observaciones'
+                name='observations'
+                placeholder='Preparar con cuidado e ir armando las cajas de a 6 unidades'
+                required={false}
+                rows={4}
+              />
             </div>
           </div>
           <div className='flex flex-1 flex-col gap-2'>
@@ -252,7 +261,9 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
               <p>
                 Materias Primas utilizadas para generar{' '}
                 <strong>{`${
-                  recipeSelected?.quantity * (selectedRow?.quantity || quantityInputValue > 0 && quantityInputValue)
+                  recipeSelected?.quantity *
+                  (selectedRow?.quantity ||
+                    (quantityInputValue > 0 && quantityInputValue))
                 } ${recipeSelected?.unity}`}</strong>{' '}
                 del producto <strong>{recipeSelected?.product.name}</strong>:
               </p>
@@ -263,7 +274,10 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                         <li key={index}>
                           {detail.name}
                           {', '}
-                          {detail.quantity * (selectedRow?.quantity || quantityInputValue > 0 && quantityInputValue)}{' '}
+                          {detail.quantity *
+                            (selectedRow?.quantity ||
+                              (quantityInputValue > 0 &&
+                                quantityInputValue))}{' '}
                           {recipeSelected?.unity}
                         </li>
                       )
@@ -273,7 +287,10 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                         <li key={index}>
                           {detail.name}
                           {', '}
-                          {detail.quantity * (selectedRow?.quantity || quantityInputValue > 0 && quantityInputValue)}{' '}
+                          {detail.quantity *
+                            (selectedRow?.quantity ||
+                              (quantityInputValue > 0 &&
+                                quantityInputValue))}{' '}
                           {recipeSelected?.unity}
                         </li>
                       )
