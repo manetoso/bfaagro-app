@@ -130,9 +130,9 @@ const updateStatusProceso = async (req = request, res = response) => {
           }
           checksMinAmountProducts.push(amountsProducts)
           let NOTIFICACION = makeObjectNotification("ARTICULOS")
-          if(NOTIFICACION != false){
-            NOTIFICACION.NOTIFICACION += amountsProducts.PRODUCTO + `\n CATIDAD EXISTENTE = ${amountsProducts.CANTIDAD}\n CANTIDAD MINIMA = ${amountsProducts.CANTIDAD_MINIMA}` 
-            await createNotificacion(NOTIFICACION)
+          if(NOTIFICACION != ''){
+            NOTIFICACION.NOTIFICACION += amountsProducts.PRODUCTO + `\n CATIDAD EXISTENTE = ${amountsProducts.CANTIDAD}\n CANTIDAD MINIMA = ${amountsProducts.CANTIDAD_MINIMA}`
+            await createNotificacion({NOTIFICACION})
           }
         }
       })      
@@ -143,7 +143,7 @@ const updateStatusProceso = async (req = request, res = response) => {
       // Sumamos la cantidad que hace la formula al producto y guardamos 
       // Ahora la multiplicamos por la cantidad de veces que se hizo la formula
       productMade.CANTIDAD += formulaUsed.CANTIDAD *  proccessDBUsed.CANTIDAD
-      const lote_Producto = constructLoteProducto(productMade)
+      const lote_Producto = await constructLoteProducto(productMade, formulaUsed.CANTIDAD)
       if(lote_Producto){
         await createLote_Producto(lote_Producto)
       }
