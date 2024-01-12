@@ -57,10 +57,8 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
   const {
     materials,
     recipes,
-    warehouses,
     error,
     removeError,
-    processesStatus,
     changeProcessStatus,
     selected
   } = useProcessesStore()
@@ -200,7 +198,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
       quantity: data.quantity,
       observations: data?.observations
     }
-    console.log({ formatedData })
+    // console.log({ formatedData })
     submitAction(formatedData, field)
   }
 
@@ -264,38 +262,47 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                   recipeSelected?.quantity *
                   (selectedRow?.quantity ||
                     (quantityInputValue > 0 && quantityInputValue))
-                } ${recipeSelected?.unity}`}</strong>{' '}
+                } ${recipeSelected?.unity}`}
+                </strong>{' '}
                 del producto <strong>{recipeSelected?.product.name}</strong>:
               </p>
               <ul className='mt-2 list-disc pl-6'>
                 {selected.recipeData
                   ? selectedRow.recipeData?.details.map((detail, index) => {
-                      return (
-                        <li key={index}>
-                          {detail.name}
-                          {', '}
-                          {detail.quantity *
-                            (selectedRow?.quantity ||
-                              (quantityInputValue > 0 &&
-                                quantityInputValue))}{' '}
-                          {recipeSelected?.unity}
-                        </li>
-                      )
-                    })
+                    return (
+                      <li key={index}>
+                        {detail.name}
+                        {', '}
+                        {detail.quantity *
+                          (selectedRow?.quantity ||
+                            (quantityInputValue > 0 &&
+                              quantityInputValue))}{' '}
+                        {recipeSelected?.unity}
+                      </li>
+                    )
+                  })
                   : recipeSelected?.details.map((detail, index) => {
-                      return (
-                        <li key={index}>
-                          {detail.name}
-                          {', '}
-                          {detail.quantity *
-                            (selectedRow?.quantity ||
-                              (quantityInputValue > 0 &&
-                                quantityInputValue))}{' '}
-                          {recipeSelected?.unity}
-                        </li>
-                      )
-                    })}
+                    return (
+                      <li key={index}>
+                        {detail.name}
+                        {', '}
+                        {detail.quantity *
+                          (selectedRow?.quantity ||
+                            (quantityInputValue > 0 &&
+                              quantityInputValue))}{' '}
+                        {recipeSelected?.unity}
+                      </li>
+                    )
+                  })}
               </ul>
+              {Object.keys(selectedRow).length !== 0 && (
+                <>
+                  <h3 className='text-xl font-bold mt-2'>Observaciones</h3>
+                  <p>
+                    {selectedRow?.observations || 'No hay observaciones'}
+                  </p>
+                </>
+              )}
               {error.status && (
                 <div className='mt-2'>
                   <p className='text-sm font-bold text-red-500'>

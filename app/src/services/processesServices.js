@@ -258,8 +258,8 @@ export function convertToDBSchema(data) {
 
 /**
  *
- * @param {{ _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, CANTIDAD: number, createdAt: string, updatedAt: string }} data
- * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string, unity: string }[] }, qunatity: number, createdAt: string, createdAtFormatted: string }} - The recipe to App Schema.
+ * @param {{ _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, COMENTARIOS: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, CANTIDAD: number, createdAt: string, updatedAt: string }} data
+ * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, observations: string, quantity: string, unity: string }[] }, qunatity: number, createdAt: string, createdAtFormatted: string }} - The recipe to App Schema.
  */
 export function convertToAppSchema(data) {
   try {
@@ -285,6 +285,7 @@ export function convertToAppSchema(data) {
           unity: detail.UNIDAD_MEDIDA
         }))
       },
+      observations: data.COMENTARIOS,
       quantity: data.CANTIDAD,
       createdAt: data.createdAt,
       createdAtFormatted: new Date(data.createdAt).toLocaleDateString('es-MX', {
