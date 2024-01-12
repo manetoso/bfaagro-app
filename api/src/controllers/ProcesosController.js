@@ -143,10 +143,11 @@ const updateStatusProceso = async (req = request, res = response) => {
       // Sumamos la cantidad que hace la formula al producto y guardamos 
       // Ahora la multiplicamos por la cantidad de veces que se hizo la formula
       productMade.CANTIDAD += formulaUsed.CANTIDAD *  proccessDBUsed.CANTIDAD
-      const lote_Producto = await constructLoteProducto(productMade, formulaUsed.CANTIDAD)
+      // Creamos su Lote
+      /*const lote_Producto = await constructLoteProducto(productMade, formulaUsed.CANTIDAD)
       if(lote_Producto){
         await createLote_Producto(lote_Producto)
-      }
+      }*/
       actionDB = await PRODUCTOS.findByIdAndUpdate(productMade._id,productMade)
     }
     actionDB = await PROCESOS.findByIdAndUpdate(idProccess, data, {

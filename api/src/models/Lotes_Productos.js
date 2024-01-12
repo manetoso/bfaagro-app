@@ -34,6 +34,17 @@ const LOTES_PRODUCTOS = new Schema(
             required: true
           }
         }
+    },
+    CANTIDAD_COMPROMETIDA:{
+      ID_PROCESO:{
+        type: Schema.Types.ObjectId,
+        ref: 'PROCESOS',
+        default: ""        
+      },
+      CANTIDAD:{
+        type: Number,
+        default: 0
+      }
     }
   },
   { timestamps: true }

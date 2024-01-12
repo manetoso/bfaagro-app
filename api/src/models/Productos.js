@@ -2,6 +2,16 @@ import { Schema, model } from 'mongoose'
 
 const PRODUCTOS = new Schema(
   {
+    LOTES: [{
+      LOTE:{
+        type: String,
+        default:''
+      },
+      CANTIDAD:{
+        type: Number,
+        default: null
+      }
+    }],
     NOMBRE_PRODUCTO: {
       type: String,
       required: true,
