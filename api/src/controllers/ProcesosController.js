@@ -9,6 +9,7 @@ import { request, response } from 'express'
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
 import { createNotificacion } from './NotificacionesController.js'
 import { checkMinAmountProduct, makeObjectNotification } from '../helpers/Index.js'
+import { constructLoteProducto, createLote_Producto } from '../controllers/Lotes_ProductosController.js'
 
 const createProceso = async (req = request, res = response) => {
   try {
@@ -16,7 +17,8 @@ const createProceso = async (req = request, res = response) => {
     const {
       ID_FORMULA,
       FORMULACION_DETALLE = [],
-      CANTIDAD
+      CANTIDAD,
+      COMENTARIOS
     } = req.body
     // Buscamos la Formula por el ID
     const formula = await FORMULAS.findById(ID_FORMULA)
@@ -40,7 +42,8 @@ const createProceso = async (req = request, res = response) => {
         },
         FORMULACION_DETALLE
       },
-      CANTIDAD
+      CANTIDAD,
+      COMENTARIOS
     }
     const actionDB = await PROCESOS.create(process)
     return serverOkMessage(res, actionDB, 201)
@@ -127,9 +130,9 @@ const updateStatusProceso = async (req = request, res = response) => {
           }
           checksMinAmountProducts.push(amountsProducts)
           let NOTIFICACION = makeObjectNotification("ARTICULOS")
-          if(NOTIFICACION != false){
-            NOTIFICACION.NOTIFICACION += amountsProducts.PRODUCTO + `\n CATIDAD EXISTENTE = ${amountsProducts.CANTIDAD}\n CANTIDAD MINIMA = ${amountsProducts.CANTIDAD_MINIMA}` 
-            await createNotificacion(NOTIFICACION)
+          if(NOTIFICACION != ''){
+            NOTIFICACION.NOTIFICACION += amountsProducts.PRODUCTO + `\n CATIDAD EXISTENTE = ${amountsProducts.CANTIDAD}\n CANTIDAD MINIMA = ${amountsProducts.CANTIDAD_MINIMA}`
+            await createNotificacion({NOTIFICACION})
           }
         }
       })      
@@ -140,6 +143,11 @@ const updateStatusProceso = async (req = request, res = response) => {
       // Sumamos la cantidad que hace la formula al producto y guardamos 
       // Ahora la multiplicamos por la cantidad de veces que se hizo la formula
       productMade.CANTIDAD += formulaUsed.CANTIDAD *  proccessDBUsed.CANTIDAD
+      // Creamos su Lote
+      /*const lote_Producto = await constructLoteProducto(productMade, formulaUsed.CANTIDAD)
+      if(lote_Producto){
+        await createLote_Producto(lote_Producto)
+      }*/
       actionDB = await PRODUCTOS.findByIdAndUpdate(productMade._id,productMade)
     }
     actionDB = await PROCESOS.findByIdAndUpdate(idProccess, data, {
@@ -200,6 +208,7 @@ const validateStatusBeFinalizado = async (idProccess, ESTADO) => {
     console.log(error)
   }
 }
+
 
 export {
   findProcesos,

@@ -60,6 +60,10 @@ const PROCESOS = new Schema(
     CANTIDAD: {
       type: Number,
       default: 1
+    },
+    COMENTARIOS: {
+      type: String,
+      default: ""
     }
   },
   { timestamps: true }

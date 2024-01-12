@@ -32,9 +32,6 @@ const makeObjectNotification = (type) => {
         NOTIFICACION: 'LA SIGUIENTE CUENTA POR PAGAR ESTA A PUNTO DE VENCER. '
       }
       break
-    default:
-      NOTIFICACION = false
-      break
   }
   return NOTIFICACION
 }

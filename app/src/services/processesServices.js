@@ -17,7 +17,7 @@ export async function fetchData() {
     })
     /**
      * The respponse body from the request.
-     * @typedef { { _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, CANTIDAD: number, createdAt: string, updatedAt: string } ProcessesBody
+     * @typedef { { _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, COMENTARIOS: string, UNIDAD_MEDIDA: string }[] }, CANTIDAD: number, createdAt: string, updatedAt: string } ProcessesBody
      * @type {{body: ProcessesBody[]}} - The Recipes response body.
      */
     const json = resp
@@ -44,6 +44,7 @@ export async function fetchData() {
         }))
       },
       quantity: process.CANTIDAD,
+      observations: process.COMENTARIOS,
       createdAt: process.createdAt,
       createdAtFormatted: new Date(process.createdAt).toLocaleDateString(
         'es-MX',
@@ -62,7 +63,7 @@ export async function fetchData() {
 
 /**
  *
- * @param {{ recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }} data
+ * @param {{ recipeName: string, unity: string, quantity: number, observations: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }} data
  * @returns {{data: { id: string, recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }, error: {errors: {product: string, requested: number, existing: number, missing: number}[], msg: string}}}
  */
 export async function createData(data) {
@@ -71,7 +72,8 @@ export async function createData(data) {
     const elementToSend = {
       ID_FORMULA: elementToDBSchema.FORMULA.ID_FORMULA,
       FORMULACION_DETALLE: elementToDBSchema.FORMULA.FORMULACION_DETALLE,
-      CANTIDAD: elementToDBSchema.CANTIDAD
+      CANTIDAD: elementToDBSchema.CANTIDAD,
+      COMENTARIOS: elementToDBSchema.COMENTARIOS
     }
     const { data: resp } = await bfaApi.post(
       '/procesos',
@@ -123,6 +125,7 @@ export async function updateData({ id }) {
     return respFormated
   } catch (error) {
     toast.error('Error actualizando proceso')
+    console.log({ error })
     throw new Error('Error updating recipe')
   }
 }
@@ -220,8 +223,8 @@ export async function fetchRawMaterial() {
 
 /**
  *
- * @param {{ recipeId: string, status: { id: string, value: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, unity: string }[] }, quantity: number }} data
- * @returns {{ PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, CANTIDAD: number }} - The recipe to DB Schema.
+ * @param {{ recipeId: string, status: { id: string, value: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, unity: string }[] }, quantity: number, observations: string }} data
+ * @returns {{ PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, CANTIDAD: number, COMENTARIOS: string }} - The recipe to DB Schema.
  */
 export function convertToDBSchema(data) {
   try {
@@ -244,7 +247,8 @@ export function convertToDBSchema(data) {
           UNIDAD_MEDIDA: detail.unity
         }))
       },
-      CANTIDAD: data.quantity
+      CANTIDAD: data.quantity,
+      COMENTARIOS: data.observations
     }
     return dbSchemaLike
   } catch (error) {
@@ -254,8 +258,8 @@ export function convertToDBSchema(data) {
 
 /**
  *
- * @param {{ _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, CANTIDAD: number, createdAt: string, updatedAt: string }} data
- * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, quantity: string, unity: string }[] }, qunatity: number, createdAt: string, createdAtFormatted: string }} - The recipe to App Schema.
+ * @param {{ _id: string, PROCESO: { ID_ESTADO: string, ESTADO: string }, FORMULA: { ID_FORMULA: string, NOMBRE_FORMULA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }, FORMULACION_DETALLE: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, COMENTARIOS: string, CANTIDAD: number, UNIDAD_MEDIDA: string }[] }, CANTIDAD: number, createdAt: string, updatedAt: string }} data
+ * @returns {{ id: string, recipeId: string, status: { id: string, value: string }, recipeData: { recipeName: string, product: { id: string, name: string }, details: { id: string, name: string, observations: string, quantity: string, unity: string }[] }, qunatity: number, createdAt: string, createdAtFormatted: string }} - The recipe to App Schema.
  */
 export function convertToAppSchema(data) {
   try {
@@ -281,6 +285,7 @@ export function convertToAppSchema(data) {
           unity: detail.UNIDAD_MEDIDA
         }))
       },
+      observations: data.COMENTARIOS,
       quantity: data.CANTIDAD,
       createdAt: data.createdAt,
       createdAtFormatted: new Date(data.createdAt).toLocaleDateString('es-MX', {

@@ -136,6 +136,49 @@ export async function fetchRolesData() {
     throw new Error('Error searching roles data')
   }
 }
+
+/**
+ *
+ * @returns {{ id: string, value: string, documentType: string }} rol data
+ */
+export async function fetchLotsData() {
+  try {
+    const { data: resp } = await bfaApi.get('/lotes', {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.ADMIN
+      }
+    })
+    /**
+     * The respponse body from the request.
+     * @typedef {{ _id: string, VALOR: string, TIPO_DOCUMENTO: string }} RolData
+     * @type {{body: RolData[]}} - The Rol response body.
+     */
+    const json = resp
+
+    const data = json.body.map((lot) => convertLotsDataToAppShema(lot))
+    return data
+  } catch (error) {
+    throw new Error('Error searching lots data')
+  }
+}
+
+const fieldToSchemaConverter = {
+  [FIELDS_TYPES.USERS]: convertUserDataToDBShema,
+  [FIELDS_TYPES.ROLES]: convertRolDataToDBShema,
+  [FIELDS_TYPES.LOTS]: convertLotDataToDBShema
+}
+const fieldToAppSchemaConverter = {
+  [FIELDS_TYPES.USERS]: convertUserDataToAppShema,
+  [FIELDS_TYPES.ROLES]: convertRolDataToAppShema,
+  [FIELDS_TYPES.LOTS]: convertLotsDataToAppShema
+}
+const requestPath = {
+  [FIELDS_TYPES.USERS]: '/usuarios',
+  [FIELDS_TYPES.ROLES]: '/tiposdocumentos',
+  [FIELDS_TYPES.LOTS]: '/lotes'
+}
+
 /**
  *
  * @param {object} data
@@ -144,12 +187,9 @@ export async function fetchRolesData() {
  */
 export async function createData(data, field) {
   try {
-    const elementToDBSchema =
-      field === FIELDS_TYPES.USERS
-        ? convertUserDataToDBShema(data)
-        : convertRolDataToDBShema(data)
+    const elementToDBSchema = fieldToSchemaConverter[field](data)
     const { data: resp } = await bfaApi.post(
-      field === FIELDS_TYPES.USERS ? '/usuarios' : '/tiposdocumentos',
+      requestPath[field],
       JSON.stringify(elementToDBSchema),
       {
         headers: {
@@ -159,15 +199,12 @@ export async function createData(data, field) {
       }
     )
     const json = resp
-    const respFormated =
-      field === FIELDS_TYPES.USERS
-        ? convertUserDataToAppShema(json.body)
-        : convertRolDataToAppShema(json.body)
+    const respFormated = fieldToAppSchemaConverter[field](json.body)
     toast.success('Elemento creado con éxito')
     return respFormated
   } catch (error) {
     toast.error('Error creando nuevo elemento')
-    throw new Error('Error creating new user/rol')
+    throw new Error('Error creating new user/rol/lot')
   }
 }
 
@@ -179,14 +216,9 @@ export async function createData(data, field) {
  */
 export async function updateData(data, field) {
   try {
-    const elementToDBSchema =
-      field === FIELDS_TYPES.USERS
-        ? convertUserDataToDBShema(data)
-        : convertRolDataToDBShema(data)
+    const elementToDBSchema = fieldToSchemaConverter[field](data)
     const { data: resp } = await bfaApi.put(
-      field === FIELDS_TYPES.USERS
-        ? `/usuarios/${data.id}`
-        : `/tiposdocumentos/${data.id}`,
+      `${requestPath[field]}/${data.id}`,
       JSON.stringify(elementToDBSchema),
       {
         headers: {
@@ -196,10 +228,7 @@ export async function updateData(data, field) {
       }
     )
     const json = resp
-    const respFormated =
-      field === FIELDS_TYPES.USERS
-        ? convertUserDataToAppShema(json.body)
-        : convertRolDataToAppShema(json.body)
+    const respFormated = fieldToAppSchemaConverter[field](json.body)
     toast.success('Elemento actualizado con éxito')
     return respFormated
   } catch (error) {
@@ -215,17 +244,12 @@ export async function updateData(data, field) {
  */
 export async function deleteData(id, field) {
   try {
-    const { data: resp } = await bfaApi.delete(
-      field === FIELDS_TYPES.USERS
-        ? `/usuarios/${id}`
-        : `/tiposdocumentos/${id}`,
-      {
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-          section: ROLES.ADMIN
-        }
+    const { data: resp } = await bfaApi.delete(`${requestPath[field]}/${id}`, {
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        section: ROLES.ADMIN
       }
-    )
+    })
     const json = resp
     toast.success('Elemento eliminado con éxito')
     return !json.error
@@ -279,6 +303,19 @@ export function convertRolDataToDBShema(rolData) {
 }
 
 /**
+ * @param {{ serialNumber: string, consecutive: number, productId: string, lastMade: string }} lotData - The lot data to update.
+ * @returns {{ SERIE: string, CONSECUTIVO: number, ID_PRODUCTO: string, ULTIMO_REALIZADO: string }} lot data
+ */
+export function convertLotDataToDBShema(lotData) {
+  return {
+    SERIE: lotData.serialNumber,
+    CONSECUTIVO: lotData.consecutive,
+    ID_PRODUCTO: lotData.productId,
+    ULTIMO_REALIZADO: lotData.lastMade
+  }
+}
+
+/**
  * @param {{ _id: string, EMPRESA: string, DIRECCION: string }} companyData - The company data to update.
  * @returns {{ id: string, name: string, address: string }} company data
  */
@@ -314,5 +351,22 @@ export function convertRolDataToAppShema(rolData) {
     id: rolData._id,
     value: rolData.VALOR,
     documentType: rolData.TIPO_DOCUMENTO
+  }
+}
+
+/**
+ * @param {{ _id: string, SERIE: string, CONSECUTIVO: number, ID_PRODUCTO: { _id: string, NOMBRE_PRODUCTO: string }, ULTIMO_REALIZADO: string }} lotData - The lot data to update.
+ * @returns {{ id: string, serialNumber: string, consecutive: number, product: {id: string, name: string}, lastMade: string }} lot data
+ */
+export function convertLotsDataToAppShema(lotData) {
+  return {
+    id: lotData._id,
+    serialNumber: lotData.SERIE,
+    consecutive: lotData.CONSECUTIVO,
+    product: {
+      id: lotData.ID_PRODUCTO._id,
+      name: lotData.ID_PRODUCTO.NOMBRE_PRODUCTO
+    },
+    lastMade: lotData.ULTIMO_REALIZADO
   }
 }
