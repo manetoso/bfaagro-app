@@ -64,6 +64,17 @@ const PROCESOS = new Schema(
     COMENTARIOS: {
       type: String,
       default: ""
+    },
+    PROCESO_DETALLE: {
+      LOTES: [{
+        _id: false,
+        LOTE:{
+          type: String
+        },
+        CANTIDAD:{
+          type: Number
+        }
+      }],
     }
   },
   { timestamps: true }

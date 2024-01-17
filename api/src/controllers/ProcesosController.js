@@ -9,7 +9,8 @@ import { request, response } from 'express'
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
 import { createNotificacion } from './NotificacionesController.js'
 import { checkMinAmountProduct, makeObjectNotification } from '../helpers/Index.js'
-import { constructLoteProducto, createLote_Producto } from '../controllers/Lotes_ProductosController.js'
+import { constructLoteProducto } from '../controllers/LotesController.js'
+import { updateLotesProducto } from '../controllers/ProductosController.js'
 
 const createProceso = async (req = request, res = response) => {
   try {
@@ -143,11 +144,19 @@ const updateStatusProceso = async (req = request, res = response) => {
       // Sumamos la cantidad que hace la formula al producto y guardamos 
       // Ahora la multiplicamos por la cantidad de veces que se hizo la formula
       productMade.CANTIDAD += formulaUsed.CANTIDAD *  proccessDBUsed.CANTIDAD
-      // Creamos su Lote
-      /*const lote_Producto = await constructLoteProducto(productMade, formulaUsed.CANTIDAD)
-      if(lote_Producto){
-        await createLote_Producto(lote_Producto)
-      }*/
+      // Revisamos si en PROCESO_DETALLE tiene lotes, esto indicaria que es un proceso de embalaje
+      // Y los lotes que esten registrados son a los que pertenecian los PRODUCTOS
+      if(proccess.PROCESO_DETALLE.LOTES.length != 0) {
+        proccess.PROCESO_DETALLE.LOTES.forEach(async (lote) =>{
+          await updateLotesProducto(productMade._id, lote.LOTE, lote.CANTIDAD)
+        })
+      }else {
+        // Creamos su Lote
+        const lote_Producto = await constructLoteProducto(productMade._id)
+        if(lote_Producto){
+          await updateLotesProducto(productMade._id, lote_Producto, formulaUsed.CANTIDAD)
+        }
+      }
       actionDB = await PRODUCTOS.findByIdAndUpdate(productMade._id,productMade)
     }
     actionDB = await PROCESOS.findByIdAndUpdate(idProccess, data, {

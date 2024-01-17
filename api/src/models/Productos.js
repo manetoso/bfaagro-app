@@ -3,6 +3,7 @@ import { Schema, model } from 'mongoose'
 const PRODUCTOS = new Schema(
   {
     LOTES: [{
+      _id: false,
       LOTE:{
         type: String,
         default:''

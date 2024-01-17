@@ -13,6 +13,17 @@ const VENTAS_DETALLE = new Schema({
         ref: 'PRODUCTOS_EMBALAJADOS',
         required: true
       },
+      LOTES: [{
+        _id: false,
+        LOTE:{
+          type: String,
+          default:''
+        },
+        CANTIDAD:{
+          type: Number,
+          default: null
+        }
+      }],
       INCREMENTO: {
         type: Number,
         required: true
