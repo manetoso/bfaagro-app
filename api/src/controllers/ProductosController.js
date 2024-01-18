@@ -117,6 +117,20 @@ const createProductoInAlmacen = async (product = {}, almacen, cantidad) => {
   }
 }
 
+const updateLotesProducto = async( idProducto = 0, lote = '', cantidad = 0 ) => {
+  try {
+    const objLote = {
+      LOTE: lote,
+      CANTIDAD: cantidad
+    }
+    const objLoteDB = await PRODUCTOS.findById(idProducto)
+    objLoteDB.LOTES.push(objLote)
+    await PRODUCTOS.findByIdAndUpdate(idProducto, {LOTES: objLoteDB.LOTES}, {new: true})
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export {
   createProducto,
   findProductos,
@@ -124,6 +138,7 @@ export {
   updateProducto,
   findProductosByType,
   fixProductosByType,
-  createProductoInAlmacen
+  createProductoInAlmacen,
+  updateLotesProducto
 }
 

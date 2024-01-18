@@ -40,7 +40,6 @@ const createVenta = async (req = request, res = response) => {
         await createCuentaxCobrarByVenta(actionDB._id, CLIENTES, FOLIO, NEW_FECHA_VENCIMIENTO, ESTADO, TOTAL_VENTA, TOTAL_PAGADO, SALDO)
         return serverOkMessage(res, actionDB, 201)
     } catch (error) {
-        console.log(error);
         return serverErrorMessage(res)
     }
 }

@@ -63,4 +63,19 @@ const deleteLote = async (req = request, res = response) => {
   }
 }
 
-export { createLote, findLotes, deleteLote, updateLote, nextConsecutivoLote }
+const constructLoteProducto = async (idProducto) => {
+  try {
+    const lote = await LOTES.findOne({ ID_PRODUCTO: idProducto })
+
+    let fecha = new Date()
+    fecha.setHours(fecha.getHours() - 6)
+    let fechaCorta = fecha.toISOString().substring(0, 10).replace(/-/g, '')
+    
+    const loteProducto = `${lote.SERIE}${fechaCorta}${lote.CONSECUTIVO}`
+    return loteProducto
+  } catch (error) {
+    return null
+  }
+}
+
+export { createLote, findLotes, deleteLote, updateLote, nextConsecutivoLote, constructLoteProducto }

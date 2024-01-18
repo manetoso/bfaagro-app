@@ -42,35 +42,9 @@ const deleteLote_Producto = async (req = request, res = response) => {
   }
 }
 
-const constructLoteProducto = async (producto= {}, cantidad= 0) => {
-  try {
-    const lote = await LOTES.findOne({ ID_PRODUCTO: producto._id })
-    let fecha = new Date()
-    fecha.setHours(fecha.getHours() - 6)
-    let fechaCorta = fecha.toISOString().substring(0, 10).replace(/-/g, '')
-    const loteProducto = {
-      LOTE: `${lote.SERIE}${fechaCorta}${lote.CONSECUTIVO}`,
-      PRODUCTO: {
-        ID_PRODUCTO: producto._id,
-        NOMBRE_PRODUCTO: producto.NOMBRE_PRODUCTO,
-        UNIDAD_MEDIDA: producto.UNIDAD_MEDIDA,
-        CANTIDAD: cantidad,
-        ALMACEN: {
-          ID_ALMACEN: producto.ALMACEN.ID_ALMACEN,
-          NOMBRE_ALMACEN: producto.ALMACEN.NOMBRE_ALMACEN
-        }
-      }
-    }
-    return loteProducto
-  } catch (error) {
-    return null
-  }
-}
-
 export {
   createLote_Producto,
   findLotes_Productos,
   deleteLote_Producto,
-  updateLote_Producto,
-  constructLoteProducto
+  updateLote_Producto
 }
