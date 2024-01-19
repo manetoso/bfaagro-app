@@ -144,10 +144,12 @@ const updateStatusProceso = async (req = request, res = response) => {
       // Sumamos la cantidad que hace la formula al producto y guardamos 
       // Ahora la multiplicamos por la cantidad de veces que se hizo la formula
       productMade.CANTIDAD += formulaUsed.CANTIDAD *  proccessDBUsed.CANTIDAD
+      actionDB = await PRODUCTOS.findByIdAndUpdate(productMade._id,productMade)
       // Revisamos si en PROCESO_DETALLE tiene lotes, esto indicaria que es un proceso de embalaje
       // Y los lotes que esten registrados son a los que pertenecian los PRODUCTOS
-      if(proccess.PROCESO_DETALLE.LOTES.length != 0) {
-        proccess.PROCESO_DETALLE.LOTES.forEach(async (lote) =>{
+      if(proccessDBUsed.PROCESO_DETALLE.LOTES.length != 0) {
+        // Hereda los lotas
+        proccessDBUsed.PROCESO_DETALLE.LOTES.forEach(async (lote) =>{
           await updateLotesProducto(productMade._id, lote.LOTE, lote.CANTIDAD)
         })
       }else {
@@ -157,11 +159,10 @@ const updateStatusProceso = async (req = request, res = response) => {
           await updateLotesProducto(productMade._id, lote_Producto, formulaUsed.CANTIDAD)
         }
       }
-      actionDB = await PRODUCTOS.findByIdAndUpdate(productMade._id,productMade)
     }
-    actionDB = await PROCESOS.findByIdAndUpdate(idProccess, data, {
-      new: true
-    })
+      actionDB = await PROCESOS.findByIdAndUpdate(idProccess, data, {
+        new: true
+      })
     const result = {
       actionDB,
       checksMinAmountProducts

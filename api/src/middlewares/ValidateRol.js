@@ -10,7 +10,7 @@ const validateRol = async (req = request, res = response, next) => {
         if(!isAdmin){
             const authUser = req.authUser
             const valid = validateUserHaveRol(authUser.ROLES, section)
-             //Añadimos información a la request para posteriores validaciones
+             // Añadimos información a la request para posteriores validaciones
             if (!valid){
                 res.status(401).json({
                     msg: 'No se cuenta con los permisos suficientes'
