@@ -1,6 +1,7 @@
 import PRODUCTOS from '../models/Productos.js'
 import { request, response } from 'express'
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
+import { nextConsecutivoLoteByIdProducto } from './LotesController.js'
 
 const createProducto = async (req = request, res = response) => {
   try {
@@ -125,7 +126,8 @@ const updateLotesProducto = async( idProducto = 0, lote = '', cantidad = 0 ) => 
     }
     const objLoteDB = await PRODUCTOS.findById(idProducto)
     objLoteDB.LOTES.push(objLote)
-    await PRODUCTOS.findByIdAndUpdate(idProducto, {LOTES: objLoteDB.LOTES}, {new: true})
+    await PRODUCTOS.findByIdAndUpdate(idProducto, objLoteDB, { new: true })
+    await nextConsecutivoLoteByIdProducto(idProducto, lote)
   } catch (error) {
     console.log(error);
   }

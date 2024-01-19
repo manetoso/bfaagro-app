@@ -1,6 +1,6 @@
 import { request, response } from 'express'
 import { LOTES } from '../models/Index.js'
-import { serverOkMessage } from './ControllerGlobal.js'
+import { serverOkMessage, serverErrorMessage } from './ControllerGlobal.js'
 
 const createLote = async (req = request, res = response) => {
   try {
@@ -44,12 +44,24 @@ const nextConsecutivoLote = async (idLote) => {
     const nextConsecutivo = {
       "CONSECUTIVO": lote.CONSECUTIVO++
     }
-    const actionDB = await LOTES.findByIdAndUpdate(idLote, { CONSECUTIVO: nextConsecutivo }, {
+    const actionDB = await LOTES.findByIdAndUpdate(idLote, { CONSECUTIVO: nextConsecutivo.CONSECUTIVO }, {
       new: true
     })
     return serverOkMessage(res, actionDB)
   } catch (error) {
     return serverErrorMessage(res)
+  }
+}
+const nextConsecutivoLoteByIdProducto = async (idProducto, loteUsed) => {
+  try {
+    const lote = await LOTES.findOne({ ID_PRODUCTO: idProducto })
+    const CONSECUTIVO = lote.CONSECUTIVO + 1
+    const actionDB = await LOTES.findOneAndUpdate({ ID_PRODUCTO: idProducto},{CONSECUTIVO: CONSECUTIVO, ULTIMO_REALIZADO: loteUsed}, {
+      new: true
+    })
+    return actionDB
+  } catch (error) {
+    return null
   }
 }
 
@@ -70,7 +82,7 @@ const constructLoteProducto = async (idProducto) => {
     let fecha = new Date()
     fecha.setHours(fecha.getHours() - 6)
     let fechaCorta = fecha.toISOString().substring(0, 10).replace(/-/g, '')
-    
+
     const loteProducto = `${lote.SERIE}${fechaCorta}${lote.CONSECUTIVO}`
     return loteProducto
   } catch (error) {
@@ -78,4 +90,4 @@ const constructLoteProducto = async (idProducto) => {
   }
 }
 
-export { createLote, findLotes, deleteLote, updateLote, nextConsecutivoLote, constructLoteProducto }
+export { createLote, findLotes, deleteLote, updateLote, nextConsecutivoLote, constructLoteProducto, nextConsecutivoLoteByIdProducto }
