@@ -4,7 +4,7 @@ import { validateFields, validateJWT, validateRol } from '../middlewares/Index.j
 
 const router = Router()
 
-router.get('/', [], findProductos)
+router.get('/', [validateJWT, validateRol, validateFields], findProductos)
 router.post('/', [validateJWT, validateRol, validateFields], createProducto)
 router.put('/:idProducto', [validateJWT, validateRol, validateFields], updateProducto)
 router.delete('/:idProducto', [validateJWT, validateRol, validateFields], deleteProducto)
