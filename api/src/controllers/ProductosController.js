@@ -118,11 +118,11 @@ const createProductoInAlmacen = async (product = {}, almacen, cantidad) => {
   }
 }
 
-const updateLotesProducto = async( idProducto = 0, lote = '', cantidad = 0 ) => {
+const updateLotesProducto = async( idProducto = 0, lote = '', cantidad = 0, cantidadVeces = 1 ) => {
   try {
     const objLote = {
       LOTE: lote,
-      CANTIDAD: cantidad
+      CANTIDAD: cantidad * cantidadVeces
     }
     const objLoteDB = await PRODUCTOS.findById(idProducto)
     objLoteDB.LOTES.push(objLote)

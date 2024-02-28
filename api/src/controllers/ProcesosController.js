@@ -148,15 +148,15 @@ const updateStatusProceso = async (req = request, res = response) => {
       // Revisamos si en PROCESO_DETALLE tiene lotes, esto indicaria que es un proceso de embalaje
       // Y los lotes que esten registrados son a los que pertenecian los PRODUCTOS
       if(proccessDBUsed.PROCESO_DETALLE.LOTES.length != 0) {
-        // Hereda los lotas
+        // Hereda los lotes
         proccessDBUsed.PROCESO_DETALLE.LOTES.forEach(async (lote) =>{
-          await updateLotesProducto(productMade._id, lote.LOTE, lote.CANTIDAD)
+          await updateLotesProducto(productMade._id, lote.LOTE, lote.CANTIDAD, proccessDBUsed.CANTIDAD)
         })
       }else {
         // Creamos su Lote
         const lote_Producto = await constructLoteProducto(productMade._id)
         if(lote_Producto){
-          await updateLotesProducto(productMade._id, lote_Producto, formulaUsed.CANTIDAD)
+          await updateLotesProducto(productMade._id, lote_Producto, formulaUsed.CANTIDAD, proccessDBUsed.CANTIDAD)
         }
       }
     }
