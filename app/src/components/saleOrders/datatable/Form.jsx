@@ -35,6 +35,8 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     const comboId = []
     const comboName = []
     const comboUnity = []
+    const comboLots = []
+    const comboLotsQantity = []
     const infiniteQantity = []
     const infiniteUnitPrice = []
     const infiniteIncrement = []
@@ -60,6 +62,20 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
       if (key.includes('comboInfiniteInput') && key.includes('unity')) {
         comboUnity.push(value)
       }
+      if (
+        key.includes('comboInfiniteInput') &&
+        key.includes('lots') &&
+        key.includes('quantity')
+      ) {
+        comboLotsQantity.push(value)
+      }
+      if (
+        key.includes('comboInfiniteInput') &&
+        key.includes('lots') &&
+        key.includes('lote')
+      ) {
+        comboLots.push(value)
+      }
       if (key.includes('infiniteInput') && key.includes('quantity')) {
         infiniteQantity.push(value)
       }
@@ -73,11 +89,20 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
         infiniteTotalUnit.push(value)
       }
     }
+
     comboId.forEach((id, index) => {
+      const lot = []
+      for (let i = 0; i < infiniteQantity[index]; i++) {
+        lot.push({
+          serie: comboLots[i],
+          quantity: comboLotsQantity[i]
+        })
+      }
       formatedProducts.push({
         productId: id,
         name: comboName[index],
         unity: comboUnity[index],
+        lot,
         quantity: Number(infiniteQantity[index]),
         unitPrice: Number(infiniteUnitPrice[index]),
         increment: Number(infiniteIncrement[index]),
@@ -107,7 +132,9 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
     }
 
     // console.log({ data })
+    // console.log({ formatedProducts })
     // console.log({ formatedData })
+    // TODO: LET THE USER CHOOSE THE LOTS
     submitAction(formatedData, field)
   }
 

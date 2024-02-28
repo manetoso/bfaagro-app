@@ -199,6 +199,7 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
       observations: data?.observations
     }
     // console.log({ formatedData })
+    // TODO: LET THE USER CHOOSE THE LOTS
     submitAction(formatedData, field)
   }
 

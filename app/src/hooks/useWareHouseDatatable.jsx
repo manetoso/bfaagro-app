@@ -128,6 +128,22 @@ export const useWareHouseDatatable = ({ field }) => {
           }
         },
         footer: (props) => props.column.id
+      }),
+      columnHelper.accessor('lots', {
+        header: 'Lotes',
+        cell: (info) =>
+          info.getValue().length > 0 ? (
+            <div className='flex flex-col'>
+              {info.getValue().map((x) => (
+                <span key={x.lote}>
+                  <strong>{x.lote}:</strong> {x.quantity}
+                </span>
+              ))}
+            </div>
+          ) : (
+            'Sin Lote'
+          ),
+        footer: (props) => props.column.id
       })
     ],
     []

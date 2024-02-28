@@ -110,12 +110,16 @@ export async function updateData(data, detailId) {
   try {
     const dbSchemaLike = converCreateSaleOrderToDBSchema(data)
     dbSchemaLike.VENTA_DETALLE._id = detailId
-    const { data: resp } = await bfaApi.put(`/ventas/${data.id}`, dbSchemaLike, {
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-        section: ROLES.SALES
+    const { data: resp } = await bfaApi.put(
+      `/ventas/${data.id}`,
+      dbSchemaLike,
+      {
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          section: ROLES.SALES
+        }
       }
-    })
+    )
     const json = resp
     const respFormated = convertSaleOrderToAppSchema(json.body)
     toast.success('Orden de venta actualizada con éxito')
@@ -177,8 +181,8 @@ export function converSaleOrderToDBSchema(data) {
 
 /**
  *
- * @param {{ endDate: string, total: number, totalPaid: number, balance: number, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number }[], originClient: { clientId: string, clientName: string }, destinationClient: { clientId: string, clientName: string } }} data
- * @returns {{ FECHA_VENCIMIENTO: string, TOTAL_VENTA: number, TOTAL_PAGADO: number, SALDO: number, VENTA_DETALLE: { PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number }[], PRECIO_TOTAL: number }, CLIENTES: { CLIENTE_ORIGEN: { ID_CLIENTE: string, NOMBRE_CLIENTE: string }, CLIENTE_DESTINO: { ID_CLIENTE: string, NOMBRE_CLIENTE: string } } }} - The sale order to DB Schema.
+ * @param {{ endDate: string, total: number, totalPaid: number, balance: number, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number, lot: { serie: string, quantity: number }[] }[], originClient: { clientId: string, clientName: string }, destinationClient: { clientId: string, clientName: string } }} data
+ * @returns {{ FECHA_VENCIMIENTO: string, TOTAL_VENTA: number, TOTAL_PAGADO: number, SALDO: number, VENTA_DETALLE: { PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number, LOTES: { LOTE: string, CANTIDAD: number }[] }[], PRECIO_TOTAL: number }, CLIENTES: { CLIENTE_ORIGEN: { ID_CLIENTE: string, NOMBRE_CLIENTE: string }, CLIENTE_DESTINO: { ID_CLIENTE: string, NOMBRE_CLIENTE: string } } }} - The sale order to DB Schema.
  */
 export function converCreateSaleOrderToDBSchema(data) {
   try {
@@ -195,7 +199,11 @@ export function converCreateSaleOrderToDBSchema(data) {
           CANTIDAD: product.quantity,
           UNIDAD_MEDIDA: product.unity,
           INCREMENTO: product.increment,
-          PRECIO_UNITARIO: product.unitPrice
+          PRECIO_UNITARIO: product.unitPrice,
+          LOTES: product.lot.map((lot) => ({
+            LOTE: lot.serie,
+            CANTIDAD: lot.quantity
+          }))
         })),
         PRECIO_TOTAL: data.total
       },
@@ -268,8 +276,8 @@ export function convertSaleOrderToAppSchema(data) {
 
 /**
  *
- * @param {{ _id: string, ID_VENTA: string, PRECIO_TOTAL: number, PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number, INCREMENTO: number }[] }} data
- * @returns {{ id: string, saleOrderId: string, total: number, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number }[] }} - The sale order detail to App Schema.
+ * @param {{ _id: string, ID_VENTA: string, PRECIO_TOTAL: number, PRODUCTOS: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRECIO_UNITARIO: number, INCREMENTO: number, LOTES: { LOTE: string, CANTIDAD: number }[] }[] }} data
+ * @returns {{ id: string, saleOrderId: string, total: number, products: { productId: string, name: string, quantity: number, unity: string, unitPrice: number, lot: { serie: string, quantity: number }[] }[] }} - The sale order detail to App Schema.
  */
 export function convertSaleOrderDetailToAppSchema(data) {
   try {
@@ -283,9 +291,14 @@ export function convertSaleOrderDetailToAppSchema(data) {
         quantity: product.CANTIDAD,
         unity: product.UNIDAD_MEDIDA,
         unitPrice: product.PRECIO_UNITARIO,
-        increment: product.INCREMENTO
+        increment: product.INCREMENTO,
+        lot: product.LOTES.map((lot) => ({
+          serie: lot.LOTE,
+          quantity: lot.CANTIDAD
+        }))
       }))
     }
+    console.log({ dbSchemaLike })
     return dbSchemaLike
   } catch (error) {
     throw new Error('Error converting sale order detail to App Schema')

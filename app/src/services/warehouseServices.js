@@ -35,6 +35,10 @@ export async function fetchData() {
       productType: product.TIPO_PRODUCTO.map((type) => ({
         id: type.ID_TIPO_PRODUCTO,
         name: type.TIPO_PRODUCTO
+      })),
+      lots: product.LOTES.map((lot) => ({
+        lote: lot.LOTE,
+        quantity: lot.CANTIDAD
       }))
     }))
     return data
@@ -53,7 +57,8 @@ export async function createData(data) {
     const elementToDBSchema = convertToDBSchema(data)
     const { data: resp } = await bfaApi.post(
       '/productos',
-      JSON.stringify(elementToDBSchema), {
+      JSON.stringify(elementToDBSchema),
+      {
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           section: ROLES.WAREHOUSE
@@ -80,7 +85,8 @@ export async function updateData(data) {
     const elementToDBSchema = convertToDBSchema(data)
     const { data: resp } = await bfaApi.put(
       `/productos/${data.id}`,
-      JSON.stringify(elementToDBSchema), {
+      JSON.stringify(elementToDBSchema),
+      {
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           section: ROLES.WAREHOUSE
@@ -139,7 +145,8 @@ export async function productReceipt(data) {
     }
     const { data: resp } = await bfaApi.post(
       '/movimientosAlmacen',
-      JSON.stringify(elementToDBSchema), {
+      JSON.stringify(elementToDBSchema),
+      {
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           section: ROLES.WAREHOUSE

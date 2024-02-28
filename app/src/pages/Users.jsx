@@ -47,8 +47,7 @@ export function Users() {
         >
           USUARIOS
         </button>
-        {/* TODO: UNCOMMENT TO CREATE LOTES */}
-        {/* <button
+        <button
           onClick={() => setSelectedTable(FIELDS_TYPES.LOTS)}
           className={`w-full rounded-lg py-2.5 text-sm font-medium leading-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-1 ${
             selectedTable === FIELDS_TYPES.LOTS
@@ -57,7 +56,7 @@ export function Users() {
           }`}
         >
           LOTES
-        </button> */}
+        </button>
         <button
           onClick={() => setSelectedTable(FIELDS_TYPES.ROLES)}
           className={`w-full rounded-lg py-2.5 text-sm font-medium leading-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-1 ${
