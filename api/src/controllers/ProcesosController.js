@@ -10,7 +10,7 @@ import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
 import { createNotificacion } from './NotificacionesController.js'
 import { checkMinAmountProduct, makeObjectNotification } from '../helpers/Index.js'
 import { constructLoteProducto } from '../controllers/LotesController.js'
-import { updateLotesProducto } from '../controllers/ProductosController.js'
+import { updateLotesProducto, decrementLotesProducto } from '../controllers/ProductosController.js'
 
 const createProceso = async (req = request, res = response) => {
   try {
@@ -152,6 +152,8 @@ const updateStatusProceso = async (req = request, res = response) => {
         proccessDBUsed.PROCESO_DETALLE.LOTES.forEach(async (lote) =>{
           await updateLotesProducto(productMade._id, lote.LOTE, lote.CANTIDAD, proccessDBUsed.CANTIDAD)
         })
+        // Restamos la cantidad de producto del lote especifico que se uso
+        await decrementLotesProducto(proccessDBUsed.PROCESO_DETALLE.LOTES)
       }else {
         // Creamos su Lote
         const lote_Producto = await constructLoteProducto(productMade._id)

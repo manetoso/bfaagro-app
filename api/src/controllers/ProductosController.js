@@ -2,6 +2,7 @@ import PRODUCTOS from '../models/Productos.js'
 import { request, response } from 'express'
 import { serverErrorMessage, serverOkMessage } from './ControllerGlobal.js'
 import { nextConsecutivoLoteByIdProducto } from './LotesController.js'
+import { LOTES } from '../models/Index.js'
 
 const createProducto = async (req = request, res = response) => {
   try {
@@ -133,6 +134,21 @@ const updateLotesProducto = async( idProducto = 0, lote = '', cantidad = 0, cant
   }
 }
 
+const decrementLotesProducto = async( lotes = []) => {
+  try {
+    lotes.forEach(async (lote) => {
+      const productoSaved = await PRODUCTOS.find({'LOTES.LOTE': lote.LOTE})
+      productoSaved.LOTES.filter((loteSaved) => loteSaved.LOTE == lote.LOTE).map((objeto) => {
+        objeto.CANTIDAD -= lote.CANTIDAD
+        return objeto;
+      });
+      PRODUCTOS.findByIdAndUpdate(productoSaved._id, productoSaved)
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export {
   createProducto,
   findProductos,
@@ -141,6 +157,7 @@ export {
   findProductosByType,
   fixProductosByType,
   createProductoInAlmacen,
-  updateLotesProducto
+  updateLotesProducto,
+  decrementLotesProducto
 }
 
