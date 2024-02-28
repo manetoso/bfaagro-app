@@ -150,7 +150,7 @@ const updateStatusProceso = async (req = request, res = response) => {
       if(proccessDBUsed.PROCESO_DETALLE.LOTES.length != 0) {
         // Hereda los lotes
         proccessDBUsed.PROCESO_DETALLE.LOTES.forEach(async (lote) =>{
-          await updateLotesProducto(productMade._id, lote.LOTE, lote.CANTIDAD, proccessDBUsed.CANTIDAD)
+          await updateLotesProducto(productMade._id, lote.LOTE, lote.CANTIDAD)
         })
         // Restamos la cantidad de producto del lote especifico que se uso
         await decrementLotesProducto(proccessDBUsed.PROCESO_DETALLE.LOTES)

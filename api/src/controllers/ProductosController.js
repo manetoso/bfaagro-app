@@ -138,10 +138,12 @@ const decrementLotesProducto = async( lotes = []) => {
   try {
     lotes.forEach(async (lote) => {
       const productoSaved = await PRODUCTOS.find({'LOTES.LOTE': lote.LOTE})
-      productoSaved.LOTES.filter((loteSaved) => loteSaved.LOTE == lote.LOTE).map((objeto) => {
+      console.log(productoSaved)
+      loteFiltrados = productoSaved.LOTES.filter((loteSaved) => loteSaved.LOTE == lote.LOTE)
+      nuevaCantidad =  loteFiltrados.map((objeto) => {
         objeto.CANTIDAD -= lote.CANTIDAD
         return objeto;
-      });
+      })
       PRODUCTOS.findByIdAndUpdate(productoSaved._id, productoSaved)
     })
   } catch (error) {
