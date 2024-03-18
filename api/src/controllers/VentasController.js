@@ -7,6 +7,7 @@ import { registerMovementByAlmacen, registerMovementAlmacen } from '../controlle
 import { generateNewFolio } from '../helpers/Index.js'
 import { createCuentaxCobrarByVenta } from './Cuentas_por_CobrarController.js'
 import { createRegister, constructArrayProducts, updateRegisterByIdentificador } from './BitacoraProductosController.js'
+import { decreaseLotesProductos } from '../controllers/ProductosController.js'
 
 const sumarPeriodo = (FECHA_VENCIMIENTO, PERIODO) => {
     const fechaVencimiento = new Date(FECHA_VENCIMIENTO)
@@ -36,6 +37,8 @@ const createVenta = async (req = request, res = response) => {
         await createVentaDetalle(actionDB._id, VENTA_DETALLE)
         // REGISTRAMOS EL MOVIMIENTO DE SALIDA
         await registerMovementAlmacen('SALIDA', VENTA_DETALLE.PRODUCTOS)
+        // Restamos la cantidad de los lotes pertenecientes a los productos
+        await decreaseLotesProductos(VENTAS_DETALLE.PRODUCTOS.LOTES)
         // CREAR LA CXC
         await createCuentaxCobrarByVenta(actionDB._id, CLIENTES, FOLIO, NEW_FECHA_VENCIMIENTO, ESTADO, TOTAL_VENTA, TOTAL_PAGADO, SALDO)
         return serverOkMessage(res, actionDB, 201)

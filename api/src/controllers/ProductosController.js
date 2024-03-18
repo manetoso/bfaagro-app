@@ -133,6 +133,27 @@ const updateLotesProducto = async( idProducto = 0, lote = '', cantidad = 0 ) => 
   }
 }
 
+const findProductoByLote = async (lote = '') => {
+  try {
+    return await PRODUCTOS.findOne({"LOTES.LOTE": lote}) 
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const decreaseLotesProductos = async ( lotes = [] ) => {
+  try {
+    lotes.forEach( async (lote) => {
+      const productDB = await findProductoByLote(lote.LOTE)
+      let indexLoteObjDB = productDB.LOTES.findIndex((element) => element.LOTE = lote)
+      productDB.LOTES[indexLoteObjDB].CANTIDAD -= lote.CANTIDAD
+      await PRODUCTOS.findByIdAndUpdate(productDB._id, productDB)
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export {
   createProducto,
   findProductos,
@@ -141,6 +162,8 @@ export {
   findProductosByType,
   fixProductosByType,
   createProductoInAlmacen,
-  updateLotesProducto
+  updateLotesProducto,
+  findProductoByLote,
+  decreaseLotesProductos
 }
 
