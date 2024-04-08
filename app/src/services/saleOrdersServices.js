@@ -66,7 +66,7 @@ export async function fetchData() {
       secondArrayIterator: 'saleOrderId',
       newAttribute: 'saleDetails'
     })
-    const areBFASales = window.location.href.includes('bfa')
+    const areBFASales = window.location.href.endsWith('/bfa')
     if (areBFASales) {
       const dataSorted = sales.filter(
         (saleOrder) => saleOrder.originClient.clientId === null
