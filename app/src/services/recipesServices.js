@@ -8,7 +8,7 @@ import { PRODUCT_TYPES, ROLES } from '@/utils/consts'
 /**
  *
  * @param {{ field: string }} param - The field to search.
- * @returns {Promise<{ id: string, recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number }[] }[]>} - The recipes.
+ * @returns {Promise<{ id: string, recipeName: string, unity: string, quantity: number, product: { id: string, name: string }, details: { id: string, name: string, quantity: number, unity: string }[] }[]>} - The recipes.
  */
 export async function fetchData({ field }) {
   try {
@@ -20,7 +20,7 @@ export async function fetchData({ field }) {
     })
     /**
      * The respponse body from the request.
-     * @typedef { { _id: string, NOMBRE_FORMULA: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, TIPO_PRODUCTO: { ID_TIPO_PRODUCTO: string, TIPO_PRODUCTO: string }[] }, FORMULACION_DETALLE: { CANTIDAD: number, ID_PRODUCTO: string, NOMBRE_PRODUCTO: string }[] } } RecipesBody
+     * @typedef { { _id: string, NOMBRE_FORMULA: string, CANTIDAD: number, UNIDAD_MEDIDA: string, PRODUCTO: { ID_PRODUCTO: string, NOMBRE_PRODUCTO: string, TIPO_PRODUCTO: { ID_TIPO_PRODUCTO: string, TIPO_PRODUCTO: string }[] }, FORMULACION_DETALLE: { CANTIDAD: number, NOMBRE_PRODUCTO: string, ID_PRODUCTO: { _id: string, UNIDAD_MEDIDA: string } }[] } } RecipesBody
      * @type {{body: RecipesBody[]}} - The Recipes response body.
      */
     const json = resp
@@ -48,9 +48,10 @@ export async function fetchData({ field }) {
           //   : []
         },
         details: recipe.FORMULACION_DETALLE.map((material) => ({
-          id: material.ID_PRODUCTO,
+          id: material.ID_PRODUCTO._id,
           name: material.NOMBRE_PRODUCTO,
-          quantity: material.CANTIDAD
+          quantity: material.CANTIDAD,
+          unity: material.ID_PRODUCTO.UNIDAD_MEDIDA
         }))
       }
       // console.log(`>>> recipe no: ${index} with id: ${newRecipe.id}`)
@@ -82,6 +83,7 @@ export async function fetchData({ field }) {
       })
     }
   } catch (error) {
+    console.log({ error })
     throw new Error('Error searching recipes')
   }
 }

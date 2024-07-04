@@ -281,19 +281,17 @@ export function Form({ selectedRow, submitAction, modalId, field }) {
                       </li>
                     )
                   })
-                  : recipeSelected?.details.map((detail, index) => {
-                    return (
-                      <li key={index}>
-                        {detail.name}
-                        {', '}
-                        {detail.quantity *
-                          (selectedRow?.quantity ||
-                            (quantityInputValue > 0 &&
-                              quantityInputValue))}{' '}
-                        {recipeSelected?.unity}
-                      </li>
-                    )
-                  })}
+                  : recipeSelected?.details.map((detail, index) => (
+                    <li key={index}>
+                      {detail.name}
+                      {', '}
+                      {detail.quantity *
+                        (selectedRow?.quantity ||
+                          (quantityInputValue > 0 &&
+                            quantityInputValue))}{' '}
+                      {detail?.unity}
+                    </li>
+                  ))}
               </ul>
               {Object.keys(selectedRow).length !== 0 && (
                 <>

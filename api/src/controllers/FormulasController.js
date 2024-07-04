@@ -15,7 +15,9 @@ const createFormula = async (req = request, res = response) => {
 }
 const findFormulas = async (req = request, res = response) => {
   try {
-    const actionDB = await FORMULAS.find().sort({ createdAt: -1 }).lean()
+    const actionDB = await FORMULAS.find().sort({ createdAt: -1 })
+    .populate('FORMULACION_DETALLE.ID_PRODUCTO')
+    .lean()
     let result = []
     for( const element of actionDB ){
       const typeProduct = await searchAndReturnTypeProducto(element.PRODUCTO.ID_PRODUCTO)
