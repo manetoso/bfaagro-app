@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Open Sans',
     fontSize: 12,
     paddingHorizontal: 60,
-    paddingVertical: 40
+    paddingVertical: 20
   },
   topDecorationWrapper: {
     left: 0,
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 40
+    marginBottom: 20
   },
   header: {
     color: '#008D36',
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 20,
     justifyContent: 'space-between',
-    marginBottom: 40
+    marginBottom: 10
   },
   infoRow: {
     alignItems: 'flex-start',
@@ -121,14 +121,14 @@ const styles = StyleSheet.create({
     fontSize: 10
   },
   table: {
-    marginBottom: 40
+    marginBottom: 20
   },
   tableHeader: {
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 16
+    paddingVertical: 10
   },
   tableHeaderCell: {
     color: '#008D36',
@@ -147,7 +147,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 16
+    fontSize: 10,
+    paddingVertical: 6
   },
   tableRowCell: {
     textAlign: 'center',
@@ -212,8 +213,9 @@ export function PDFBuilder() {
   if (
     (selected.id === undefined || companyData.id === undefined,
     suppliersData.length === 0)
-  )
+  ) {
     return null
+  }
   const supplier = suppliersData.find(
     (s) => s.id === selected?.supplier?.supplierId
   )
@@ -233,8 +235,7 @@ export function PDFBuilder() {
           .toLowerCase()}-${selected?.currency}.pdf`}
       >
         {({ blob, url, loading, error }) =>
-          loading ? 'Cargando documento...' : 'Descargar ahora!'
-        }
+          loading ? 'Cargando documento...' : 'Descargar ahora!'}
       </PDFDownloadLink>
       <PDFViewer className='h-[78vh] w-full'>
         <MyPDFDocument
@@ -379,8 +380,7 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
         <Text
           style={styles.pageNumber}
           render={({ pageNumber, totalPages }) =>
-            `${pageNumber} / ${totalPages}`
-          }
+            `${pageNumber} / ${totalPages}`}
           fixed
         />
         <View style={styles.bottomDecorationWrapper} fixed>
