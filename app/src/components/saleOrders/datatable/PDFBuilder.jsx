@@ -44,7 +44,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Open Sans',
     fontSize: 12,
     paddingHorizontal: 60,
-    paddingVertical: 20
+    paddingTop: 20,
+    paddingBottom: 40
   },
   topDecorationWrapper: {
     left: 0,
@@ -121,6 +122,7 @@ const styles = StyleSheet.create({
     fontSize: 10
   },
   table: {
+    flexGrow: 2,
     marginBottom: 20
   },
   tableHeader: {
@@ -161,12 +163,15 @@ const styles = StyleSheet.create({
   },
   tableFooter: {
     display: 'flex',
+    flexGrow: 1,
     flexDirection: 'row',
     gap: 10,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    alignItems: 'flex-end'
   },
   tableFooterColBig: {
-    width: '100%'
+    width: '100%',
+    marginBottom: 10
   },
   tableFooterCol: {
     width: '70%'
@@ -178,13 +183,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     fontWeight: 800,
     gap: 10,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    marginBottom: 40
   },
   signaturesWrapper: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 80
+    justifyContent: 'flex-end'
   },
   signature: {
     alignItems: 'center',
@@ -234,8 +239,11 @@ export function PDFBuilder() {
           ?.replace(' ', '-')
           .toLowerCase()}.pdf`}
       >
+        {/* eslint-disable react/jsx-curly-newline */}
         {({ blob, url, loading, error }) =>
-          loading ? 'Cargando documento...' : 'Descargar ahora!'}
+          loading ? 'Cargando documento...' : 'Descargar ahora!'
+        }
+        {/* eslint-enable react/jsx-curly-newline */}
       </PDFDownloadLink>
       <PDFViewer className='h-[78vh] w-full'>
         <MyPDFDocument
@@ -249,6 +257,16 @@ export function PDFBuilder() {
 }
 
 function MyPDFDocument({ selected, companyData, suppliersData }) {
+  const calculateFooterMargin = () => {
+    const arrayLength = selected?.saleDetails?.products?.length
+    if (arrayLength === 18 || arrayLength === 47) {
+      return 50
+    } else if (arrayLength === 19 || arrayLength === 48) {
+      return 20
+    } else {
+      return 0
+    }
+  }
   return (
     <Document language='Español'>
       <Page size='A4' style={styles.page}>
@@ -324,21 +342,38 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
               <Text style={styles.tableRowCell}>
                 {formatNumberToMoneyString(product?.unitPrice)}
               </Text>
-              <Text style={styles.tableRowCell}>{product?.increment || 0}%</Text>
+              <Text style={styles.tableRowCell}>
+                {product?.increment || 0}%
+              </Text>
               <Text style={styles.tableRowCell}>
                 {formatNumberToMoneyString(
                   product?.unitPrice * product?.quantity
                 )}
               </Text>
               <Text style={styles.tableRowCell}>
-                {product?.increment ? formatNumberToMoneyString(
-                  (product?.unitPrice * product?.quantity) - (product?.unitPrice * product?.quantity) * product?.increment / 100
-                ) : formatNumberToMoneyString(product?.unitPrice * product?.quantity)}
+                {/* eslint-disable */}
+                {product?.increment
+                  ? formatNumberToMoneyString(
+                      product?.unitPrice * product?.quantity -
+                        (product?.unitPrice *
+                          product?.quantity *
+                          product?.increment) /
+                          100
+                    )
+                  : formatNumberToMoneyString(
+                      product?.unitPrice * product?.quantity
+                    )}
+                {/* eslint-enable */}
               </Text>
             </View>
           ))}
         </View>
-        <View style={styles.tableFooter}>
+        <View
+          style={{
+            ...styles.tableFooter,
+            marginTop: calculateFooterMargin()
+          }}
+        >
           <View style={styles.tableFooterColBig}>
             <Text style={{ ...styles.strong, marginBottom: 10 }}>
               Informaci&oacute;n de la empresa:
@@ -362,20 +397,23 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
                 )} MXN`}
               </Text>
             </View>
+            <View style={styles.signaturesWrapper}>
+              <View style={styles.signature}>
+                <View style={styles.signatureLine} />
+                <Text style={{ ...styles.small }}>Autoriza</Text>
+              </View>
+            </View>
           </View>
         </View>
-        <View style={styles.signaturesWrapper}>
-          <View style={styles.signature}>
-            <View style={styles.signatureLine} />
-            <Text style={{ ...styles.small }}>Autoriza</Text>
-          </View>
-        </View>
+        {/* eslint-disable react/jsx-curly-newline */}
         <Text
           style={styles.pageNumber}
           render={({ pageNumber, totalPages }) =>
-            `${pageNumber} / ${totalPages}`}
+            `${pageNumber} / ${totalPages}`
+          }
           fixed
         />
+        {/* eslint-enable react/jsx-curly-newline */}
         <View style={styles.bottomDecorationWrapper} fixed>
           <View style={styles.decoration} />
         </View>

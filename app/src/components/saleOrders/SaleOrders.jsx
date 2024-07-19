@@ -48,7 +48,7 @@ export function SaleOrders() {
       <PDFView
         closeModal={() => printPurchaseOrder({})}
         isOpen={pdfView}
-        title='Orden de Compra PDF'
+        title='Orden de Venta PDF'
       >
         <PDFBuilder />
       </PDFView>
