@@ -79,3 +79,12 @@ export const formatDate = (date) => {
     newDate.getMonth() + 1
   } / ${newDate.getDate()} / ${newDate.getFullYear()}`
 }
+
+export const formatDateV2 = (date) => {
+  const newDate = new Date(date)
+  return newDate.toLocaleDateString('es-MX', {
+    day: '2-digit',
+    month: 'short',
+    year: '2-digit'
+  })
+}

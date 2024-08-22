@@ -28,6 +28,7 @@ export async function fetchData({ field }) {
     // console.log({ json })
     const data = []
     json.body.forEach((recipe, index) => {
+      // console.log({ recipe })
       const newRecipe = {
         id: recipe._id,
         recipeName: recipe.NOMBRE_FORMULA,
