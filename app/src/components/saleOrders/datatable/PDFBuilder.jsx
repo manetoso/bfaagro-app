@@ -13,11 +13,8 @@ import {
 import { useSaleOrdersStore } from '@/stores/useSaleOrdersStore'
 import Logo from '@/assets/bfa-main-logo.png'
 import LogoBG from '@/assets/bfa-bg.png'
-import {
-  formatDate,
-  formatNumberToMoneyString,
-  formatPhoneNumber
-} from '@/utils/utils'
+import { formatDateV2, formatNumberToMoneyString } from '@/utils/utils'
+import { t } from './pdf-styles'
 
 Font.register({
   family: 'Open Sans',
@@ -42,10 +39,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     fontFamily: 'Open Sans',
-    fontSize: 12,
+    fontSize: 9,
     paddingHorizontal: 60,
-    paddingTop: 20,
-    paddingBottom: 40
+    paddingTop: 10,
+    paddingBottom: 20
   },
   topDecorationWrapper: {
     left: 0,
@@ -80,36 +77,21 @@ const styles = StyleSheet.create({
   },
   mainLogo: {
     aspectRatio: 16 / 9,
-    width: 130
+    width: 100
   },
   headerWrapper: {
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20
+    marginVertical: 10
   },
   header: {
     color: '#008D36',
-    fontSize: 32,
+    fontSize: 18,
     fontWeight: 800,
     letterSpacing: -2,
     textAlign: 'center'
-  },
-  mainInfoWrapper: {
-    alignItems: 'flex-start',
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 20,
-    justifyContent: 'space-between',
-    marginBottom: 10
-  },
-  infoRow: {
-    alignItems: 'flex-start',
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 10,
-    justifyContent: 'space-between'
   },
   strong: {
     color: '#008D36',
@@ -122,15 +104,13 @@ const styles = StyleSheet.create({
     fontSize: 10
   },
   table: {
-    flexGrow: 2,
-    marginBottom: 20
+    flexGrow: 3
   },
   tableHeader: {
     alignItems: 'center',
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 10
+    justifyContent: 'space-between'
   },
   tableHeaderCell: {
     color: '#008D36',
@@ -145,65 +125,27 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     alignItems: 'center',
-    borderBottom: '1px solid #008D36',
+    borderBottom: '1px solid #000',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     fontSize: 10,
-    paddingVertical: 6
+    paddingVertical: 2
   },
   tableRowCell: {
     textAlign: 'center',
     width: '30%'
   },
   tableRowCellBig: {
-    color: '#008D36',
-    fontWeight: 800,
     width: '100%'
   },
   tableFooter: {
     display: 'flex',
     flexGrow: 1,
-    flexDirection: 'row',
-    gap: 10,
-    justifyContent: 'space-between',
-    alignItems: 'flex-end'
-  },
-  tableFooterColBig: {
-    width: '100%',
-    marginBottom: 10
-  },
-  tableFooterCol: {
-    width: '70%'
-  },
-  tableFooterTotalsRow: {
-    alignItems: 'flex-start',
-    color: '#008D36',
-    display: 'flex',
-    flexDirection: 'row',
-    fontWeight: 800,
-    gap: 10,
-    justifyContent: 'space-between',
-    marginBottom: 40
-  },
-  signaturesWrapper: {
-    display: 'flex',
-    flexDirection: 'row',
     justifyContent: 'flex-end'
   },
-  signature: {
-    alignItems: 'center',
-    color: '#004083',
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  signatureLine: {
-    backgroundColor: '#004083',
-    height: 2,
-    width: 160
-  },
   pageNumber: {
-    bottom: 20,
+    bottom: 2,
     color: 'grey',
     fontSize: 12,
     left: 0,
@@ -229,11 +171,7 @@ export function PDFBuilder() {
       <PDFDownloadLink
         className='btn absolute bottom-12 right-16'
         document={
-          <MyPDFDocument
-            selected={selected}
-            companyData={companyData}
-            suppliersData={supplier}
-          />
+          <MyPDFDocument selected={selected} suppliersData={supplier} />
         }
         fileName={`Orden-de-venta-${selected?.folio
           ?.replace(' ', '-')
@@ -246,97 +184,102 @@ export function PDFBuilder() {
         {/* eslint-enable react/jsx-curly-newline */}
       </PDFDownloadLink>
       <PDFViewer className='h-[78vh] w-full'>
-        <MyPDFDocument
-          selected={selected}
-          companyData={companyData}
-          suppliersData={supplier}
-        />
+        <MyPDFDocument selected={selected} suppliersData={supplier} />
       </PDFViewer>
     </div>
   )
 }
 
-function MyPDFDocument({ selected, companyData, suppliersData }) {
+function MyPDFDocument({ selected, suppliersData }) {
+  // const test = Array.from(Array(112).keys())
   const calculateFooterMargin = () => {
+    let margin = 0
     const arrayLength = selected?.saleDetails?.products?.length
-    if (arrayLength === 18 || arrayLength === 47) {
-      return 50
-    } else if (arrayLength === 19 || arrayLength === 48) {
-      return 20
-    } else {
-      return 0
+    // const arrayLength = test.length
+    if (
+      (arrayLength >= 27 && arrayLength <= 35) ||
+      (arrayLength >= 70 && arrayLength <= 78)
+    ) {
+      margin = 180
     }
+    return margin
   }
   return (
     <Document language='Español'>
       <Page size='A4' style={styles.page}>
-        <View style={styles.topDecorationWrapper} fixed>
-          <View style={styles.decoration} />
+        <View style={styles.header}>
+          <Text>REMISIÓN PEDIDO</Text>
         </View>
         <Image style={styles.logoBG} src={LogoBG} fixed />
         <View style={styles.headerWrapper}>
           <Image style={styles.mainLogo} src={Logo} />
-          <View style={styles.header}>
-            <Text>ORDEN DE VENTA</Text>
-          </View>
-        </View>
-        <View style={styles.mainInfoWrapper}>
-          <View style={styles.infoRow}>
-            <Text style={styles.strong}>Cliente:</Text>
-            <View>
-              <Text style={styles.strong}>
-                {selected?.destinationClient?.clientName}{' '}
+          <View style={[t.flex]}>
+            <View style={[t.flex, t.flexRow, t.flexAlignSelfEnd]}>
+              <Text style={[t.tableCell, t.fontBold]}>FOLIO:</Text>
+              <Text style={[t.tableCellRight, t.textRight]}>
+                {selected?.folio?.split(' ')[1]}
               </Text>
-              <Text style={{ ...styles.muted, ...styles.small, maxWidth: 300 }}>
-                <Text style={{ ...styles.strong }}>Dir: </Text>
+            </View>
+            <View style={[t.flex, t.flexRow, t.flexAlignSelfEnd]}>
+              <Text style={[t.tableCell, t.fontBold]}>FECHA:</Text>
+              <Text style={[t.tableCellRight, t.textRight]}>
+                {formatDateV2(selected?.createdAt)}
+              </Text>
+            </View>
+            <View style={[t.flex, t.flexRow]}>
+              <Text
+                style={[t.tableCell, t.textCenter, t.fontBold, t.textPrimary]}
+              >
+                CLIENTE:
+              </Text>
+              <Text style={[t.tableCellRight, { width: '200px' }]}>
+                {selected?.destinationClient?.clientName}
+              </Text>
+            </View>
+            <View style={[t.flex, t.flexRow]}>
+              <Text
+                style={[t.tableCell, t.textCenter, t.fontBold, t.textPrimary]}
+              >
+                DOMICILIO:
+              </Text>
+              <Text style={[t.tableCellRight, { width: '200px' }]}>
                 {suppliersData?.address}
               </Text>
-              <Text style={{ ...styles.muted, ...styles.small }}>
-                <Text style={{ ...styles.strong }}>RFC: </Text>
-                {suppliersData?.rfc}
+            </View>
+            <View style={[t.flex, t.flexRow]}>
+              <Text
+                style={[
+                  t.tableCellBottom,
+                  t.textCenter,
+                  t.fontBold,
+                  t.textPrimary
+                ]}
+              >
+                TIPO:
               </Text>
-              <Text style={{ ...styles.muted, ...styles.small }}>
-                <Text style={{ ...styles.strong }}>Tipo: </Text>
+              <Text style={[t.tableCellRightBottom, { width: '200px' }]}>
                 {suppliersData?.clientType?.clientType}
               </Text>
-              <Text style={{ ...styles.muted, ...styles.small }}>
-                {suppliersData?.email}
-              </Text>
-              <Text style={{ ...styles.muted, ...styles.small }}>
-                {formatPhoneNumber(suppliersData?.phoneNumber)}
-              </Text>
-            </View>
-          </View>
-          <View style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-            <View style={{ ...styles.infoRow, justifyContent: 'flex-start' }}>
-              <Text style={styles.strong}>Folio:</Text>
-              <View>
-                <Text style={styles.strong}>
-                  #{selected?.folio?.split(' ')[1]}
-                </Text>
-              </View>
-            </View>
-            <View style={{ ...styles.infoRow, justifyContent: 'flex-start' }}>
-              <Text style={styles.strong}>Fecha:</Text>
-              <View>
-                <Text>{formatDate(selected?.createdAt)}</Text>
-              </View>
             </View>
           </View>
         </View>
         <View style={styles.table}>
           <View style={styles.tableHeader}>
-            <Text style={styles.tableHeaderCell}>#</Text>
-            <Text style={styles.tableHeaderCellBig}>Descripción</Text>
-            <Text style={styles.tableHeaderCell}>Cant</Text>
+            <Text style={[styles.tableHeaderCellBig, t.textCenter]}>
+              Descripción
+            </Text>
+            <Text style={styles.tableHeaderCell}>Cant.</Text>
             <Text style={styles.tableHeaderCell}>P.U.</Text>
-            <Text style={styles.tableHeaderCell}>Desc</Text>
-            <Text style={styles.tableHeaderCell}>Sub</Text>
+            <Text style={styles.tableHeaderCell}>Desc.</Text>
+            <Text style={styles.tableHeaderCell}>Sub.</Text>
             <Text style={styles.tableHeaderCell}>Total</Text>
           </View>
-          {selected?.saleDetails?.products?.map((product, index) => (
-            <View key={product?.productId} style={styles.tableRow}>
-              <Text style={styles.tableRowCell}>{index + 1}</Text>
+          {/* {test.map((product) => ( */}
+          {selected?.saleDetails?.products?.map((product) => (
+            <View
+              key={product?.productId}
+              style={[styles.tableRow, t.fontSemibold]}
+            >
               <Text style={styles.tableRowCellBig}>{product?.name}</Text>
               <Text style={styles.tableRowCell}>{product?.quantity}</Text>
               <Text style={styles.tableRowCell}>
@@ -374,49 +317,61 @@ function MyPDFDocument({ selected, companyData, suppliersData }) {
             marginTop: calculateFooterMargin()
           }}
         >
-          <View style={styles.tableFooterColBig}>
-            <Text style={{ ...styles.strong, marginBottom: 10 }}>
-              Informaci&oacute;n de la empresa:
+          <View
+            style={[t.flexRow, t.flexAlignSelfEnd, t.fontBold, t.textPrimary]}
+          >
+            <Text>Total: </Text>
+            <Text style={[t.textRight, { width: '80px' }]}>
+              {`${formatNumberToMoneyString(selected?.saleDetails?.total)}`}{' '}
             </Text>
-            <Text style={styles.small}>{companyData?.name}</Text>
-            <Text style={styles.small}>{companyData?.address}</Text>
           </View>
-          <View style={styles.tableFooterCol}>
-            <View
-              style={{
-                ...styles.tableFooterTotalsRow,
-                color: '#004083',
-                flexWrap: 'wrap',
-                fontSize: 16
-              }}
-            >
-              <Text>Total:</Text>
-              <Text style={{ textAlign: 'right' }}>
-                {`${formatNumberToMoneyString(
-                  selected?.saleDetails?.total
-                )} MXN`}
+          <View style={[t.border2, t.flex, t.p6]}>
+            <View style={[t.flex, t.flexRow]}>
+              <Text style={[t.widthHalf, t.textCenter, t.fontBold]}>
+                PAGARÉ
               </Text>
             </View>
-            <View style={styles.signaturesWrapper}>
-              <View style={styles.signature}>
-                <View style={styles.signatureLine} />
-                <Text style={{ ...styles.small }}>Autoriza</Text>
+            <Text style={[t.textCenter, t.fontBold]}>
+              DEBO(EMOS) Y PAGARÉ(MOS) a BFA Agro, S.A. de C.V. la cantidad de
+              $_____________________, valor de mercancía recibida a mi(nuestra)
+              entera satisfacción, el día _____________________ en la ciudad de
+              ________________ o en cualquier otra que BFA Agro, S.A. de C.V.
+              determine. De no pagarse el importe total en la fecha anotada en
+              este pagaré se causarán intereses moratorios a la tase del
+              ________% mensual.
+            </Text>
+            <Text style={[t.textCenter, t.fontBold]}>ACEPTO(AMOS)</Text>
+            <View
+              style={[
+                t.flex,
+                t.flexRow,
+                t.justifyBetween,
+                { gap: 50, marginTop: 50 }
+              ]}
+            >
+              <View style={[t.flex, t.widthFull]}>
+                <View style={[t.border, t.widthFull]} />
+                <Text style={[t.textCenter, t.fontBold]}>Nombre Completo</Text>
+              </View>
+              <View style={[t.flex, t.widthFull]}>
+                <View style={[t.border, t.widthFull]} />
+                <Text style={[t.textCenter, t.fontBold]}>Firma</Text>
               </View>
             </View>
           </View>
         </View>
         {/* eslint-disable react/jsx-curly-newline */}
-        <Text
+        {/* <Text
           style={styles.pageNumber}
           render={({ pageNumber, totalPages }) =>
             `${pageNumber} / ${totalPages}`
           }
           fixed
-        />
+        /> */}
+        <Text style={styles.pageNumber} fixed>
+          Ventas: administración@bfaagro.com
+        </Text>
         {/* eslint-enable react/jsx-curly-newline */}
-        <View style={styles.bottomDecorationWrapper} fixed>
-          <View style={styles.decoration} />
-        </View>
       </Page>
     </Document>
   )
